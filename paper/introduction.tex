@@ -1,0 +1,49 @@
+\section{Introduction}
+
+Artificial Intelligence (AI) applications in agriculture have witnessed remarkable growth in recent years, with deep learning methods achieving impressive accuracy in crop disease detection \cite{kamilaris2018deep, mohanty2016using}. However, the widespread adoption of these technologies among farmers has been hindered by a critical limitation: most state-of-the-art models function as inscrutable ``black boxes,'' providing predictions without explanations. This lack of transparency creates a significant barrier to trust, particularly in high-stakes agricultural decisions where misclassification can lead to substantial economic losses or unnecessary pesticide application.
+
+Paddy cultivation, a cornerstone of global food security providing sustenance to over half of the world's population, faces consistent threats from various diseases that can reduce yields by 10-30\% annually \cite{savary2019global}. While computer vision models have demonstrated high accuracy in detecting these diseases from leaf images \cite{rahman2020deep}, their deployment in real-world agricultural settings remains limited. The primary reason for this limited adoption is the inherent opacity of deep learning models—farmers and agricultural extension workers understandably hesitate to rely on systems whose reasoning they cannot comprehend or verify.
+
+\subsection{The Explainability Gap in Agricultural AI}
+
+The explainability gap in agricultural AI systems represents a critical research challenge. Recent surveys among agricultural stakeholders reveal that 78\% of potential users cite a "lack of understanding how the AI makes decisions" as a primary concern regarding adoption \cite{wolfert2017big}. This hesitation is particularly pronounced in resource-constrained settings typical of developing nations, where the consequences of incorrect decisions are most severe, and where traditional knowledge and practices remain deeply valued.
+
+Current approaches to disease detection primarily emphasize model accuracy while neglecting the equally important dimensions of interpretability and actionability. Models like ResNet, Inception, and various object detection architectures achieve impressive classification accuracy but provide minimal insight into their decision-making process \cite{ferentinos2018deep}. This limitation prevents users from:
+
+\begin{itemize}
+    \item Verifying the reliability of predictions in novel or edge-case scenarios
+    \item Understanding the specific visual characteristics that indicate disease presence
+    \item Assessing the confidence of predictions and associated uncertainty
+    \item Connecting predictions to appropriate treatment and management decisions
+\end{itemize}
+
+\subsection{Need for Explainable AI in Paddy Disease Management}
+
+Paddy disease management represents an ideal domain for explainable AI implementation due to several factors. First, diseases manifest through visually distinctive patterns that domain experts recognize—an aspect that aligns well with visual explanation techniques. Second, treatment decisions depend not only on disease identification but also on severity assessment, growth stage, and environmental conditions—contextual factors that benefit from transparent reasoning. Third, the knowledge gap between AI capabilities and farmer expertise creates a communication challenge that explanations can bridge.
+
+The potential benefits of explainable disease detection extend beyond immediate treatment decisions. Transparent AI systems can serve as educational tools, helping farmers develop their diagnostic capabilities over time. They can build trust incrementally through verified predictions, and they can adapt recommendations to local constraints and preferences. Most importantly, they can empower farmers to make informed decisions rather than replacing their judgment entirely.
+
+\subsection{Research Questions and Contributions}
+
+This research addresses the following key questions:
+
+\begin{enumerate}
+    \item How can deep learning models for paddy disease detection be made interpretable without sacrificing accuracy?
+    \item What types of explanations (visual, textual, example-based) are most effective for agricultural stakeholders?
+    \item How can uncertainty quantification be integrated with explanations to support risk-informed decision-making?
+    \item How do explainable systems impact user trust and decision quality compared to non-explainable alternatives?
+\end{enumerate}
+
+To address these questions, we present ExplainableCropAI, a novel framework that integrates state-of-the-art disease detection with multi-level explanations tailored to agricultural contexts. Our approach combines visual attention mapping, uncertainty quantification, natural language explanation generation, and context-aware recommendation synthesis to create a comprehensive decision support system.
+
+The primary contributions of this work include:
+
+\begin{enumerate}
+    \item A multi-level explanation system providing complementary visual, feature-based, and textual explanations
+    \item Integration of domain-specific agricultural knowledge in explanation generation
+    \item An uncertainty-aware explanation approach that communicates model confidence alongside predictions
+    \item A recommendation engine that links explanations to contextually appropriate treatment options
+    \item Empirical evaluation of the system's impact on user trust and decision quality through controlled user studies
+\end{enumerate}
+
+By bridging the gap between opaque AI predictions and transparent decision support, this research aims to increase the practical utility and adoption of computer vision for sustainable agricultural disease management. The framework demonstrates how explainability can transform deep learning from a black-box prediction tool into an assistive technology that augments rather than replaces human expertise in agricultural decision-making.
