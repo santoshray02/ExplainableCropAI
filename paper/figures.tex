@@ -1,0 +1,33 @@
+% Figures for ExplainableCropAI Paper
+
+% System Architecture Figure
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.9\textwidth]{../results/figures/system_architecture.pdf}
+    \caption{ExplainableCropAI system architecture showing the interconnection between disease detection model, explanation components, uncertainty quantification, and recommendation system.}
+    \label{fig:system-architecture}
+\end{figure}
+
+% Grad-CAM Examples Figure
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.9\textwidth]{../results/figures/gradcam_examples.pdf}
+    \caption{Visual explanations generated using Grad-CAM for various paddy diseases. For each row: (left) original image, (middle) class activation heatmap, (right) heatmap overlay indicating regions contributing to the model's prediction.}
+    \label{fig:gradcam-examples}
+\end{figure}
+
+% Uncertainty Visualization Figure
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.9\textwidth]{../results/figures/uncertainty_visualization.pdf}
+    \caption{Uncertainty quantification in ExplainableCropAI: (a) MC Dropout samples showing prediction distribution, (b) predictive entropy distribution indicating uncertainty levels, (c) predictive entropy by disease class, and (d) confidence intervals showing prediction uncertainty.}
+    \label{fig:uncertainty-visualization}
+\end{figure}
+
+% Uncertainty-Based Recommendations Figure
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.9\textwidth]{../results/figures/uncertainty_recommendations.pdf}
+    \caption{Relationship between prediction uncertainty and recommendation confidence: (a) scatter plot showing inverse correlation between uncertainty and recommendation confidence, (b) distribution of recommendation types, and (c) examples of recommendations with varying confidence levels.}
+    \label{fig:uncertainty-recommendations}
+\end{figure}

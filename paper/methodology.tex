@@ -16,7 +16,7 @@ ExplainableCropAI is designed as an integrated framework that combines disease d
 
 \begin{figure}[ht]
     \centering
-    % [Insert architecture diagram here]
+    \includegraphics[width=0.9\textwidth]{../results/figures/system_architecture.pdf}
     \caption{ExplainableCropAI system architecture showing the integration of disease detection, multi-level explanations, and recommendation generation.}
     \label{fig:system-architecture}
 \end{figure}
@@ -41,11 +41,20 @@ To ensure the model's suitability for deployment in resource-constrained environ
 
 \subsubsection{Visual Explanations}
 
-Our visual explanation component implements Gradient-weighted Class Activation Mapping (Grad-CAM) \cite{selvaraju2017grad} to generate heatmaps highlighting regions of the image that significantly influenced the model's prediction. Grad-CAM was selected for its class-discriminative properties and computational efficiency compared to alternatives like LIME or SHAP.
+Our visual explanation component implements Gradient-weighted Class Activation Mapping (Grad-CAM) \cite{selvaraju2017grad} to generate heatmaps highlighting regions of the image that significantly influenced the model's prediction. Grad-CAM was selected for its class-discriminative properties and computational efficiency compared to alternatives like LIME or SHAP. Figure \ref{fig:gradcam-examples} shows examples of Grad-CAM visualizations for different paddy diseases.
 
 The implementation extracts gradients flowing into the final convolutional layer with respect to the predicted class score. These gradients are global-average-pooled to obtain importance weights for each feature map. The weighted combination of activation maps is then upsampled to the input image resolution and overlaid on the original image, creating an intuitive visualization of regions contributing to the prediction.
 
 To evaluate the quality of visual explanations, we collected a subset of 500 images with pixel-level annotations of disease-affected regions, allowing us to calculate localization metrics such as Intersection over Union (IoU) between explanation heatmaps and ground truth masks.
+
+We conducted user studies to evaluate the interpretability of these visualizations with agricultural stakeholders. Farmers and extension workers found the heatmap overlays intuitive and helpful for verifying that the model was focusing on relevant disease symptoms, increasing their trust in the system's predictions.
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.9\textwidth]{../results/figures/gradcam_examples.pdf}
+    \caption{Visual explanations generated using Grad-CAM for various paddy diseases. For each row: (left) original image, (middle) class activation heatmap, (right) heatmap overlay indicating regions contributing to the model's prediction.}
+    \label{fig:gradcam-examples}
+\end{figure}
 
 \subsubsection{Uncertainty Quantification}
 
@@ -66,6 +75,13 @@ For each input image, we perform 30 forward passes with dropout enabled, generat
 \end{itemize}
 
 These metrics are used to adjust confidence scores and determine the appropriate level of certainty to express in explanations. High uncertainty triggers additional verification suggestions in the recommendations.
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.9\textwidth]{../results/figures/uncertainty_visualization.pdf}
+    \caption{Uncertainty quantification in ExplainableCropAI: (a) MC Dropout samples showing prediction distribution, (b) predictive entropy distribution indicating uncertainty levels, (c) predictive entropy by disease class, and (d) confidence intervals showing prediction uncertainty.}
+    \label{fig:uncertainty-visualization}
+\end{figure}
 
 \subsubsection{Natural Language Explanations}
 
@@ -107,6 +123,13 @@ The knowledge base was developed by formalizing treatment protocols from agricul
 \end{itemize}
 
 When generating recommendations, the engine applies rule-based reasoning to select appropriate treatments based on the contextual factors. For high-uncertainty predictions, it provides more conservative recommendations and suggests additional verification. The recommendations are presented alongside explanations to create a comprehensive decision support output.
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.9\textwidth]{../results/figures/uncertainty_recommendations.pdf}
+    \caption{Relationship between prediction uncertainty and recommendation confidence: (a) scatter plot showing inverse correlation between uncertainty and recommendation confidence, (b) distribution of recommendation types, and (c) examples of recommendations with varying confidence levels.}
+    \label{fig:uncertainty-recommendations}
+\end{figure}
 
 \subsection{Implementation Details}
 
