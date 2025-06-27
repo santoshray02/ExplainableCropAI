@@ -11,8 +11,8 @@
 ### Slide 2: The Problem
 - **Challenge:** Black-box AI systems limit farmer trust and adoption
 - **Statistics:** 
-  - 78% of farmers cite "lack of understanding how AI makes decisions" as a primary concern
-  - 10-30% annual crop losses due to paddy diseases globally
+  - Significant crop losses due to paddy diseases globally
+  - Limited adoption of AI tools in agriculture due to lack of interpretability
 - **Key Question:** How can we make advanced disease detection technology trustworthy and actionable for farmers?
 - **Visual:** Contrasting images of a black-box AI system vs. transparent AI system
 
@@ -51,7 +51,7 @@
   - Preserved spatial information for visual explanations
   - Integrated dropout layers for uncertainty estimation
   - Hooks for capturing activations and gradients
-- **Performance:** 97.2% accuracy on standard test set, 91.4% on challenging conditions
+- **Performance:** 90% accuracy on disease classification tasks
 - **Visual:** Model architecture diagram highlighting modifications
 
 ### Slide 7: Multi-level Explanation System
@@ -117,29 +117,30 @@
   - Uncertainty calibration
   - Recommendation appropriateness
 - **User Study:**
-  - 45 participants (15 extension officers, 15 experienced farmers, 15 novice farmers)
+  - Preliminary evaluation with agricultural domain participants
   - Comparison of prediction-only, visual-explanation, and full-explanation systems
   - Measures: decision accuracy, trust, mental workload
 - **Visual:** User study design diagram
 
 ### Slide 13: Technical Evaluation Results
 - **Disease Detection Performance:**
-  - 97.2% accuracy, 96.9% F1-score on standard test set
+  - 90% accuracy on disease classification tasks
   - Comparable to state-of-the-art non-explainable models
 - **Explanation Quality:**
-  - 72% IoU with ground truth for visual explanations
-  - Well-calibrated uncertainty estimates (ECE = 0.032)
-  - High expert ratings for explanation quality (4.3/5)
+  - Visual explanations highlight disease-relevant regions
+  - Well-calibrated uncertainty estimates
+  - Positive evaluation of explanation quality
 - **Visual:** Performance comparison chart with other approaches
 
 ### Slide 14: User Study Results
 - **Decision Accuracy:**
-  - 29% overall improvement with full explanations
-  - 42% improvement for novice farmers
-  - 18% improvement for extension officers
+  - Improvements observed with explanations across user groups
+  - Particularly beneficial for users with less domain expertise
+  - Visual explanations enhance understanding
 - **Trust and Workload:**
-  - Trust ratings: 3.8 → 4.9 → 5.8 (prediction-only → visual → full)
-  - Mental demand: 63.3 → 51.6 → 35.4 (lower is better)
+  - Increased trust ratings with explanation systems
+  - Reduced mental workload with comprehensive explanations
+  - Positive user feedback on system usability
 - **Visual:** Bar charts showing improvements across user groups
 
 ### Slide 15: Key Insights
@@ -154,14 +155,14 @@
   - Enables appropriate trust calibration
 - **Visual:** Conceptual diagram of how explanations bridge expertise gaps
 
-### Slide 16: Case Study: Field Deployment
-- **Setting:** Two-week field deployment with 5 extension officers
-- **Key Observations:**
-  - System primarily used as verification tool (68% of cases)
-  - High interest in visual explanations from farmers
-  - Technical challenges: connectivity, variable lighting
-  - Educational value for training new extension staff
-- **Visual:** Photos from field deployment
+### Slide 16: System Implementation
+- **Development Environment:** Academic research setting
+- **Key Features Implemented:**
+  - Multi-modal explanation generation
+  - Uncertainty quantification integration
+  - User-friendly interface design
+  - Comprehensive evaluation framework
+- **Visual:** Screenshots of system interface and components
 
 ### Slide 17: System Demonstration
 - **Live Demo Overview:**
@@ -212,15 +213,15 @@
 
 ### Slide 21: Acknowledgments & References
 - **Acknowledgments:**
-  - Participating farmers and extension officers
-  - Department of Agriculture
-  - Funding sources
+  - Symbiosis Institute of Technology for research support
+  - Faculty guidance and mentorship
+  - Academic research community
 - **Key References:**
   - Selected important citations from the paper
 - **Contact Information:**
-  - Email addresses
-  - Project repository URL
-- **Visual:** Logos of supporting organizations
+  - santosh.kumar.mtech2022@sitpune.edu.in
+  - GitHub: github.com/santoshray02/ExplainableCropAI
+- **Visual:** Symbiosis Institute of Technology logo
 
 ### Slide 22: Questions & Discussion
 - **Discussion Prompts:**
