@@ -76,14 +76,15 @@ We divided the dataset into training (70\%), validation (15\%), and testing (15\
 
 Our base disease detection model was implemented using PyTorch 1.9.0. We used ResNet50 pretrained on ImageNet as the backbone, with the following modifications:
 
-\begin{lstlisting}[language=Python, caption=Modified ResNet50 for explainability, label=lst:resnet-model]
+\begin{lstlisting}[language=Python, caption=Modified ResNet50 for explainability, label=lst:resnet-model, basicstyle=\footnotesize\ttfamily, breaklines=true]
 class PaddyDiseaseClassifier(nn.Module):
     def __init__(self, num_classes=10, pretrained=True):
         super(PaddyDiseaseClassifier, self).__init__()
         
-        # Load pretrained ResNet50 without the classification head
+        # Load pretrained ResNet50 without classification head
         self.backbone = models.resnet50(pretrained=pretrained)
-        self.backbone = nn.Sequential(*list(self.backbone.children())[:-2])
+        self.backbone = nn.Sequential(
+            *list(self.backbone.children())[:-2])
         
         # Global Average Pooling
         self.gap = nn.AdaptiveAvgPool2d(1)
@@ -116,7 +117,7 @@ class PaddyDiseaseClassifier(nn.Module):
         x = self.gap(x)
         x = x.view(x.size(0), -1)
         
-        # Apply dropout (enabled during inference for MC Dropout)
+        # Apply dropout (enabled during inference)
         x = self.dropout(x)
         
         # Classification
@@ -164,7 +165,7 @@ The Grad-CAM implementation follows Algorithm \ref{alg:gradcam}, which generates
 
 For uncertainty quantification, we implemented Monte Carlo Dropout by enabling dropout during inference and performing 30 forward passes for each input image. The uncertainty metrics were calculated as follows:
 
-\begin{lstlisting}[language=Python, caption=Uncertainty estimation with Monte Carlo Dropout, label=lst:mc-dropout]
+\begin{lstlisting}[language=Python, caption=Uncertainty estimation with Monte Carlo Dropout, label=lst:mc-dropout, basicstyle=\footnotesize\ttfamily, breaklines=true]
 def estimate_uncertainty(model, image, num_samples=30):
     predictions = []
     
@@ -179,17 +180,20 @@ def estimate_uncertainty(model, image, num_samples=30):
             predictions.append(probs.cpu().numpy())
     
     # Stack predictions
-    predictions = np.stack(predictions)  # (num_samples, batch_size, num_classes)
+    predictions = np.stack(predictions)
+    # Shape: (num_samples, batch_size, num_classes)
     
     # Mean prediction
     mean_probs = np.mean(predictions, axis=0)
     
     # Predictive entropy (total uncertainty)
-    entropy = -np.sum(mean_probs * np.log(mean_probs + 1e-10), axis=1)
+    entropy = -np.sum(mean_probs * np.log(
+        mean_probs + 1e-10), axis=1)
     
     # Expected entropy (aleatoric uncertainty)
     expected_entropy = -np.mean(
-        np.sum(predictions * np.log(predictions + 1e-10), axis=2),
+        np.sum(predictions * np.log(
+            predictions + 1e-10), axis=2),
         axis=0
     )
     
@@ -198,8 +202,10 @@ def estimate_uncertainty(model, image, num_samples=30):
     
     # Class agreement
     pred_classes = np.argmax(predictions, axis=2)
-    most_common = scipy.stats.mode(pred_classes, axis=0)[0]
-    agreement = np.mean(pred_classes == most_common, axis=0)
+    most_common = scipy.stats.mode(
+        pred_classes, axis=0)[0]
+    agreement = np.mean(
+        pred_classes == most_common, axis=0)
     
     return {
         'entropy': entropy,

@@ -10,9 +10,9 @@
 \usepackage{xcolor}
 \usepackage{hyperref}
 \usepackage{algorithm}
-\usepackage{algorithmic}
 \usepackage{listings}
 \usepackage{booktabs}
+\usepackage{url}
 
 \def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
     T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
@@ -26,25 +26,25 @@
 \IEEEauthorblockA{\textit{Symbiosis Institute of Technology} \\
 \textit{Symbiosis International University}\\
 Pune, India \\
-santosh.kumar@example.edu}
+santosh.kumar.mtech2022@sitpune.edu.in}
 \and
 \IEEEauthorblockN{Durgesh Nandan}
 \IEEEauthorblockA{\textit{Symbiosis Institute of Technology} \\
 \textit{Symbiosis International University}\\
 Pune, India \\
-durgesh.nandan@example.edu}
+durgeshnandano51@gmail.com}
 \and
 \IEEEauthorblockN{Sumit Kumar}
 \IEEEauthorblockA{\textit{Symbiosis Institute of Technology} \\
 \textit{Symbiosis International University}\\
 Pune, India \\
-sumit.kumar@example.edu}
+kumar.sumit@sitpune.edu.in}
 }
 
 \maketitle
 
 \begin{abstract}
-While deep learning has significantly improved automated crop disease detection, most current systems function as inscrutable "black boxes," limiting farmer trust and adoption. This paper presents ExplainableCropAI, a novel framework that integrates accurate paddy disease detection with multi-level explanations and context-aware recommendations. Our approach combines visual evidence highlighting (Grad-CAM), uncertainty quantification (Monte Carlo Dropout), and domain-specific natural language explanations to provide transparent and actionable insights. We demonstrate that this explainable system achieves 97.2\% disease classification accuracy while generating faithful visual explanations that localize disease regions with 72\% IoU with ground truth. Through a controlled user study with 45 agricultural stakeholders, we establish that explanations significantly improve trust (+53\%) and treatment decision accuracy (+29\%) compared to unexplained predictions, with the strongest benefits for users with less domain expertise. The system's context-aware recommendation engine generates treatment and prevention suggestions rated highly by agricultural experts for appropriateness (4.6/5) and specificity (4.3/5). These findings demonstrate that explainability can transform deep learning from a black-box prediction tool into an assistive technology that augments farmer decision-making without sacrificing accuracy—a critical advancement for responsible AI deployment in agriculture.
+While deep learning has significantly improved automated crop disease detection, most current systems function as inscrutable "black boxes," limiting farmer trust and adoption. This paper presents ExplainableCropAI, a novel framework that integrates accurate paddy disease detection with multi-level explanations and context-aware recommendations. Our approach combines visual evidence highlighting (Grad-CAM), uncertainty quantification (Monte Carlo Dropout), and domain-specific natural language explanations to provide transparent and actionable insights. We demonstrate that this explainable system achieves 97.2\% disease classification accuracy while generating faithful visual explanations that localize disease regions with 72\% intersection over union (IoU) with ground truth annotations. Through a controlled user study with 45 agricultural stakeholders, we establish that explanations significantly improve trust (+53\%) and treatment decision accuracy (+29\%) compared to unexplained predictions, with the strongest benefits for users with less domain expertise. The system's context-aware recommendation engine generates treatment and prevention suggestions rated highly by agricultural experts for appropriateness (4.6/5) and specificity (4.3/5). These findings demonstrate that explainability can transform deep learning from a black-box prediction tool into an assistive technology that augments farmer decision-making without sacrificing accuracy—a critical advancement for responsible AI deployment in agriculture.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -58,6 +58,7 @@ explainable AI, agricultural decision support, deep learning, paddy disease dete
 \input{experimental_evaluation}
 \input{results_discussion}
 \input{conclusion}
+\input{figures}
 
 \section*{Acknowledgment}
 

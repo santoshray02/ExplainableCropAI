@@ -1,0 +1,53 @@
+image_id,disease,confidence,severity,growth_stage,recommendation_type,recommendation
+IMG_0001,Bacterial Leaf Blight,0.95,moderate,tillering,specific,"TREATMENT RECOMMENDATION:
+1. Apply copper-based bactericide such as copper oxychloride (50% WP) @ 1250g/ha.
+2. Drain the field to reduce humidity.
+3. Remove severely infected plants and destroy by burning.
+4. Consider using resistant varieties in future plantings.
+
+PREVENTION:
+1. Use balanced fertilization, avoid excess nitrogen.
+2. Maintain proper spacing between plants for good aeration.
+3. Practice crop rotation with non-host crops."
+IMG_0003,Bacterial Leaf Streak,0.85,mild,tillering,general,"TREATMENT RECOMMENDATION:
+1. Consider applying copper-based bactericides.
+2. Improve field drainage to reduce humidity.
+3. Monitor the infection spread closely over the next 5-7 days.
+4. If symptoms worsen, consult with an extension officer.
+
+PREVENTION:
+1. Use certified disease-free seeds.
+2. Avoid excessive nitrogen fertilization.
+3. Practice proper field sanitation by removing crop debris."
+IMG_0011,Brown Spot,0.96,severe,grain_filling,specific,"TREATMENT RECOMMENDATION:
+1. Apply fungicide containing propiconazole (e.g., Tilt) at 1ml/L water.
+2. For organic farming, apply compost tea fortified with Trichoderma.
+3. Correct soil nutrient deficiencies, particularly potassium, through balanced fertilization.
+4. Apply foliar spray of potassium nitrate (1%) for quick nutrient supplementation.
+
+PREVENTION:
+1. Use healthy, certified seeds for future plantings.
+2. Maintain proper spacing between plants.
+3. Regular monitoring of soil nutrient status, especially potassium."
+IMG_0018,Neck Blast,0.84,moderate,reproductive,general,"TREATMENT RECOMMENDATION:
+1. Apply systemic fungicide containing tricyclazole or propiconazole.
+2. Monitor effectiveness after 7 days and reapply if necessary.
+3. Take measures to reduce field humidity.
+4. Consider consulting an expert for confirmation of diagnosis.
+
+NOTE OF CAUTION:
+The system has moderate uncertainty about this diagnosis. Similarity with leaf blast symptoms means treatments would be similar, but disease progression monitoring is recommended."
+IMG_0046,Healthy,0.99,none,vegetative,informational,"ASSESSMENT: Your crop appears healthy with no visible disease symptoms.
+
+PREVENTIVE MEASURES:
+1. Continue regular monitoring for early disease detection.
+2. Maintain balanced fertilization and proper water management.
+3. Practice field sanitation by removing weeds that may harbor pests or diseases.
+4. Consider prophylactic fungicide application only if disease pressure in the region is high."
+IMG_0050,Brown Spot,0.89,mild,booting,verification,"TREATMENT RECOMMENDATION:
+1. Apply light fungicide treatment with azoxystrobin or propiconazole.
+2. Check soil for nutrient deficiencies, especially potassium.
+3. Take a sample to your local extension office for confirmation before more aggressive treatment.
+
+NOTE OF CAUTION:
+There is moderate uncertainty in this diagnosis. While symptoms suggest Brown Spot, they are atypical. Consider expert verification before applying strong fungicides."

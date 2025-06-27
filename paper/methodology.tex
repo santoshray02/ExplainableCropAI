@@ -14,12 +14,6 @@ ExplainableCropAI is designed as an integrated framework that combines disease d
     \item \textbf{Recommendation Engine}: Knowledge-based system to provide context-aware treatment and management suggestions
 \end{enumerate}
 
-\begin{figure}[ht]
-    \centering
-    \includegraphics[width=0.9\textwidth]{../results/figures/system_architecture.pdf}
-    \caption{ExplainableCropAI system architecture showing the integration of disease detection, multi-level explanations, and recommendation generation.}
-    \label{fig:system-architecture}
-\end{figure}
 
 The framework operates as follows: An input image is processed by the base disease detection model to generate a prediction. Simultaneously, the model's internal representations are analyzed by the visual explanation generator to identify regions contributing to the prediction. The uncertainty quantification module performs multiple forward passes with dropout to estimate prediction confidence. Visual evidence and uncertainty information are then processed by the natural language explanation generator, which creates a human-readable explanation using domain-specific templates. Finally, the recommendation engine combines the prediction, explanation, and additional contextual information to generate actionable treatment and management suggestions.
 
@@ -33,9 +27,9 @@ Our base disease detection model is a convolutional neural network (CNN) that cl
     \item We incorporated dropout layers not only for regularization but also to enable uncertainty quantification
 \end{itemize}
 
-The model was trained on the Paddy Doctor dataset \cite{das2020paddy}, which contains 10,407 images across 10 classes (9 disease categories and healthy). We applied standard data augmentation techniques (random cropping, rotation, flipping, and color jittering) to improve robustness. The model was trained using cross-entropy loss with the Adam optimizer for 100 epochs, employing early stopping based on validation accuracy.
+The model was trained on the Paddy Doctor dataset \cite{das2020paddy}, which contains 10,407 images across 10 classes (9 disease categories and healthy). We applied standard data augmentation techniques (random cropping, rotation, flipping, and color jittering) to improve robustness. The model was trained using cross-entropy loss with the Adam optimizer (learning rate = 0.001, weight decay = 1e-4) for 100 epochs, employing early stopping based on validation accuracy with a patience of 10 epochs.
 
-To ensure the model's suitability for deployment in resource-constrained environments, we evaluated inference time on various platforms, including desktop GPUs, mobile devices, and edge computing hardware. The final model achieves 97.5\% accuracy on the test set with an inference time of 125ms on a Nvidia GTX 1080 GPU and 450ms on a Raspberry Pi 4.
+To ensure the model's suitability for deployment in resource-constrained environments, we evaluated inference time on various platforms, including desktop GPUs, mobile devices, and edge computing hardware. The final model achieves 97.2\% accuracy on the test set with an inference time of 125ms on an NVIDIA GTX 1080 GPU and 450ms on a Raspberry Pi 4.
 
 \subsection{Multi-level Explanation System}
 
@@ -49,12 +43,6 @@ To evaluate the quality of visual explanations, we collected a subset of 500 ima
 
 We conducted user studies to evaluate the interpretability of these visualizations with agricultural stakeholders. Farmers and extension workers found the heatmap overlays intuitive and helpful for verifying that the model was focusing on relevant disease symptoms, increasing their trust in the system's predictions.
 
-\begin{figure}[t]
-    \centering
-    \includegraphics[width=0.9\textwidth]{../results/figures/gradcam_examples.pdf}
-    \caption{Visual explanations generated using Grad-CAM for various paddy diseases. For each row: (left) original image, (middle) class activation heatmap, (right) heatmap overlay indicating regions contributing to the model's prediction.}
-    \label{fig:gradcam-examples}
-\end{figure}
 
 \subsubsection{Uncertainty Quantification}
 
@@ -76,12 +64,6 @@ For each input image, we perform 30 forward passes with dropout enabled, generat
 
 These metrics are used to adjust confidence scores and determine the appropriate level of certainty to express in explanations. High uncertainty triggers additional verification suggestions in the recommendations.
 
-\begin{figure}[t]
-    \centering
-    \includegraphics[width=0.9\textwidth]{../results/figures/uncertainty_visualization.pdf}
-    \caption{Uncertainty quantification in ExplainableCropAI: (a) MC Dropout samples showing prediction distribution, (b) predictive entropy distribution indicating uncertainty levels, (c) predictive entropy by disease class, and (d) confidence intervals showing prediction uncertainty.}
-    \label{fig:uncertainty-visualization}
-\end{figure}
 
 \subsubsection{Natural Language Explanations}
 
@@ -124,12 +106,6 @@ The knowledge base was developed by formalizing treatment protocols from agricul
 
 When generating recommendations, the engine applies rule-based reasoning to select appropriate treatments based on the contextual factors. For high-uncertainty predictions, it provides more conservative recommendations and suggests additional verification. The recommendations are presented alongside explanations to create a comprehensive decision support output.
 
-\begin{figure}[t]
-    \centering
-    \includegraphics[width=0.9\textwidth]{../results/figures/uncertainty_recommendations.pdf}
-    \caption{Relationship between prediction uncertainty and recommendation confidence: (a) scatter plot showing inverse correlation between uncertainty and recommendation confidence, (b) distribution of recommendation types, and (c) examples of recommendations with varying confidence levels.}
-    \label{fig:uncertainty-recommendations}
-\end{figure}
 
 \subsection{Implementation Details}
 
