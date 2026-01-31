@@ -32,8 +32,7 @@ ExplainableCropAI/
 │   └── visualization/              # Figure generation scripts
 ├── models/                         # Saved model checkpoints
 ├── notebooks/                      # Jupyter notebooks for exploration
-├── paper/                          # Research paper LaTeX files
-├── presentations/                  # Presentation materials
+├── paper/                          # sn-format Paper LaTeX files
 ├── results/                        # Experimental results and figures
 └── docs/                           # Documentation
 ```
@@ -97,16 +96,9 @@ pip install -r requirements.txt
 - **Treatment Database**: Comprehensive disease management strategies
 - **Context-Aware Suggestions**: Recommendations based on disease type and severity
 
-## Research Paper
+## sn-format Paper
 
-This project includes a complete research paper documenting the methodology, experiments, and results. The paper is structured as follows:
-
-- **Introduction**: Problem motivation and research objectives
-- **Related Work**: Survey of explainable AI in agriculture
-- **Methodology**: System architecture and implementation details
-- **Experimental Evaluation**: Quantitative and qualitative assessments
-- **Results & Discussion**: Performance analysis and user study findings
-- **Conclusion**: Contributions and future work
+This project includes a complete research paper in Springer Nature format documenting the methodology, experiments, and results. The paper is located in the `paper/` directory.
 
 To compile the paper:
 ```bash
@@ -126,12 +118,6 @@ The system achieves:
 
 Key visualizations and results are available in the `results/figures/` directory.
 
-## Presentations
-
-Comprehensive presentation materials are available in the `presentations/` directory, including:
-- PowerPoint presentations for academic conferences
-- Project overview and demonstration materials
-- Technical implementation details
 
 ## Contributing
 
