@@ -8,7 +8,7 @@ This folder contains the ExplainableCropAI paper converted to Springer Nature ar
 - `references.bib` - Bibliography file
 - `sn-jnl.cls` - Springer Nature journal class file
 - `bst/` - Bibliography style files directory
-- `results/figures/` - All figures in PDF format
+- `paper/figures/` - All figures in PDF format
 
 ## Key Changes from MDPI Format
 
@@ -39,7 +39,7 @@ This folder contains the ExplainableCropAI paper converted to Springer Nature ar
 
 8. **Bibliography**: Uses `\bibliography{references}` instead of MDPI's `\externalbibliography` approach
 
-9. **Figure Paths**: Updated figure paths to use relative paths (`../results/figures/`)
+9. **Figure Paths**: Updated figure paths to use relative paths (`../paper/figures/`)
 
 ## Compilation Instructions
 
@@ -63,7 +63,7 @@ To compile the document:
 3. **Using Overleaf**:
    - Upload all files to Overleaf
    - The document should compile automatically
-   - Make sure to upload the entire folder structure including `bst/` and `results/figures/`
+   - Make sure to upload the entire folder structure including `bst/` and `paper/figures/`
 
 ## Reference Style
 
@@ -91,7 +91,7 @@ If you need a different reference style, change the document class option:
 
 If you encounter compilation errors:
 
-1. **Missing figures**: Ensure the `results/figures/` directory contains all PDF figures
+1. **Missing figures**: Ensure the `paper/figures/` directory contains all PDF figures
 2. **Bibliography errors**: Run `bibtex` after the first `pdflatex` compilation
 3. **Class file errors**: Ensure `sn-jnl.cls` and the `bst/` directory are in the same folder as `main.tex`
 4. **Package conflicts**: The template includes all necessary packages; avoid adding conflicting packages

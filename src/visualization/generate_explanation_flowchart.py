@@ -17,7 +17,7 @@ from matplotlib.lines import Line2D
 import matplotlib.patheffects as path_effects
 
 # Create output directory
-output_dir = '../../results/figures'
+output_dir = '../../paper/figures'
 os.makedirs(output_dir, exist_ok=True)
 
 # Set up the figure

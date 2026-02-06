@@ -16,7 +16,7 @@ from matplotlib.colors import LinearSegmentedColormap
 from PIL import Image
 
 # Create output directory
-output_dir = '../../results/figures'
+output_dir = '../../paper/figures'
 os.makedirs(output_dir, exist_ok=True)
 
 # Define dummy disease examples (for illustration purposes)

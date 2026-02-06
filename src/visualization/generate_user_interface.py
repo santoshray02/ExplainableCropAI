@@ -256,7 +256,7 @@ def create_user_interface():
            fontsize=9, color=white, ha='right', va='center')
     
     # Save the figure
-    output_dir = 'results/figures'
+    output_dir = 'paper/figures'
     os.makedirs(output_dir, exist_ok=True)
     
     # Save as both PDF and PNG
@@ -269,8 +269,8 @@ def create_user_interface():
     
     print("User interface mockup generated successfully!")
     print("Files saved:")
-    print("- results/figures/user_interface.pdf")
-    print("- results/figures/user_interface.png")
+    print("- paper/figures/user_interface.pdf")
+    print("- paper/figures/user_interface.png")
 
 if __name__ == "__main__":
     try:

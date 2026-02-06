@@ -16,7 +16,7 @@ import pandas as pd
 from matplotlib.ticker import PercentFormatter
 
 # Create output directory
-output_dir = '../../results/figures'
+output_dir = '../../paper/figures'
 os.makedirs(output_dir, exist_ok=True)
 
 # Set the aesthetic style of the plots
@@ -24,8 +24,11 @@ sns.set_style('whitegrid')
 plt.rcParams['font.family'] = 'sans-serif'
 plt.rcParams['font.sans-serif'] = ['Arial', 'DejaVu Sans', 'Liberation Sans']
 
-# Define dummy classes for demonstration
-classes = ['Bacterial Leaf Blight', 'Brown Spot', 'Leaf Blast', 'Healthy']
+# Define classes matching Paddy Doctor dataset (10 classes)
+classes = [
+    'Bacterial Leaf Blight', 'Brown Spot', 'Leaf Blast', 'Bacterial Leaf Streak',
+    'Bacterial Sheath Rot', 'Healthy', 'Tungro', 'Hispa', 'Dead Heart', 'Downy Mildew'
+]
 
 # Generate synthetic MC dropout samples for demonstration
 # In a real scenario, these would be actual predictions from multiple forward passes

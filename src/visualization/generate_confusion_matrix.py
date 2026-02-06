@@ -15,7 +15,7 @@ import seaborn as sns
 from matplotlib.colors import LinearSegmentedColormap
 
 # Create output directory
-output_dir = '../../results/figures'
+output_dir = '../../paper/figures'
 os.makedirs(output_dir, exist_ok=True)
 
 # Set the aesthetic style of the plots

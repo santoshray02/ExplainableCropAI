@@ -136,7 +136,7 @@ The system achieves:
   - Statistically significant trust improvement (p < 0.01)
 - **Per-Class Performance**: Healthy 99%, Leaf Blast 96%, Brown Spot 94%, BLB 93%
 
-Key visualizations and results are available in the `results/figures/` directory.
+Key visualizations and results are available in the `paper/figures/` directory.
 
 
 ## Contributing

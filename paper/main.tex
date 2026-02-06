@@ -214,7 +214,7 @@ Deployment testing spanned multiple hardware configurations to evaluate realisti
     \centering
     \resizebox{0.95\textwidth}{!}{%
     \tikzset{
-        component/.style={rectangle, rounded corners=4pt, text centered, draw=black!70, line width=0.8pt, drop shadow={shadow xshift=1pt, shadow yshift=-1pt, opacity=0.3}},
+        component/.style={rectangle, rounded corners=4pt, align=center, draw=black!70, line width=0.8pt, drop shadow={shadow xshift=1pt, shadow yshift=-1pt, opacity=0.3}},
         input/.style={component, minimum width=3.2cm, minimum height=1.4cm, fill=inputcolor, font=\bfseries\small},
         novel/.style={component, draw=novelborder, line width=1.5pt, double, double distance=1pt},
         backbone/.style={component, minimum width=4cm, minimum height=1.6cm, fill=backbonecolor, font=\bfseries\small},
@@ -316,7 +316,7 @@ Deployment testing spanned multiple hardware configurations to evaluate realisti
         \end{scope}
 
         % DATA FLOW CAPTION
-        \node[below=0.5cm of out2, font=\small\itshape, text width=12cm, text centered] {
+        \node[below=0.5cm of out2, font=\small\itshape, text width=12cm, align=center] {
             Data Flow: Input Image $\rightarrow$ ConvNeXt V2 Feature Extraction $\rightarrow$
             Multi-scale Analysis $\rightarrow$ Explainable Prediction $\rightarrow$
             LLM-generated Recommendations
@@ -330,7 +330,7 @@ Deployment testing spanned multiple hardware configurations to evaluate realisti
 % Explanation Process Flowchart Figure
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.85\textwidth]{results/figures/explanation_flowchart.pdf}
+    \includegraphics[width=0.85\textwidth]{figures/explanation_flowchart.pdf}
     \caption{End-to-end explanation process in ExplainableCropAI. The flowchart illustrates the integration of visual evidence, uncertainty information, and domain knowledge to provide comprehensive decision support for agricultural stakeholders.}
     \label{fig:explanation-flowchart}
 \end{figure}
@@ -468,7 +468,7 @@ User category differences emerged in qualitative feedback. Extension officers em
 % Confusion Matrix Figure
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.8\textwidth]{results/figures/confusion_matrix.pdf}
+    \includegraphics[width=0.8\textwidth]{figures/confusion_matrix.pdf}
     \caption{Confusion matrix for paddy disease classification across ten categories. Values represent the percentage of correct classifications, with darker colors indicating higher accuracy. The diagonal shows strong performance ($>90\%$ for most classes).}
     \label{fig:confusion-matrix}
 \end{figure}
@@ -492,7 +492,7 @@ CAM & 0.57 & 0.63 & 0.34 \\
 % User Study Results Figure
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.85\textwidth]{results/figures/user_study_results.pdf}
+    \includegraphics[width=0.85\textwidth]{figures/user_study_results.pdf}
     \caption{Impact of explanations on user decision-making metrics. Results show improvements in (a) decision accuracy, (b) trust scores, and (c) task completion time across different user expertise levels (n=12). Error bars represent 95\% confidence intervals.}
     \label{fig:user-study-results}
 \end{figure}
@@ -500,7 +500,7 @@ CAM & 0.57 & 0.63 & 0.34 \\
 % Explanation Effectiveness Figure
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=\columnwidth]{results/figures/explanation_effectiveness.pdf}
+    \includegraphics[width=\columnwidth]{figures/explanation_effectiveness.pdf}
     \caption{Effectiveness of different explanation types across agricultural tasks. The visualization shows how different explanation modalities (visual, textual, uncertainty) contribute to various agricultural decision-making scenarios, highlighting the complementary nature of multi-level explanations.}
     \label{fig:explanation-effectiveness}
 \end{figure}
@@ -508,7 +508,7 @@ CAM & 0.57 & 0.63 & 0.34 \\
 % User Interface Figure
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=\columnwidth]{results/figures/user_interface.pdf}
+    \includegraphics[width=\columnwidth]{figures/user_interface.pdf}
     \caption{ExplainableCropAI user interface showing integrated prediction, explanation, recommendation components for a detected case of Bacterial Leaf Blight. The interface provides visual explanations, natural language descriptions, uncertainty indicators, and context-aware treatment recommendations.}
     \label{fig:user-interface}
 \end{figure}
