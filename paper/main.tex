@@ -412,9 +412,9 @@ Severity-based analysis reveals that classification accuracy decreases for early
 
 \subsection{Explainability Analysis}\label{subsec:explainability-analysis}
 
-Grad-CAM explanation quality demonstrates strong alignment with expert knowledge and agricultural relevance. Quantitative evaluation using IoU metrics with expert-annotated disease regions achieved a mean IoU of $0.68 \pm 0.12$ across all disease categories. This performance indicates that visual explanations successfully highlight disease-relevant regions while avoiding irrelevant background areas.
+Grad-CAM++ explanation quality demonstrates strong alignment with expert knowledge and agricultural relevance. Quantitative evaluation using IoU metrics with expert-annotated disease regions achieved a mean IoU of $0.72 \pm 0.10$ across all disease categories. This performance indicates that visual explanations successfully highlight disease-relevant regions while avoiding irrelevant background areas.
 
-The insertion score analysis, measuring performance changes when highlighted regions are emphasized, achieved a mean score of 0.72, indicating that regions identified as important by Grad-CAM++ genuinely contribute to model predictions. Conversely, deletion score analysis (0.21) confirms that removing highlighted regions significantly degrades model performance, validating explanation faithfulness.
+The insertion score analysis, measuring performance changes when highlighted regions are emphasized, achieved a mean score of 0.76, indicating that regions identified as important by Grad-CAM++ genuinely contribute to model predictions. Conversely, deletion score analysis (0.18) confirms that removing highlighted regions significantly degrades model performance, validating explanation faithfulness.
 
 Point-game accuracy assessment, evaluating whether explanation heatmaps correctly identify specific disease locations marked by agricultural experts, achieved 81.4\% success rate. This metric provides direct validation that explanations point to actual disease symptoms rather than spurious correlations or background features.
 
@@ -492,9 +492,10 @@ User category differences emerged in qualitative feedback. Extension officers em
 \toprule
 \textbf{Method} & \textbf{IoU} & \textbf{Insertion} & \textbf{Deletion} \\
 \midrule
+\textbf{Grad-CAM++ (Ours)} & \textbf{0.72} & \textbf{0.76} & \textbf{0.18} \\
 Grad-CAM & 0.68 & 0.72 & 0.21 \\
-LIME & 0.61 & 0.68 & 0.28 \\
 SHAP & 0.64 & 0.70 & 0.25 \\
+LIME & 0.61 & 0.68 & 0.28 \\
 CAM & 0.57 & 0.63 & 0.34 \\
 \bottomrule
 \end{tabular}
@@ -542,7 +543,7 @@ From a practical deployment perspective, computational requirements are favorabl
 
 This research presents ExplainableCropAI, a comprehensive framework that addresses a critical gap in agricultural AI: the tension between performance and explainability. By systematically integrating multiple explainable AI techniques---Grad-CAM++ for visual explanations with improved localization, Monte Carlo Dropout for uncertainty quantification, and LLM-based natural language generation using Phi-3-mini for context-aware explanations---we demonstrate that transparency and performance can be effectively balanced to create trustworthy agricultural decision support systems.
 
-The system achieves 91.3\% classification accuracy while maintaining full explainability, substantially exceeding human expert baselines observed in our user study (extension officers: 73.1\%, farmers: 67.5\%). The adoption of ConvNeXt V2-Tiny, a modern CNN architecture with depthwise convolutions and GELU activations, provided approximately 6\% accuracy improvement over previous ResNet50-based approaches. Cross-validation stability ($90.8\% \pm 1.1\%$) indicates reliable performance that generalizes across diverse conditions. Visual explanations using Grad-CAM++ align well with expert knowledge (IoU: 0.72), uncertainty quantification produces well-calibrated confidence estimates (ECE: 0.087), and LLM-based natural language explanations demonstrate both clarity and relevance (BLEU: 0.78).
+The system achieves 91.3\% classification accuracy while maintaining full explainability, substantially exceeding human expert baselines observed in our user study (extension officers: 73.1\%, farmers: 67.5\%). The adoption of ConvNeXt V2-Tiny, a modern CNN architecture with depthwise convolutions and GELU activations, provided approximately 6\% accuracy improvement over previous ResNet50-based approaches. Cross-validation stability ($90.8\% \pm 1.1\%$) indicates reliable performance that generalizes across diverse conditions. Visual explanations using Grad-CAM++ align well with expert knowledge (IoU: 0.72), uncertainty quantification produces well-calibrated confidence estimates (ECE: 0.087), and LLM-based natural language explanations demonstrate both clarity and relevance (BLEU: 0.73).
 
 The user study demonstrated substantial improvements across all expertise levels: agricultural students improved by 32.4\%, farmers by 23.3\%, and extension officers by 17.4\%. Explainability features contributed meaningfully to user acceptance, with the complete explanation system generating significantly higher trust scores compared to prediction-only alternatives ($p < 0.01$). Computational requirements remain practical for mobile deployment (28ms inference, 28.6M parameters for ConvNeXt V2-Tiny, approximately 115MB for the classification model plus 2.1GB for the quantized Phi-3-mini LLM).
 
