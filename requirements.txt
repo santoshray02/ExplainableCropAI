@@ -1,13 +1,34 @@
-torch>=1.9.0
-torchvision>=0.10.0
-numpy>=1.20.0
-pandas>=1.3.0
-matplotlib>=3.4.0
-Pillow>=8.2.0
-scikit-learn>=0.24.0
-scipy>=1.7.0
-opencv-python>=4.5.0
-tqdm>=4.60.0
-seaborn>=0.11.0
-ipykernel>=6.0.0
-notebook>=6.4.0
+# Core Deep Learning
+torch>=2.0.0
+torchvision>=0.15.0
+timm>=0.9.0  # For ConvNeXt V2
+
+# LLM Support (Phi-3-mini)
+transformers>=4.36.0
+accelerate>=0.25.0
+bitsandbytes>=0.41.0  # For 4-bit quantization
+
+# Data Processing
+numpy>=1.24.0
+pandas>=2.0.0
+scipy>=1.10.0
+
+# Visualization
+matplotlib>=3.7.0
+seaborn>=0.12.0
+Pillow>=10.0.0
+opencv-python>=4.8.0
+
+# Machine Learning
+scikit-learn>=1.3.0
+
+# Utilities
+tqdm>=4.65.0
+
+# Jupyter Support
+ipykernel>=6.25.0
+notebook>=7.0.0
+
+# Optional: For faster inference
+# onnxruntime>=1.16.0
+# onnx>=1.14.0

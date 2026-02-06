@@ -116,28 +116,128 @@ class PaddyDiseaseKnowledgeBase:
                     }
                 }
             },
-            "Sheath Blight": {
-                "symptoms": "irregularly shaped lesions on leaf sheaths with gray-white centers and brown margins",
-                "treatment": "apply fungicides containing azoxystrobin or propiconazole",
-                "prevention": "use wider plant spacing and moderate nitrogen fertilization",
+            "Bacterial Sheath Rot": {
+                "symptoms": "brown to dark brown discoloration on leaf sheaths with foul odor",
+                "treatment": "apply copper-based bactericides and remove affected plant parts",
+                "prevention": "avoid plant injuries, ensure proper drainage, use disease-free seeds",
                 "impact": "reduce yield by 20-50% and affect grain quality",
-                "similar_diseases": "Sheath Rot",
-                "distinguishing_features": "lesions that often form rings or bands around the sheath",
+                "similar_diseases": "Sheath Blight",
+                "distinguishing_features": "dark brown discoloration with characteristic foul smell",
                 "severity_levels": {
                     "low": {
-                        "description": "Few lesions on lower leaf sheaths, limited vertical spread",
-                        "treatment": "adjust plant density and nitrogen management",
+                        "description": "Few lesions on lower leaf sheaths, limited spread",
+                        "treatment": "improve drainage and remove affected plant parts",
                         "expected_yield_impact": "5-10% if disease progression is halted"
                     },
                     "medium": {
-                        "description": "Lesions on multiple sheaths, beginning to reach upper parts of plants",
-                        "treatment": "apply recommended fungicides and improve air circulation",
+                        "description": "Multiple sheaths affected with spreading discoloration",
+                        "treatment": "apply copper-based bactericides and improve field sanitation",
                         "expected_yield_impact": "potential yield reduction of 15-30% if untreated"
                     },
                     "high": {
-                        "description": "Extensive lesions reaching flag leaf sheath and potentially panicles",
-                        "treatment": "immediate fungicide application, possibly multiple treatments",
+                        "description": "Extensive infection with panicle emergence affected",
+                        "treatment": "aggressive bactericide application, remove severely affected plants",
                         "expected_yield_impact": "severe yield losses of 30-50% if untreated"
+                    }
+                }
+            },
+            "Tungro": {
+                "symptoms": "yellow to orange discoloration of leaves, stunted growth, reduced tillering",
+                "treatment": "no direct treatment available; control leafhopper vectors with insecticides",
+                "prevention": "use resistant varieties, synchronous planting, control green leafhoppers",
+                "impact": "cause severe yield losses up to 100% in susceptible varieties",
+                "similar_diseases": "nutrient deficiency, other viral diseases",
+                "distinguishing_features": "interveinal yellowing with stunted growth pattern",
+                "severity_levels": {
+                    "low": {
+                        "description": "Few plants showing mild yellowing symptoms",
+                        "treatment": "control leafhopper population, remove infected plants",
+                        "expected_yield_impact": "10-20% if vector population is controlled"
+                    },
+                    "medium": {
+                        "description": "Multiple plants affected with clear stunting",
+                        "treatment": "intensive vector control, consider replanting if early in season",
+                        "expected_yield_impact": "potential yield reduction of 30-50%"
+                    },
+                    "high": {
+                        "description": "Widespread infection across field with severe stunting",
+                        "treatment": "focus on vector control for next season, salvage what possible",
+                        "expected_yield_impact": "severe yield losses of 50-100%"
+                    }
+                }
+            },
+            "Hispa": {
+                "symptoms": "white parallel streaks on leaves, scraping damage, tunneling in leaves",
+                "treatment": "apply contact insecticides like chlorpyrifos or lambda-cyhalothrin",
+                "prevention": "avoid close planting, remove grassy weeds, use balanced fertilization",
+                "impact": "reduce photosynthetic area leading to 10-30% yield loss",
+                "similar_diseases": "leaf miner damage",
+                "distinguishing_features": "characteristic parallel white streaks with visible beetles",
+                "severity_levels": {
+                    "low": {
+                        "description": "Few leaves with scraping marks, low beetle population",
+                        "treatment": "handpick beetles, maintain field hygiene",
+                        "expected_yield_impact": "minimal if controlled early"
+                    },
+                    "medium": {
+                        "description": "Multiple plants affected with visible beetle population",
+                        "treatment": "apply recommended insecticides at proper intervals",
+                        "expected_yield_impact": "potential yield reduction of 10-20%"
+                    },
+                    "high": {
+                        "description": "Severe infestation with extensive leaf damage",
+                        "treatment": "immediate insecticide application, may need repeated treatments",
+                        "expected_yield_impact": "yield losses of 20-30% or more"
+                    }
+                }
+            },
+            "Dead Heart": {
+                "symptoms": "central shoot dies and turns brown, can be easily pulled out",
+                "treatment": "apply systemic insecticides targeting stem borers",
+                "prevention": "destroy stubbles, use pheromone traps, timely planting",
+                "impact": "direct tiller loss leading to 20-70% yield reduction",
+                "similar_diseases": "stem rot, drought stress",
+                "distinguishing_features": "dead central whorl that pulls out easily, bore holes visible",
+                "severity_levels": {
+                    "low": {
+                        "description": "Less than 5% tillers affected",
+                        "treatment": "apply granular insecticides, set up pheromone traps",
+                        "expected_yield_impact": "5-10% with timely intervention"
+                    },
+                    "medium": {
+                        "description": "5-15% tillers showing dead heart symptoms",
+                        "treatment": "spray systemic insecticides, increase trap density",
+                        "expected_yield_impact": "potential yield reduction of 15-30%"
+                    },
+                    "high": {
+                        "description": "More than 15% tillers affected",
+                        "treatment": "intensive insecticide program, consider economic threshold",
+                        "expected_yield_impact": "severe yield losses of 30-70%"
+                    }
+                }
+            },
+            "Downy Mildew": {
+                "symptoms": "white to gray downy growth on leaf undersides, yellow patches on upper surface",
+                "treatment": "apply metalaxyl-based fungicides or copper-based products",
+                "prevention": "use resistant varieties, improve air circulation, avoid overhead irrigation",
+                "impact": "reduce photosynthesis and cause 15-40% yield loss",
+                "similar_diseases": "powdery mildew, other foliar diseases",
+                "distinguishing_features": "downy growth on leaf underside visible in humid conditions",
+                "severity_levels": {
+                    "low": {
+                        "description": "Few leaves with light downy patches",
+                        "treatment": "improve air circulation, apply preventive fungicides",
+                        "expected_yield_impact": "minimal if environmental conditions change"
+                    },
+                    "medium": {
+                        "description": "Multiple leaves affected with spreading patches",
+                        "treatment": "apply systemic fungicides promptly",
+                        "expected_yield_impact": "potential yield reduction of 15-25%"
+                    },
+                    "high": {
+                        "description": "Widespread infection with leaf drying",
+                        "treatment": "aggressive fungicide application with repeated treatments",
+                        "expected_yield_impact": "yield losses of 25-40%"
                     }
                 }
             },
