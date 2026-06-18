@@ -4,170 +4,141 @@
 
 [![GitHub Repository](https://img.shields.io/badge/GitHub-ExplainableCropAI-blue)](https://github.com/santoshray02/ExplainableCropAI)
 
-## Overview
+ExplainableCropAI detects paddy (rice) crop diseases and, alongside each prediction,
+produces three complementary explanations: a **Grad-CAM++ visual heatmap**, a
+**Monte Carlo Dropout uncertainty** estimate, and an **LLM-generated, audience-adaptive
+natural-language explanation** grounded in a curated treatment knowledge base. It is the
+reference implementation for the paper submitted to *The Visual Computer* (Springer Nature).
 
-ExplainableCropAI is a research project addressing a critical challenge in agricultural technology: making AI-powered disease detection systems transparent and interpretable for end users. The framework detects paddy crop diseases with **91.3% accuracy** using modern deep learning while providing clear, actionable explanations for its decisions.
+> **Status:** under major revision. Some experimental numbers in the paper are being
+> finalised from the scripts in [`experiments/`](experiments/README.md). See
+> [Reproducing the results](#reproducing-the-results-paper-tables).
 
-### Key Features
+## Key features
 
-- **ConvNeXt V2-Tiny Backbone**: State-of-the-art CNN architecture (2023) with 28.6M parameters
-- **Grad-CAM++ Visual Explanations**: Improved localization using second-order gradients
-- **LLM-based Natural Language Generation**: Context-aware explanations using Phi-3-mini (3.8B)
-- **Monte Carlo Dropout**: Uncertainty quantification with 30 stochastic passes
-- **Audience-Adaptive Explanations**: Tailored for farmers, extension officers, and researchers
-- **Actionable Recommendations**: Treatment and management suggestions based on disease severity
+- **ConvNeXt V2-Tiny backbone** (`src/models/convnext_v2.py`, `ConvNeXtV2Classifier`) — modern CNN, 28.6M parameters. A legacy ResNet50 path (`src/base_model.py`, `PaddyDiseaseClassifier`) is retained as a baseline.
+- **Grad-CAM++ visual explanations** (`src/explainers/gradcam_plus.py`), with LayerCAM as an alternative and legacy Grad-CAM (`src/explainers/gradcam.py`).
+- **Monte Carlo Dropout uncertainty** (`src/uncertainty/mc_dropout.py`) — 30 stochastic passes; predictive entropy + epistemic (mutual information) decomposition.
+- **LLM natural-language generation** (`src/nlg/llm_generator.py`) using Phi-3-mini, with a template-based fallback (`src/nlg/template_generator.py`). Treatment content is drawn from a **curated knowledge base**, not free-generated (see [Safety](#safety--scope)).
+- **Recommendation engine** (`src/recommendations/`) — severity-based treatment guidance keyed by disease.
+- **Unified interface** (`src/explainable_system.py`, `ExplainableCropAI`) tying the components together; supports both the legacy and modern backbones via configuration.
 
-## Project Structure
+## Dataset
+
+Trained and evaluated on the public **[Paddy Doctor](https://www.kaggle.com/competitions/paddy-disease-classification) dataset** (10,407 images, 10 classes). The official class set is:
+
+`bacterial_leaf_blight`, `bacterial_leaf_streak`, `bacterial_panicle_blight`, `blast`,
+`brown_spot`, `dead_heart`, `downy_mildew`, `hispa`, `normal` (healthy), `tungro`.
+
+> **Note:** the code uses **"Bacterial Panicle Blight"** for this class, matching the
+> official dataset. Its knowledge-base treatment entry is intentionally conservative and
+> referral-based (no specific dosages) — have a plant pathologist / extension service
+> verify region-appropriate management before field use.
+
+The dataset itself is **not redistributed** here (Kaggle license). To reproduce splits,
+use `experiments/create_splits.py` (see below).
+
+## Project structure
 
 ```
 ExplainableCropAI/
-├── data/                           # Dataset and sample data
-│   └── sample/                     # Sample CSV files and images
-├── src/                            # Source code
-│   ├── models/
-│   │   └── convnext_v2.py          # ConvNeXt V2-Tiny classifier
-│   ├── explainers/
-│   │   ├── gradcam.py              # Legacy Grad-CAM
-│   │   └── gradcam_plus.py         # Grad-CAM++ and LayerCAM
-│   ├── nlg/
-│   │   ├── template_generator.py   # Legacy template-based NLG
-│   │   └── llm_generator.py        # Phi-3-mini LLM generator
-│   ├── uncertainty/                # Monte Carlo dropout
-│   ├── recommendations/            # Treatment recommendation engine
-│   ├── visualization/              # Figure generation scripts
-│   └── explainable_system.py       # Main integration module
-├── models/                         # Saved model checkpoints
-├── notebooks/                      # Jupyter notebooks for exploration
-├── paper/                          # Springer Nature LaTeX files
-├── results/                        # Experimental results and figures
-└── docs/                           # Documentation
+├── src/
+│   ├── models/convnext_v2.py        # ConvNeXtV2Classifier (current backbone)
+│   ├── base_model.py                # PaddyDiseaseClassifier (legacy ResNet50 baseline)
+│   ├── explainers/gradcam_plus.py   # Grad-CAM++ and LayerCAM
+│   ├── explainers/gradcam.py        # legacy Grad-CAM
+│   ├── uncertainty/mc_dropout.py    # Monte Carlo Dropout
+│   ├── nlg/llm_generator.py         # Phi-3-mini LLM generator (+ template fallback)
+│   ├── recommendations/             # treatment_db.py (knowledge base) + engine
+│   ├── evaluation/explanation_metrics.py
+│   ├── visualization/               # figure-generation scripts (illustrative)
+│   └── explainable_system.py        # ExplainableCropAI — unified interface
+├── experiments/                     # reproducible scripts for the paper tables (see its README)
+├── notebooks/system_demo.ipynb      # end-to-end demo
+├── paper/                           # LaTeX manuscript (sn-jnl.cls) + response docs
+└── requirements.txt
 ```
 
-## Getting Started
+## Installation
 
-### Prerequisites
-
-- Python 3.8 or higher
-- CUDA-compatible GPU (recommended for training)
-
-### Installation
-
-1. Clone the repository:
 ```bash
 git clone https://github.com/santoshray02/ExplainableCropAI.git
 cd ExplainableCropAI
-```
-
-2. Create a virtual environment:
-```bash
 python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-```
-
-3. Install dependencies:
-```bash
+source venv/bin/activate          # Windows: venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-### Quick Start
+Requires Python 3.8+; a CUDA-capable GPU is recommended for training and for the
+LLM/uncertainty passes (CPU works for small tests).
 
-1. **Explore the system demo**:
-   ```bash
-   jupyter notebook notebooks/system_demo.ipynb
-   ```
+## Quick start
 
-2. **Generate visualizations**:
-   ```bash
-   python src/visualization/generate_user_interface.py
-   python src/visualization/generate_gradcam_examples.py
-   ```
+End-to-end demo:
 
-3. **Run explanation effectiveness analysis**:
-   ```bash
-   python src/visualization/visualize_explanation_effectiveness.py
-   ```
-
-## Key Components
-
-### Disease Classification
-- **ConvNeXt V2-Tiny**: Modern CNN backbone (2023) with depthwise convolutions, LayerNorm, and GELU activations
-- **10 Disease Classes**: Bacterial Leaf Blight, Brown Spot, Leaf Blast, Bacterial Leaf Streak, Bacterial Sheath Rot, Healthy, Tungro, Hispa, Dead Heart, Downy Mildew
-- **91.3% Accuracy**: On Paddy Doctor dataset (10,407 images)
-
-### Visual Explanations
-- **Grad-CAM++**: Second-order gradient weighting for improved localization
-- **LayerCAM**: Alternative multi-layer visualization method
-- **Attention Heatmaps**: Highlighting disease-relevant regions
-
-### Natural Language Generation
-- **Phi-3-mini (3.8B)**: Microsoft's compact LLM for context-aware explanations
-- **Audience-Adaptive**: Tailored outputs for farmers, experts, and researchers
-- **4-bit Quantization**: Optional mobile deployment optimization
-
-### Uncertainty Quantification
-- **Monte Carlo Dropout**: 30 stochastic passes for uncertainty estimation
-- **Entropy & Mutual Information**: Decomposed uncertainty metrics
-- **Confidence Visualization**: Clear communication of prediction reliability
-
-### Recommendation Engine
-- **Treatment Database**: Comprehensive disease management for all 10 classes
-- **Severity-Based Suggestions**: Low/medium/high severity treatment protocols
-- **Context-Aware Integration**: Combined with LLM for natural recommendations
-
-## sn-format Paper
-
-This project includes a complete research paper in Springer Nature format documenting the methodology, experiments, and results. The paper is located in the `paper/` directory.
-
-To compile the paper:
 ```bash
-cd paper
-pdflatex main.tex
-bibtex main
-pdflatex main.tex
-pdflatex main.tex
+jupyter notebook notebooks/system_demo.ipynb
 ```
 
-## Results
+Generate the illustrative interface/figure renders (these use demo data, not the trained
+model outputs):
 
-The system achieves:
-- **91.3% Classification Accuracy**: ConvNeXt V2-Tiny on Paddy Doctor dataset
-- **User Study Validation**: 12 participants (extension officers, farmers, students)
-  - Up to 32.4% improvement in diagnostic accuracy with explanations
-  - Statistically significant trust improvement (p < 0.01)
-- **Per-Class Performance**: Healthy 99%, Leaf Blast 96%, Brown Spot 94%, BLB 93%
+```bash
+python src/visualization/generate_user_interface.py
+python src/visualization/generate_gradcam_examples.py
+```
 
-Key visualizations and results are available in the `paper/figures/` directory.
+## Reproducing the results (paper tables)
 
+The scripts in [`experiments/`](experiments/README.md) regenerate the manuscript's
+experimental tables on any CUDA-capable GPU. Run `create_splits.py` first; the others
+consume its `splits.csv`:
 
-## Contributing
+| Script | Reviewer point | Paper output |
+|---|---|---|
+| `create_splits.py` | #6 | leakage-controlled 70/15/15 split + per-class-per-split counts |
+| `run_explanation_comparison.py` | #7 | 6-method attribution comparison table |
+| `run_calibration.py` | #8 | ECE/MCE/Brier + reliability diagram |
+| `run_baselines_ablation.py` | #11 | baselines and ablation tables |
 
-This is a research project developed as part of an M.Tech thesis. For questions or collaboration opportunities, please contact the project maintainer.
+See `experiments/README.md` for exact commands and the output→paper mapping.
 
-## License
+## Safety & scope
 
-This project is developed for academic research purposes. Please cite appropriately if using any components in your research.
+This system is **decision support, not a prescription authority**. Treatment text is
+sourced from a curated knowledge base (`src/recommendations/treatment_db.py`); the LLM
+rephrases that content rather than inventing dosages. When prediction confidence or
+agreement is low, the system surfaces an explicit **"consult an agricultural expert"**
+referral and does not assert firm treatment advice. Pesticide/chemical guidance should be
+verified against local agricultural-extension recommendations before field use.
+
+## Compiling the paper
+
+```bash
+cd paper
+pdflatex main.tex && bibtex main && pdflatex main.tex && pdflatex main.tex
+```
 
 ## Citation
 
-If you use this work in your research, please cite:
+A DOI-archived release (Zenodo) will accompany the published paper. Until then:
 
 ```bibtex
 @article{explainablecropai2026,
-  title={ExplainableCropAI: Interpretable Deep Learning for Agricultural Disease Detection and Decision Support},
-  author={Kumar, Santosh and Kumar, Sumit and Nandan, Durgesh},
-  journal={[Journal/Conference]},
-  year={2026},
-  note={ConvNeXt V2-Tiny, Grad-CAM++, Phi-3-mini LLM}
+  title   = {ExplainableCropAI: Interpretable Deep Learning for Agricultural
+             Disease Detection and Decision Support},
+  author  = {Kumar, Santosh and Kumar, Sumit and Nandan, Durgesh},
+  journal = {The Visual Computer (under review)},
+  year    = {2026},
+  note    = {ConvNeXt V2-Tiny, Grad-CAM++, Monte Carlo Dropout, Phi-3-mini}
 }
 ```
 
 ## Contact
 
-- **Author**: Santosh Kumar
-- **Email**: santoshray02@gmail.com
-- **Institution**: Symbiosis Institute of Technology
-- **GitHub**: [@santoshray02](https://github.com/santoshray02)
+- **Santosh Kumar** — santoshray02@gmail.com — [@santoshray02](https://github.com/santoshray02)
+- Symbiosis Institute of Technology, Symbiosis International (Deemed University), Pune
 
-## Acknowledgments
+## License
 
-This research was conducted as part of an M.Tech program at Symbiosis Institute of Technology. The project represents an academic exploration of explainable AI techniques applied to agricultural disease detection.
+Academic research use. Please cite if you build on this work.

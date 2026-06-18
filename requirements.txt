@@ -22,6 +22,10 @@ opencv-python>=4.8.0
 # Machine Learning
 scikit-learn>=1.3.0
 
+# Explanation / NLG metrics & dedup
+imagehash>=4.3.1   # perceptual-hash near-duplicate detection in experiments/create_splits.py
+nltk>=3.8.1        # BLEU / ROUGE scoring for NLG evaluation
+
 # Utilities
 tqdm>=4.65.0
 

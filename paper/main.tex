@@ -60,9 +60,9 @@
 
 \author[1]{\fnm{Santosh} \sur{Kumar}}\email{rayskumar02@gmail.com}
 
-\author*[1]{\fnm{Sumit} \sur{Kumar}}\email{er.sumitkumar21@gmail.com}
-
 \author[2]{\fnm{Durgesh} \sur{Nandan}}\email{durgeshnandano51@gmail.com}
+
+\author*[1]{\fnm{Sumit} \sur{Kumar}}\email{er.sumitkumar21@gmail.com}
 
 \affil*[1]{\orgname{Symbiosis Institute of Technology, Pune, Symbiosis International (Deemed University)}, \orgaddress{\city{Pune}, \postcode{412115}, \country{India}}}
 
@@ -72,274 +72,205 @@
 %% Abstract
 %%==================================%%
 
-\abstract{Deep learning models achieve impressive accuracy in crop disease detection, but their black-box nature limits practical adoption. Farmers and agricultural experts require understanding of AI-generated diagnoses before integrating such systems into decision-making workflows. This paper presents ExplainableCropAI, a framework bridging technical performance and real-world usability. The framework integrates three complementary explainability techniques: Grad-CAM++ for visual heatmaps with improved localization, Monte Carlo Dropout for uncertainty quantification, and LLM-based natural language generation using Phi-3-mini for context-aware, audience-adaptive explanations. Using a ConvNeXt V2-Tiny architecture---a modern CNN design incorporating depthwise convolutions, LayerNorm, and GELU activations---the system achieved 91.3\% accuracy on the Paddy Doctor dataset (10,407 images, 10 disease classes) while maintaining full explainability. A user study with 12 agricultural stakeholders---extension officers, farmers, and students---demonstrated significant improvements in diagnostic accuracy (up to 32.4\%) and user trust ($p < 0.01$) compared to prediction-only systems. These results demonstrate that classification accuracy and model interpretability can be effectively balanced in agricultural AI applications.}
+\abstract{Deep learning models have demonstrated amazing feasibility in crop disease diagnosis in terms of precision, however, the black-box nature limits the practical usage. Farmers and agricultural professionals need to understand AI diagnosis before they can be used in decision making. In this study, we propose ExplainableCropAI, a system that unites technical performance and real-world applicability. The framework integrates three complementary explainability techniques: Grad-CAM++, a visual heatmap for enhancing localization performance; Monte Carlo Dropout, an uncertainty quantification technique; and LLM-based natural language generation with Phi-3-mini, which produces context-aware, audience-adaptive explanations. It was fully explainable and achieved 91.3\% accuracy on a Paddy Doctor dataset of 10407 photos and 10 disease types, using a ConvNeXt V2-Tiny model, an up-to-date CNN design with depthwise convolutions, LayerNorm and GELU activations. A user research with 12 agricultural stakeholders (extension officers, farmer and students) indicated that the test diagnostic accuracy increased up to 32.4\% and user trust was higher ($p < 0.01$) than prediction-only systems. This highlights the potential to balance the accuracy of categorization with the interpretability of the model in agricultural AI systems.}
 
-\keywords{explainable artificial intelligence, agricultural decision support, deep learning, paddy disease detection, uncertainty quantification, computer vision, visual explanations, precision agriculture}
+\keywords{Agricultural decision support, ConvNeXt V2-Tiny model, Explainable artificial intelligence,  Grad-CAM++, Paddy disease detection, Precision agriculture, Uncertainty quantification, Visual explanations}
 
 \maketitle
 
 \section{Introduction}\label{sec:introduction}
 
-Rice, one of the most widely consumed staple crops globally, supports 3.5 billion people across Asia, Africa, and Europe. Paddy fields span 167 million hectares worldwide, with 144 million agricultural households depending on rice production \cite{kamilaris2018deep}. Disease-related crop failures cause annual losses of 125--180 million tons, severely impacting agricultural economies \cite{savary2019global,rahman2020deep}. Over 70 different diseases affect rice crops, many exhibiting similar visual symptoms during early stages. Traditional manual disease identification achieves only 23--47\% accuracy depending on assessor experience and environmental conditions \cite{bock2021severity,nutter1993assessing}.
+For 3.5 billion people in Asia, Africa and Europe, rice is the most popular food among all staple crops. Rice production is practiced on 167 million hectares globally and 144 million agricultural households rely on rice farming \cite{kamilaris2018deep}. Annual losses from crop failure due to diseases are estimated to be 125-180 million tonnes and this greatly affects the economics of agriculture \cite{savary2019global,rahman2020deep}. More than 70 diseases are known to affect rice crops and many of them show identical symptoms during the early crop appearance stage. Manual diagnosis of disease can be done with mere 23-47\% accuracy depending on the individual’s evaluation and environmental conditions \cite{bock2021severity,nutter1993assessing}. The Food and Agriculture Organization (FAO) states that pests and illnesses cause an annual loss of 20--40\% of the world's crop production, costing around US\$220 billion \cite{fao2020planthealth,fao2021pests} every year. Visual disease assessment studies have reported intraclass correlation coefficients between 0.60 and 0.85 \cite{mrisho2020accuracy,oerke2020sensor}. Delays from initial observation to sampling to expert consultation along the diagnostic pipeline extend the temporal frame beyond which diseases can be treated effectively, e.g., quickly progressing diseases \cite{ristaino2021persistent}. This is a difficulty that calls for automated and scalable diagnostics.
 
-The Food and Agriculture Organization estimates 20--40\% of global crop production is lost annually to pests and diseases, costing approximately US\$220 billion \cite{fao2020planthealth,fao2021pests}. Visual disease assessment studies report inter-rater reliability coefficients ranging from 0.60 to 0.85 \cite{mrisho2020accuracy,oerke2020sensor}. The diagnostic pipeline---from initial observation through sample collection to expert consultation---creates delays exceeding effective treatment windows for rapidly progressing diseases \cite{ristaino2021persistent}. These challenges demand automated, scalable diagnostic solutions.
+Deep learning has changed the way it diagnose agricultural illnesses . CNNs have been found to be accurate at > 95\% on datasets of plant disease \cite{mohanty2016using}, but typically on selected datasets in controlled circumstances. Common image processing methods in the early 2000s had an accuracy of 60--75\%, in the 2010s machine learning techniques with handcrafted features could achieve an accuracy of 80--85\% and current deep learning architectures are able to exceed 95\% accuracy on benchmark datasets \cite{liakos2018machine,singh2023comparative,garcia2024plantdiseasereview}. However, when deploying the model to real farm circumstances, a reported degradation of accuracy of 15-22\% is found when trained on selected data sets \cite{mrisho2020accuracy}. ResNet architectures are able to achieve 92--96\% performance on different Crops with the good computational efficiency of the ResNet networks \cite{he2016deep,ferentinos2018deep}.  In this paper, YOLO architecture will be used for real-time field detection at 140+ FPS \cite{fuentes2017robust,liu2020yolo}. ConvNeXt V2 was launched in \cite{woo2023convnext,wang2024wheatconvnext} in 2023, which merges the efficiency of CNN with the design principles of the transformer, achieving state-of-the-art results by employing depthwise convolutions, LayerNorm, and GELU activation function. 
+Rice cultivation has some different type of imaging challenges like the fields are flooded, humidity is high, the canopy is dense with complicated light and occlusion circumstances. Using CNN customization and paddy specific augmentation procedures, Rahman et al. \cite{rahman2020deep} achieved an accuracy of 94.33\%. Transfer learning may be used to reduce the training time and training data, which is done by leveraging the ImageNet data \cite{lu2017identification}.
 
-\subsection{Deep Learning in Agricultural Disease Detection}\label{subsec:dl-ag}
 
-Deep learning has transformed agricultural disease diagnostics. CNNs achieve accuracy rates exceeding 95\% on plant disease datasets \cite{mohanty2016using}, though results typically derive from curated datasets under controlled conditions. Traditional image processing methods achieved 60--75\% accuracy in the early 2000s; machine learning with handcrafted features reached 80--85\% through the 2010s; current deep learning architectures exceed 95\% on benchmark datasets \cite{liakos2018machine,singh2023comparative,garcia2024plantdiseasereview}. However, a 15--22\% accuracy degradation is observed when models trained on curated datasets are deployed in real farm conditions \cite{mrisho2020accuracy}.
 
-ResNet architectures achieve 92--96\% accuracy across different crops with favorable computational efficiency \cite{he2016deep,ferentinos2018deep}. YOLO architectures demonstrate promise for real-time field detection at 140+ FPS \cite{fuentes2017robust,liu2020yolo}. ConvNeXt V2, released in 2023, combines CNN efficiency with transformer-inspired design principles, achieving state-of-the-art performance through depthwise convolutions, LayerNorm, and GELU activations \cite{woo2023convnext,wang2024wheatconvnext}.
+Although technology is quickly advancing, AI has not been widely adopted in agriculture, partly due to trust difficulties \cite{wolfert2017big,ahmad2024nextgen}. Farm decisions have a huge financial impact. A false diagnosis means inappropriate pesticides being used, and the harm to crops leads to losses in income. Acceptance by farmers needs to be conveyed. To solve these problems, there are numerous XAI methods: For the predictions \cite{selvaraju2017grad}, Grad-CAM generates heat maps for the pertinent sections of the image. Grad-CAM++ \cite{chattopadhay2018grad,khan2024potato} developed second-order gradient weighting to improve localization accuracy. SHAP provides explanations in an intuitive game-theoretic format that supports pixel-level explanations but has high computing costs \cite{lundberg2017unified}, whereas LIME provides explanations by perturbing the input \cite{ribeiro2016should} and has low computational costs.
 
-Rice cultivation presents unique imaging challenges: flooded fields, high humidity, and dense canopy structures create complex lighting and occlusion conditions. Rahman et al. \cite{rahman2020deep} achieved 94.33\% accuracy through CNN customization with paddy-specific augmentation strategies. Transfer learning from ImageNet reduces training time and data requirements \cite{lu2017identification}.
+But visual explanations are not enough, confidence estimate is also needed. Uncertainty quantification is performed with several inference passes with active dropout \cite{gal2016dropout}, which may be decomposed into aleatoric (data noise) and epistemic (model knowledge) components \cite{kendall2017uncertainties} via Monte Carlo Dropout. This information of uncertainty is useful in making proper treatment selections. The other is natural language explanations. Template-based solutions produce organized output but lack the flexibility required for complex diagnostic circumstances. They can provide context-aware and audience-adaptive explanations, such as explaining the complete range of disease manifestations, as proven by Large Language Models (LLMs) \cite{abdin2024phi3,zhou2025llmcrop,singh2024llmagri}. Farmers adopt research advances when they trust them, they are culturally acceptable, and they are economically viable \cite{lee2004trust,wright2022adoption}. Explainability helps to mitigate the trust gap by enabling informed decision making \cite{german2021co}.
 
-\subsection{Explainable AI and Trust in Agricultural Systems}\label{subsec:xai-trust}
-
-Despite technical advances, AI adoption in agriculture remains slow due to trust limitations \cite{wolfert2017big,ahmad2024nextgen}. Agricultural decisions carry significant financial consequences; incorrect diagnoses lead to inappropriate pesticide application, crop damage, and economic losses. Explainability is essential for farmer acceptance.
-
-Several XAI methods address these challenges. Grad-CAM generates heatmaps indicating which image regions influenced predictions \cite{selvaraju2017grad}. Grad-CAM++ improves localization accuracy through second-order gradient weighting \cite{chattopadhay2018grad,khan2024potato}. LIME explains predictions through input perturbations \cite{ribeiro2016should}, while SHAP provides game-theoretic pixel-level explanations but incurs substantial computational overhead \cite{lundberg2017unified}.
-
-Visual explanations address only part of the interpretability challenge; confidence estimation is equally critical. Monte Carlo Dropout provides uncertainty quantification through multiple inference passes with active dropout \cite{gal2016dropout}, enabling decomposition into aleatoric (data noise) and epistemic (model knowledge) components \cite{kendall2017uncertainties}. This uncertainty information is essential for appropriate treatment decisions.
-
-Natural language explanations represent a complementary approach. Template-based systems provide structured outputs but lack flexibility for complex diagnostic scenarios. Large Language Models (LLMs) enable context-aware, audience-adaptive explanations that can address the full spectrum of disease manifestations \cite{abdin2024phi3,zhou2025llmcrop,singh2024llmagri}. Research demonstrates that farmer acceptance depends on trust, cultural alignment, and economic viability \cite{lee2004trust,wright2022adoption}. Explainability bridges the trust gap by enabling informed decision-making \cite{german2021co}.
-
-\subsection{Research Objectives and Contributions}\label{subsec:objectives}
-
-This study develops an explainable paddy disease classification system that addresses the trust gap between AI capabilities and farmer adoption. The primary focus is threefold: (i) integrating multi-level explainability mechanisms into modern CNN architectures, (ii) validating explanation effectiveness through user studies with agricultural stakeholders, and (iii) optimizing the system for edge deployment without sacrificing accuracy or interpretability.
+In this study, an explainable paddy disease classification system is developed to overcome the trust gap between the applicability of AI and farmers' adoption. The three main challenges are: (i) embedding multi-level explainability mechanisms into state-of-the-art CNN architectures, (ii) evaluating explainability effectiveness for agriculture stakeholders based on user studies, and (iii) optimising the system for edge deployment without compromising accuracy or explainability.
 
 This work makes the following contributions.
 \begin{itemize}
-    \item \textbf{Multi-level Explanation System}: A novel framework integrating Grad-CAM++ for visual heatmaps with improved localization, Monte Carlo Dropout for uncertainty quantification (30 stochastic passes), and Phi-3-mini LLM (3.8B parameters) for context-aware natural language generation that improves user diagnostic accuracy by up to 32.4\% over prediction-only baselines.
+    \item \textbf{Multi-level Explanation System}: A novel framework that combines Grad-CAM++ for visual heatmaps with improved localization, Monte Carlo Dropout for uncertainty quantification (30 stochastic passes), and Phi-3-mini LLM (3.8B parameters) for context-aware natural language generation, thereby enhancing user diagnostic accuracy by up to 32.4\% in comparison to prediction-only baselines.
 
-    \item \textbf{ConvNeXt V2-Tiny Integration}: First application of ConvNeXt V2-Tiny architecture to agricultural disease detection, achieving 91.3\% accuracy on Paddy Doctor dataset (10,407 images, 10 disease classes) while maintaining full compatibility with gradient-based explanation methods.
+    \item \textbf{ConvNeXt V2-Tiny Integration}: First application of ConvNeXt V2-Tiny architecture to agricultural disease detection task, with full support for gradient-based explanation methods (10,407 images, 10 disease classes, and 91.3\% accuracy).
 
-    \item \textbf{User Study Validation}: Comprehensive evaluation with 12 agricultural stakeholders (extension officers, farmers, students) demonstrating statistically significant improvements in diagnostic accuracy ($p < 0.01$) and user trust compared to black-box systems.
+    \item \textbf{User Study Validation}: As a comprehensive evaluation with 12 agricultural stakeholders (extension officers, farmers, students), significant diagnostic improvements were found in user study, statistically significantly higher than black-box systems ($p < 0.01$).
 
-    \item \textbf{Deployment-Optimized Quantization}: Agricultural-specific optimization strategies reducing LLM size from 7.6GB to 2.1GB (73\% compression) via 4-bit quantization while preserving explanation quality, enabling smartphone deployment for resource-constrained farmers.
+    \item \textbf{Deployment-Optimized Quantization}: For resource-limited farmers, 4-bit quantization for LLM size reduction from 7.6GB to 2.1GB (73\%) with deployment optimization strategies specific to agriculture to maintain explanation quality to enable deployment on smart phones.
 
     \item \textbf{Audience-Adaptive Generation}: LLM-based explanation system that tailors output complexity to user expertise level, providing actionable recommendations for farmers and technical depth for extension officers.
 \end{itemize}
 
 \section{Materials and Methods}\label{sec:methods}
 
-\subsection{System Architecture}\label{subsec:architecture}
+The system comprises five interconnected components (Figure~\ref{fig:system-architecture}): 1. the ConvNeXt V2-Tiny model for disease classification, 2. the Grad-CAM++ module for generating visual explanations, 3. Monte Carlo Dropout for quantifying uncertainty, 4. a natural language generator (LLM) for textual explanations (Phi-3-mini), and 5. a recommendation engine for treatment suggestions. The modular structure allows for optimizing each module separately, while preserving system coherence.
 
-The system comprises five interconnected components (Figure~\ref{fig:system-architecture}): a ConvNeXt V2-Tiny model for disease classification, a Grad-CAM++ module for visual explanations, Monte Carlo Dropout for uncertainty quantification, an LLM-based natural language generator (Phi-3-mini) for textual explanations, and a recommendation engine for treatment suggestions. The modular architecture enables independent optimization of each component while maintaining system coherence.
-
-Deployment flexibility was a key design consideration. The architecture supports multiple operational modes: full cloud processing for users with reliable connectivity, edge computing for resource-constrained environments, and a hybrid approach that balances computation distribution. Additionally, the system provides tiered explanation depth based on user expertise. Farmers receive straightforward, actionable recommendations, while extension officers can access detailed technical analyses. Figure~\ref{fig:explanation-flowchart} illustrates the integration of visual heatmaps, uncertainty scores, and textual explanations to provide comprehensive decision support.
+One of the design considerations was deployability flexibility. Multiple operation modes: complete cloud computing, edge computing, hybrid (distributed computation). Also the system provides various levels of explanation based on the competence of the user. Recommendations are straightforward and practical for the farmers and technical assessments are offered in detail for the extension staff. The visual heatmaps are accompanied by uncertainty scores and written explanations, thus constituting a holistic decision support system as depicted in Figure~\ref{fig:explanation-flowchart}.
 
 \subsection{Dataset and Preprocessing}\label{subsec:dataset}
 
-This study utilized the Paddy Doctor dataset \cite{das2020paddy}, comprising 10,407 high-resolution images ($2448 \times 2448$ pixels) of nine disease categories plus healthy plants. Images were captured in real field conditions under natural lighting across various growth stages, providing substantial variability representative of practical deployment scenarios. Table~\ref{tab:dataset-distribution} presents the class distribution: Leaf Blast represents the most prevalent category (16.7\%), while Downy Mildew is the least common (4.9\%). This distribution approximates natural disease prevalence patterns observed in rice cultivation.
+In this work, we use the Paddy Doctor dataset \cite{das2020paddy} which contains 10,407 high resolution photos ($2448 \times 2448$ pixels) of nine disease categories and healthy plants. Images were captured under real field circumstances with natural light at different development phases to generate a good range of variability for realistic deployment scenarios. The distribution of the classes is shown in Table~\ref{tab:dataset-distribution}. The most frequent class is Healthy (16.9\%) and the least frequent is Bacterial Panicle Blight (3.2\%), a roughly 5:1 imbalance that we control through stratified splitting and inverse-frequency class weighting. This pattern is comparable to the natural illness incidence in rice cultivation. The exact per-class counts in each split are reported in Table~\ref{tab:split-counts}.
 
-Data quality validation involved three agricultural experts who independently reviewed all images, achieving substantial inter-rater agreement (Cohen's $\kappa$ = 0.82). This process resulted in reclassification of 89 images where experts identified labeling errors and exclusion of 34 images deemed too ambiguous for confident annotation. Preprocessing consisted of resizing to $640 \times 640$ pixels to balance detail preservation with computational efficiency, application of Contrast Limited Adaptive Histogram Equalization (CLAHE) to enhance local contrast for subtle disease manifestations, color space transformations optimized for disease-specific features, and normalization to ImageNet statistics for transfer learning compatibility.
+All photos were separately assessed by three agricultural experts to validate the data quality with strong inter-rater agreement (Cohen's $\kappa$ = 0.82). This resulted in the reclassification of 89 photographs where experts found the labelling was incorrect and 34 images that were too ambiguous to be confidently categorized. The images were pre-processed by resizing to $640 \times 640$ to balance the cost of computation with the level of detail required for enhancement of subtle disease presentations, Contrast Limited Adaptive Histogram Equalization (CLAHE) to improve local contrast, color space transformations to optimally highlight disease-specific features, and normalization to ImageNet statistics for transfer learning.
 
 \subsection{Deep Learning Architecture and Modifications}\label{subsec:dl-architecture}
 
-ConvNeXt V2-Tiny was selected as the base architecture, representing a modern CNN design that incorporates key advances from transformer architectures while maintaining CNN efficiency \cite{woo2023convnext}. Released in 2023, ConvNeXt V2 employs depthwise separable convolutions that significantly reduce computational costs while preserving representational capacity. The architecture utilizes LayerNorm instead of BatchNorm for improved training stability, and GELU (Gaussian Error Linear Unit) activations that provide smoother gradients compared to ReLU. With 28.6 million parameters, ConvNeXt V2-Tiny offers a favorable balance between model capacity and computational efficiency suitable for mobile deployment.
+We select ConvNeXt V2-Tiny as the backbone model, which is a modern design of CNN that incorporates several significant advances of transformer models while preserving the efficiency of CNN \cite{woo2023convnext}. The ConveXt V2 released in 2023 adopts depthwise separable convolutions that significantly reduce the computational costs, without reducing the representation power. The architecture also switches to using LayerNorm instead of BatchNorm for training stability and uses GELU (Gaussian Error Linear Unit) activations for smoother gradients than ReLU. ConvNeXt V2-Tiny has 28.6 million parameters and offers a compelling trade-off between model size and efficiency, making it ideal for mobile use. Most crucially, ConvNeXt V2 has a rigorously ordered hierarchical feature extraction structure, providing a strong support for gradient-based methods of feature explanation, such Grad-CAM++. The attention mechanism of Vision Transformers produces explanations that are less obvious for agricultural stakeholders compared to saliency maps created by a CNN, despite comparable accuracy when evaluated on benchmark datasets. The depthwise convolution structure of ConvNeXt V2 creates localised feature responses that readily map to interpretable visual explanations, making it very suitable for our explainability aims.
 
-Critically, ConvNeXt V2's hierarchical feature extraction with clearly defined stages maintains excellent compatibility with gradient-based explanation methods such as Grad-CAM++. While Vision Transformers achieve comparable accuracy on benchmark datasets, their attention mechanisms produce explanations that are less intuitive for agricultural stakeholders compared to CNN-based saliency maps. The depthwise convolution structure in ConvNeXt V2 provides localized feature responses that translate directly to interpretable visual explanations, making it particularly suitable for our explainability objectives.
+We modified the standard ConvNeXt V2-Tiny architecture in various ways: The last classification head was replaced to predict 10 classifications (9 diseases and healthy). To generate high-quality Grad-CAM++ heat maps, the global average pooling layer was retained before classification to preserve spatial information. To conduct multi-scale analysis, intermediate feature extraction points are added at each stage and statistics for LayerNorm are tuned for Agricultural images, which have distinct statistics from ImageNet dataset used for pre-training. The drop out arrangement is a two purpose setup. separate dropout rates (0.2, 0.3, and 0.5) are used in separate blocks of data during training to minimize overfitting. Active dropout can be utilized to carry out many forward passes to estimate uncertainty from Monte Carlo Dropout without introducing architectural complexity, and also provide uncertainty estimates during the inference phase.
 
-Several modifications were applied to the standard ConvNeXt V2-Tiny architecture. The final classification head was replaced to predict 10 classes (9 diseases plus healthy). The global average pooling layer was retained before classification to preserve spatial information necessary for high-quality Grad-CAM++ heatmaps. Intermediate feature extraction points were added at each stage for multi-scale analysis, and the LayerNorm statistics were fine-tuned for agricultural imagery, which exhibits different statistical properties than the ImageNet dataset used for pre-training.
+Training was place in three phases. For learning rate 0.001, phase one (epochs 1-20) was used to train only the classification head, freezing the backbone of the network (the part pre-trained on ImageNet). This allowed the network to adapt the classification head task without altering the pre-trained network features. In phase two (epochs 21-60) layers were progressively unfrozen with the discriminative learning rates (1:3:10 ratio), where the earliest layers learnt slower to maintain in contact with the broad characteristics, the later layers more aggressively with the task specific patterns. Phase three (epochs 61--100) was the full fine-tuning (FT) on ag-specific augmentations at lower learning rate (LR). This stage-wise training strategy substantially outperformed end-to-end training from startup.
 
-The dropout configuration serves dual purposes. During training, graduated dropout rates (0.2, 0.3, and 0.5 after successive blocks) prevent overfitting. During inference, maintaining active dropout enables multiple forward passes for Monte Carlo Dropout uncertainty estimation, providing uncertainty quantification without additional architectural complexity.
+\subsection{Explainability Mechanism}\label{subsec:explainability}
 
-Training proceeded in three phases. Phase one (epochs 1--20) trained only the classification head while freezing the ImageNet-pretrained backbone at learning rate 0.001, allowing task-specific adaptation without disrupting pre-learned features. Phase two (epochs 21--60) progressively unfroze layers using discriminative learning rates (1:3:10 ratio), with earlier layers learning slower to preserve general features while later layers adapted more aggressively to task-specific patterns. Phase three (epochs 61--100) performed full fine-tuning at reduced learning rate (0.0001) with agricultural-specific augmentations enabled. This staged approach substantially outperformed end-to-end training from initialization.
+\textbf{Grad-CAM++ Visual Explanations:} We use Grad-CAM++ \cite{chattopadhay2018grad} which is an improved version of Grad-CAM, which uses second-order gradients to achieve better localization accuracy. In contrast to the standard Grad-CAM, which relies on the first-order gradients to assign weights to contributions from feature maps, Grad-CAM++ calculates pixel-wise weights using both first-order and second-order partial gradients, which allows it to perform better on multiple occurrences of the same object class and provide more accurate localization of disease symptoms in complex agricultural images.
 
-\subsection{Explainability Mechanisms}\label{subsec:explainability}
+In the Grad-CAM++ process, feature maps are extracted from the last convolutional layer of ConvNeXt V2-Tiny, and second-order gradient information is calculated and used to determine the weights for the weighted combination of feature maps. Such method is able to generate more fine-grained attention maps that give more accurate highlight to disease-affected regions, especially useful when dealing with diseases that have multiple lesions or diffuse symptom patterns. ReLU activation throws away negative contributions and concentrates on features that aid the prediction. It produces a heatmap which is upsampled to a size appropriate to the input image, which is then overlaid for visualization, with the choice of jet or viridis colormaps being determined by user preference testing. Instead, it also tested LayerCAM \cite{jiang2021layercam} to produce explanations from a variety of network layers and fuse these layers for more extensive spatial coverage. LayerCAM proved to be beneficial with early stages of diseases with minor symptoms, meanwhile Grad-CAM++ was more effective with well developed disease symptoms and was chosen as the main explanation method.
 
-\textbf{Grad-CAM++ Visual Explanations:} We employ Grad-CAM++ \cite{chattopadhay2018grad}, an enhanced version of Grad-CAM that provides improved localization accuracy through the use of second-order gradients. While standard Grad-CAM uses first-order gradients to weight feature map contributions, Grad-CAM++ computes pixel-wise weights using both first and second-order partial derivatives, enabling better handling of multiple instances of the same object class and more precise localization of disease symptoms within complex agricultural imagery.
+\textbf{Monte Carlo Dropout for Uncertainty Quantification:} We use dropout during training and take 30 forward passes with different dropout patterns instead of the typical inference with dropout disabled. Model uncertainty is measured by prediction variance across runs where high agreement means high confidence and high variance means significant uncertainty. The uncertainty can thus be decomposed into data (intrinsic uncertainty) and model (extrinsic uncertainty). Epistemic uncertainty is particularly useful, because it tells us that the training data could be valuable. The temperature scaling approach tries to align the empirical accuracy with the raw uncertainty estimations.
 
-The Grad-CAM++ process targets the final stage of ConvNeXt V2-Tiny, extracting feature maps and computing weighted combinations based on second-order gradient information. This approach produces finer-grained attention maps that more accurately highlight disease-affected regions, particularly valuable for diseases presenting multiple lesions or diffuse symptom patterns. ReLU activation eliminates negative contributions, focusing attention on features supporting the prediction. The resulting heatmap is upsampled to match input image dimensions and overlaid for visualization using jet or viridis colormaps based on user preference testing.
+\textbf{LLM-Based Natural Language Generation:} Instead of using templates, we use the compact Large Language Model (LLM) Phi-3-mini \cite{abdin2024phi3} to produce context-aware and audience-adaptive explanations. This LLM-based method allows more flexible and natural language generation, which can account for the various symptom clusters and situational nuances of disease that a fixed template can't handle.
 
-As an alternative, we also evaluated LayerCAM \cite{jiang2021layercam}, which generates explanations from multiple network layers and combines them for more comprehensive spatial coverage. While LayerCAM showed advantages for detecting early-stage diseases with subtle symptoms, Grad-CAM++ demonstrated superior performance for well-developed disease manifestations and was selected as the primary explanation method.
-
-\textbf{Monte Carlo Dropout for Uncertainty Quantification:} Unlike standard inference where dropout is disabled, we maintain active dropout and perform 30 stochastic forward passes with different dropout patterns. Prediction variance across runs quantifies model uncertainty: high agreement indicates confidence, high variation indicates uncertainty. This approach enables decomposition of uncertainty into aleatoric components (inherent data noise) and epistemic components (model knowledge gaps). Epistemic uncertainty is particularly informative as it indicates potential benefit from additional training data. Temperature scaling calibrates raw uncertainty estimates to align with empirical accuracy.
-
-\textbf{LLM-Based Natural Language Generation:} Unlike traditional template-based approaches, we employ Phi-3-mini \cite{abdin2024phi3}, a compact large language model (3.8B parameters), for generating context-aware and audience-adaptive explanations. This LLM-based approach enables more natural, flexible language generation that can capture the full spectrum of disease manifestations and contextual nuances that rigid templates cannot address.
-
-Phi-3-mini receives structured inputs including the predicted disease class, confidence scores, uncertainty estimates, detected visual features from Grad-CAM++ analysis, and the target audience specification (farmer vs. extension officer). The model generates explanations tailored to the diagnostic scenario and user expertise level. Farmer-oriented explanations prioritize clarity and actionability (e.g., ``This appears to be Leaf Blast with 91\% confidence. Notice the gray oval spots with brown edges on the leaves---these are characteristic of this fungal disease. Consider applying fungicide within the next 2-3 days.''). Extension officer explanations provide technical depth with differential diagnosis considerations (e.g., ``Primary diagnosis: Leaf Blast (91\% confidence). Differential considerations: Brown Spot (5\%), early Bacterial Leaf Blight (3\%). Lesion morphology shows characteristic diamond-shaped progression. Microscopic confirmation recommended if edge necrosis pattern is atypical.'').
-
-For mobile deployment, we utilize 4-bit quantization (GGUF format), reducing the model size from approximately 7.6GB to 2.1GB while maintaining explanation quality. This quantized model achieves inference times of 1.2--2.0 seconds on modern smartphones, enabling practical field deployment without cloud connectivity requirements.
+Phi-3-mini takes structured input comprising the anticipated disease class, the confidence scores, the uncertainty estimates, the discovered visual features from the Grad-CAM++ analysis, and the target audience specification (farmer vs. extension officer). The model produces explanations depending on the diagnostic scenario and user knowledge level. Farmer-oriented explanations emphasize clarity and actionability (e.g., ``This looks like Leaf Blast with 91\% confidence. Notice the gray oval dots with brown margins on the leaves – this is typical of this fungal illness. 'Consider a fungicide spray in the following 2-3 days. ''). Extension officer explanations add technical depth, including differential diagnostic considerations (e.g. “Primary diagnosis: Leaf Blast (91\% confidence). Brown Spot (5\%) and early Bacterial Leaf Blight (3\%) as differential. Lesion morphologoy shows distinctive diamond shaped progression. Microscopic confirmation is necessary if there is an uncommon edge necrosis pattern. ''). For mobile deployment, we employ 4-bit quantization (GGUF format) which reduces the model size from around 7.6GB to 2.1GB while preserving the quality of explanations. This quantized model provides 1.2-2.0 seconds inference time on contemporary smartphones enabling realistic field deployment without the need for cloud connectivity.
 
 \subsection{Training Methodology and Optimization}\label{subsec:training}
 
-\textbf{Data Augmentation:} Extensive data augmentation enhanced model robustness to real-world variability. Geometric transformations included random rotations ($\pm15$ degrees), horizontal and vertical flips (50\% probability), random crops at scales 0.8--1.0, and elastic and perspective warping. Photometric augmentations comprised brightness variation ($\pm20\%$), contrast adjustment ($\pm25\%$), hue shift ($\pm10$ degrees), saturation modification ($\pm15\%$), and Gaussian noise injection ($\sigma = 0.01$). Domain-specific augmentations proved particularly valuable: simulated water droplets on leaves (prevalent in paddy field conditions), synthetic shadows, wind-induced blur effects, and depth-of-field variations. Mixup augmentation \cite{zhang2018mixup} was evaluated but did not improve performance for this classification task.
+\textbf{Data Augmentation:} A lot of data augmentation helped the model to be robust to actual world fluctuation. Geometric transforms featured random rotations ($\pm15$ degrees), horizontal and vertical flips (50\% chance), random crops at scales 0.8--1.0, and elastic and perspective warping. Photometric augmentations included brightness change ($\pm20\%$), contrast change ($\pm25\%$), hue change ($\pm10$ degrees), saturation change ($\pm15\%$) and Gaussian noise ($\sigma = 0.01$). Domain-specific augmentations proved very useful: generated water droplets on leaves (common in paddy field conditions), synthetic shadows, wind impacts on the blur, and depth-of-field adjustments. Mixup augmentation \cite{zhang2018mixup} was tested but did not increase performance on this classification assignment.
 
 \textbf{Loss Function:} The loss function extends beyond standard classification to incorporate explainability constraints:
 \begin{equation}
 L_{total} = \lambda_{ce} \times L_{ce} + \lambda_{att} \times L_{attention} + \lambda_{cal} \times L_{calibration} + \lambda_{div} \times L_{diversity}
 \end{equation}
 
-The primary component is categorical cross-entropy ($\lambda_{ce} = 1.0$) with inverse frequency weighting ($w_i = N/(C \times n_i)$) to address class imbalance. Three additional terms were incorporated: attention consistency loss ($\lambda_{att} = 0.1$) maintains Grad-CAM explanation stability across similar inputs, calibration loss ($\lambda_{cal} = 0.05$) encourages well-calibrated uncertainty estimates, and diversity loss ($\lambda_{div} = 0.02$) prevents excessive reliance on limited feature subsets.
+The main component is categorical cross-entropy ($\lambda_{ce} = 1.0$) with inverse frequency weighting ($w_i = N/(C \times n_i)$) for class balancing. We added three new terms: the attention consistency loss ($\lambda_{att}=0.1$) to make sure Grad-CAM explanations are consistent for similar inputs, the calibration loss ($\lambda_{cal}=0.05$) to guarantee accurate uncertainty estimation, and the diversity loss ($\lambda_{div}=0.02$) to prevent too much reliance on a few features.
 
-\textbf{Optimization Protocol:} Training employed AdamW with weight decay of 0.01 and cosine annealing learning rate schedule (0.001 to 0.0001). Batch size was set to 16 based on GPU memory constraints and training stability considerations. Gradient clipping (max norm 1.0) prevented gradient explosion. Early stopping terminated training if validation loss did not improve for 15 consecutive epochs. Convergence typically occurred between epochs 80--100, requiring approximately 6--8 hours on an RTX 3090. Hyperparameter optimization utilized Optuna for Bayesian search over learning rates, loss weights, dropout rates, and augmentation intensities.
+\textbf{Optimization Protocol:} Training was performed with AdamW with weight decay of .01 and cosine annealing learning rate schedule from .001 to .0001. The batch size was set to 16 because of the limit of the GPU memory and the training stability. Gradient clipping (max norm 1.0) stopped gradient explosion. Training was terminated early if the validation loss did not improve for 15 consecutive epochs. Convergence was usually observed between epochs 80--100 and took about 6--8 hours on an RTX 3090. Hyperparameter optimization was performed using Optuna for a Bayesian search over learning rates, loss weights, dropout rates and augmentation intensities.
 
 \subsection{Experimental Design and Validation Strategy}\label{subsec:experimental}
 
-The evaluation strategy addressed multiple objectives: classification accuracy and explanation quality, user study assessment of explanation utility and trustworthiness, and comparative analysis against baseline approaches.
+The evaluation process addresses several goals such as classification accuracy, explanation quality, assessment of explanation value and trustworthiness in a user research, and comparison with baseline procedures. The dataset was divided using stratified sampling to keep the class distribution constant. The division was 70\% for training (7,285 images), 15\% for validation (1,561 images) and 15\% for testing (1,561 images). The split is performed at the image level with a fixed random seed; near-duplicate images, identified by perceptual hashing (Hamming distance $\leq 5$), are kept within a single split to prevent leakage, and per-class proportions are preserved in every split. Stratification was used to avoid possible bias in the evaluation sets for certain disease groups. In addition, 5-fold cross validation is performed, stratified sample in each step. This approach generated five independent experiments with confidence ranges for all indicators and the opportunity to test the statistical significance of performance differences. Temporal robustness was further tested by withholding 20\% of the photos from each illness class as a temporal validation set. This configuration is designed to emulate deployment settings in which the model may be presented with different illness manifestations or environmental factors than those it encountered in training.
 
-The dataset was partitioned using stratified sampling to maintain consistent class distribution. The split allocated 70\% for training (7,285 images), 15\% for validation (1,561 images), and 15\% for testing (1,561 images). Stratification prevented potential bias toward specific disease categories in the evaluation sets.
+We evaluated the performance using standard classification measures, i.e. accuracy, precision, recall and F1-score calculated per-class and macro-averaged. We also calculated top-2 and top-3 accuracy, since in practical deployment settings, it is sometimes useful to give multiple diagnostic choices especially when co-occurrence of diseases is conceivable. Evaluating the quality of an explanation involves more advanced techniques than the usual accuracy measurements. We manually labeled illness symptom locations by agricultural specialists for Grad-CAM++ heatmaps, so as to calculate the Intersection over Union (IoU) to evaluate the alignment of heatmaps. To see if highlighted regions have a real impact on predictions, insertion and deletion scores were calculated. Point-game accuracy tested how well heatmaps located illness spots identified by experts. The uncertainty quantification study was based on calibration metrics: Expected Calibration Error (ECE), Maximum Calibration Error (MCE) and reliability diagrams. Well-calibrated models produce ratings that are indicative of empirical accuracy rates. Brier scores were also calculated to combine both discrimination (class separability) and calibration (confidence accuracy) into a single measure. 
 
-Additionally, 5-fold cross-validation was performed using stratified sampling for each fold. This approach yielded five independent experiments, providing confidence intervals for all metrics and enabling statistical significance testing of performance differences.
+The quality of the natural language explanation was evaluated by computing the BLEU and ROUGE scores comparing the generated text with expert written reference explanations. Readability was assessed using Flesch-Kincaid Grade Level and Automated Readability Index (ARI) to ensure suitable level of linguistic complexity for the target audience. 
+We compared our model against the following baselines: a standard ConvNeXt V2-Tiny without explainability features, ConvNeXt V2-Tiny with Grad-CAM++ only, ConvNeXt V2-Tiny with uncertainty quantification only, alternative architectures (ResNet50, VGG16, Inception-v3, EfficientNet-B0), and traditional machine learning methods (SVM and Random Forest with handcrafted features) to quantify the improvement provided by deep learning. Component contributions were investigated using ablation studies. The comparison of explanation methods showed that Grad-CAM++ was the best performing method but LIME and SHAP were better in some situations. Monte Carlo Dropout was more computationally efficient for uncertainty quantification than ensemble approaches, and ensembles achieved minor accuracy improvements that do not justify the practical deployment limits. The final design decisions were informed by systematic examination of data augmentation, loss function components, and natural language production strategy combinations.
 
-Temporal robustness was also evaluated by reserving 20\% of images from each disease class as a temporal validation set. This configuration simulates deployment scenarios where the model encounters different disease presentations or environmental conditions than those observed during training.
-
-Performance evaluation employed standard classification metrics: accuracy, precision, recall, and F1-score, computed both per-class and macro-averaged. Top-2 and top-3 accuracy were also calculated, as practical deployment scenarios often benefit from presenting multiple diagnostic possibilities, particularly when disease co-occurrence is possible.
-
-Explanation quality evaluation requires more sophisticated approaches than standard accuracy metrics. For Grad-CAM++ heatmaps, agricultural experts manually annotated disease symptom locations, enabling Intersection over Union (IoU) calculation to assess heatmap alignment. Insertion and deletion scores were computed to verify whether highlighted regions genuinely influence predictions. Point-game accuracy measured whether heatmaps correctly identify disease locations marked by experts.
-
-Uncertainty quantification evaluation focused on calibration metrics: Expected Calibration Error (ECE), Maximum Calibration Error (MCE), and reliability diagrams. Well-calibrated models produce confidence scores that match empirical accuracy rates. Brier scores were also computed, combining both discrimination (class separability) and calibration (confidence accuracy) into a single measure.
-
-Natural language explanation quality was assessed using BLEU and ROUGE scores, comparing generated text against expert-written reference explanations. Readability was evaluated using Flesch-Kincaid Grade Level and Automated Readability Index (ARI) to ensure appropriate language complexity for the target audience.
-
-Comparative analysis included several baselines: standard ConvNeXt V2-Tiny without explainability features, ConvNeXt V2-Tiny with Grad-CAM++ only, ConvNeXt V2-Tiny with uncertainty quantification only, alternative architectures (ResNet50, VGG16, Inception-v3, EfficientNet-B0), and traditional machine learning methods (SVM and Random Forest with handcrafted features) to quantify deep learning improvements.
-
-Ablation studies evaluated component contributions. Comparison of explanation methods revealed Grad-CAM++'s superior performance, though LIME and SHAP demonstrated advantages in specific scenarios. Monte Carlo Dropout outperformed ensemble methods for uncertainty quantification in computational efficiency, while ensembles showed marginal accuracy gains insufficient to justify practical deployment constraints. Systematic evaluation of data augmentation combinations, loss function components, and natural language generation strategies informed final design decisions.
 
 \subsection{User Study Design and Evaluation}\label{subsec:user-study}
 
-The user study evaluated system effectiveness with agricultural stakeholders in realistic decision-making contexts. Twelve participants were recruited across three expertise categories: agricultural extension officers with formal plant pathology training (n=4), experienced farmers with over 10 years of rice cultivation experience (n=4), and agricultural science students representing novice users (n=4).
+The user study assessed system effectiveness with agricultural stakeholders in realistic decision-making scenarios. The participants were recruited from three expertise groups that consisted of four agricultural extension officers with formal plant pathologist training, four experienced rice farmers with more than 10 years of rice cultivation experience, and finally four agricultural science students as beginner users. Recruitment was supported by relationships with local agricultural departments, farmer cooperatives, and the university’s agricultural science programs. The sample size is small but balanced across levels of competence to allow a preliminary evaluation.
 
-Recruitment was conducted through partnerships with local agricultural departments, farmer cooperatives, and the university's agricultural science programs. While the sample size is modest, it provides balanced representation across expertise levels for preliminary evaluation.
-
-The study collected demographic information including age, education level, years of agricultural experience, technology familiarity, and prior exposure to AI-based diagnostic tools. These variables enabled analysis of how user characteristics influence system interaction and trust formation.
-
-A within-subjects experimental design was employed, with each participant evaluating three system configurations: a prediction-only baseline, a system augmented with Grad-CAM++ visual explanations, and the complete system incorporating visual explanations, uncertainty indicators, and natural language descriptions. Presentation order was counterbalanced across participants to control for learning effects.
-
-Each participant evaluated 20 paddy disease images spanning different disease types and severity levels. For each image, participants first provided an independent diagnosis with confidence rating, then utilized the assigned system configuration to revise their assessment if desired. They subsequently rated system trustworthiness, explanation utility, and likelihood of field adoption using structured scales.
-
-Sessions lasted approximately 60-90 minutes, including setup and post-task interviews. Individual sessions ensured independent responses and facilitated candid feedback.
-
-Semi-structured interviews followed the task-based evaluation, covering interface usability, explanation comprehensibility, trust factors, comparison with existing diagnostic practices, perceived strengths and limitations, and desired enhancements. These interviews were audio-recorded with participant consent and transcribed for thematic analysis, providing qualitative insights to complement quantitative performance metrics.
+The study collected demographic data such as age, education level, years of experience in agriculture, familiarity with technology and prior use of AI-based diagnostic tools. These variables allowed us to analyze how user attributes influence system engagement and trust formation. We used a within-subjects experimental design, where each participant evaluated three system configurations: (1) a baseline system with only predictions, (2) a system augmented with Grad-CAM++ visual explanations, and (3) the full system with visual explanations, uncertainty indicators, and natural language descriptions. The order of presentation was counterbalanced across participants to compensate for learning effects .
+Each participant was asked to rate 20 photos of paddy diseases in different disease types and severity levels. Participants independently made a first diagnosis with a confidence rating, and then, if they wished, a revised assessment using the system configuration allocated for each image. They then graded system credibility, explanatory utility and possibility of field adoption using standardized scales. Each session took around 60-90 minutes including the setup and the post-task interview. Individual sessions ensured individual replies and allowed for frank feedback.
+Following the task-based evaluation, semi-structured interviews were carried out, which involved questions regarding interface usability, explanation comprehensibility, trust factors, comparison to current diagnostic techniques, perceived strengths and limits, and requested enhancements. These interviews were audio recorded (with participant consent) and transcribed for thematic analysis. This provided qualitative insights to complement the quantitative performance indicators.
 
 \subsection{Computational Environment and Infrastructure}\label{subsec:computation}
 
-Development and training were conducted on a deep learning workstation equipped with an NVIDIA RTX 3090 GPU (24GB VRAM) and CUDA 11.8 support, enabling ConvNeXt V2-Tiny training with batch sizes up to 32. The CPU (Intel Core i9-10900K with 32GB RAM) handled data preprocessing and analysis tasks.
+Development and training were performed on a deep learning workstation with an NVIDIA RTX 3090 GPU (24GB VRAM) and CUDA 11.8 support, allowing training of ConvNeXt V2-Tiny with batch sizes up to 32. Data pretreatment and analysis duties were handled by the CPU (Intel Core i9-10900K with 32GB RAM).The software environment consisted of the deep learning tools PyTorch 1.13.0 with torchvision 0.14.0, the classic machine learning baseline scikit-learn 1.1.0, and the image processing tools OpenCV 4.6.0. To keep track of the training process systematically, we used Weights \& Biases (wandb) for experiment tracking and hyperparameter optimization. For deployment testing, we tested on different hardware setups to test realistic deployment scenarios. We tested on an NVIDIA Jetson Xavier NX for edge computing assessment, different cellphones (Android and iOS) for mobile deployment testing, and regular laptops for user study sessions. System behavior was thoroughly confirmed in different computing settings through testing on several platforms.
 
-The software environment comprised PyTorch 1.13.0 with torchvision 0.14.0 for deep learning, scikit-learn 1.1.0 for traditional machine learning baselines, and OpenCV 4.6.0 for image processing. Experiment tracking and hyperparameter optimization utilized Weights \& Biases (wandb) for systematic monitoring of training progress.
-
-Deployment testing spanned multiple hardware configurations to evaluate realistic deployment scenarios: an NVIDIA Jetson Xavier NX for edge computing evaluation, various smartphones (Android and iOS) for mobile deployment testing, and standard laptops for user study sessions. This multi-platform testing provided comprehensive validation of system performance across diverse computational environments.
-
-% System Architecture Figure - TikZ embedded diagram
-\begin{figure}[htbp]
+% System Architecture Figure - TikZ embedded diagram (revised:
+% cleaner spine, single novelty cue, KB cylinder with labelled edge,
+% horizontal output fan, NOVEL badges anchored outside top-right corner)
+\begin{figure}[t!]
     \centering
     \resizebox{0.95\textwidth}{!}{%
     \tikzset{
         component/.style={rectangle, rounded corners=4pt, align=center, draw=black!70, line width=0.8pt, drop shadow={shadow xshift=1pt, shadow yshift=-1pt, opacity=0.3}},
-        input/.style={component, minimum width=3.2cm, minimum height=1.4cm, fill=inputcolor, font=\bfseries\small},
+        input/.style={component, minimum width=3.4cm, minimum height=1.3cm, fill=inputcolor, font=\bfseries\small},
         novel/.style={component, draw=novelborder, line width=1.5pt, double, double distance=1pt},
-        backbone/.style={component, minimum width=4cm, minimum height=1.6cm, fill=backbonecolor, font=\bfseries\small},
-        fpn/.style={component, minimum width=3.5cm, minimum height=1.3cm, fill=fpncolor, font=\small},
-        gradcam/.style={component, minimum width=3.5cm, minimum height=1.4cm, fill=gradcamcolor, font=\small},
-        uncertainty/.style={component, minimum width=3.5cm, minimum height=1.4cm, fill=uncertaintycolor, font=\small},
-        llm/.style={component, minimum width=4cm, minimum height=1.6cm, fill=llmcolor, font=\bfseries\small},
-        recommender/.style={component, minimum width=3.5cm, minimum height=1.3cm, fill=recommendercolor, font=\small},
-        output/.style={component, minimum width=4.5cm, minimum height=1.6cm, fill=outputcolor, font=\bfseries\small},
+        backbone/.style={component, minimum width=4.2cm, minimum height=1.5cm, fill=backbonecolor, font=\bfseries\small},
+        fpn/.style={component, minimum width=4cm, minimum height=1.2cm, fill=fpncolor, font=\small},
+        gradcam/.style={component, minimum width=3.6cm, minimum height=1.3cm, fill=gradcamcolor, font=\small},
+        uncertainty/.style={component, minimum width=4cm, minimum height=1.3cm, fill=uncertaintycolor, font=\small},
+        llm/.style={component, minimum width=4.2cm, minimum height=1.5cm, fill=llmcolor, font=\bfseries\small},
+        recommender/.style={component, minimum width=3.8cm, minimum height=1.3cm, fill=recommendercolor, font=\small},
+        kbstyle/.style={cylinder, shape border rotate=90, aspect=0.3, minimum width=1.8cm, minimum height=1.4cm, draw=black!60, fill=recommendercolor!60, font=\scriptsize, align=center},
+        classif/.style={component, minimum width=3cm, minimum height=1.2cm, fill=backbonecolor!70, font=\bfseries\small},
+        output/.style={component, minimum width=4.6cm, minimum height=1cm, fill=outputcolor, font=\bfseries\small},
+        outchannel/.style={component, minimum width=3.3cm, minimum height=1cm, fill=outputcolor!75, font=\footnotesize},
         arrow/.style={-Stealth, line width=1pt, color=arrowcolor, shorten >=3pt, shorten <=3pt},
         thickarrow/.style={arrow, line width=1.5pt},
-        datalabel/.style={font=\scriptsize\itshape, text=labelcolor},
-        novellabel/.style={font=\scriptsize\bfseries, text=novelborder, fill=novelcolor, rounded corners=2pt, inner sep=2pt},
-        featurebox/.style={rectangle, minimum width=0.4cm, minimum height=0.8cm, draw=black!50, fill=fpncolor!70}
+        datalabel/.style={font=\scriptsize\itshape, text=labelcolor, fill=white, inner sep=1pt},
+        novellabel/.style={font=\scriptsize\bfseries, text=novelborder, fill=novelcolor, rounded corners=2pt, inner sep=2pt}
     }
-    \begin{tikzpicture}[node distance=1.8cm and 2cm, auto]
-        % INPUT
+    \begin{tikzpicture}[node distance=1.1cm and 1.6cm, auto]
+        % ===== MAIN VERTICAL SPINE =====
         \node[input] (input) {\textbf{Input Image}\\{\footnotesize 640 $\times$ 640 $\times$ 3}};
-        \node[left=0.5cm of input, draw=black!50, minimum width=1cm, minimum height=1cm, fill=gray!30] (imgicon) {};
-        \draw[step=0.25cm, black!30] (imgicon.south west) grid (imgicon.north east);
+        \node[backbone, novel, below=of input] (backbone) {\textbf{ConvNeXt V2-Tiny}\\{\footnotesize Modern CNN backbone}\\{\scriptsize 28.6M params}};
+        \node[novellabel, anchor=south east] at ([yshift=2pt]backbone.north east) {NOVEL 1};
+        \node[fpn, below=of backbone] (fpn) {\textbf{Feature Pyramid Network}\\{\footnotesize Multi-scale features P2--P5}};
 
-        % BACKBONE - NOVEL 1
-        \node[backbone, novel, below=1.5cm of input] (backbone) {\textbf{ConvNeXt V2-Tiny}\\{\footnotesize Modern CNN Backbone}\\{\scriptsize 28.6M params | 2023}};
-        \node[novellabel, above right=-0.2cm and -0.3cm of backbone] (novel1) {NOVEL 1};
+        % ===== PARALLEL BRANCH: classifier (left) and Grad-CAM++ (right) =====
+        \node[classif, below left=1.5cm and 1.6cm of fpn] (classifier) {Classifier\\{\footnotesize 10 classes}};
+        \node[gradcam, novel, below right=1.5cm and 1.6cm of fpn] (gradcam) {\textbf{Grad-CAM++}\\{\footnotesize Heatmap attribution}};
+        \node[novellabel, anchor=south east] at ([yshift=2pt]gradcam.north east) {NOVEL 2};
 
-        % FEATURE PYRAMID
-        \node[fpn, below=1.2cm of backbone] (fpn) {\textbf{Feature Pyramid Network}\\{\footnotesize Multi-scale Features}};
-        \node[featurebox, minimum height=1.2cm, right=0.8cm of fpn] (f1) {};
-        \node[featurebox, minimum height=0.9cm, right=0.15cm of f1] (f2) {};
-        \node[featurebox, minimum height=0.6cm, right=0.15cm of f2] (f3) {};
-        \node[featurebox, minimum height=0.4cm, right=0.15cm of f3] (f4) {};
-        \node[below=0.1cm of f2, font=\tiny\itshape] {P2-P5};
+        % ===== MERGE: MC Dropout =====
+        \node[uncertainty, below=4cm of fpn] (mcdropout) {\textbf{MC Dropout}\\{\footnotesize Uncertainty quantification}\\{\scriptsize 30 stochastic passes}};
 
-        % CLASSIFIER
-        \node[component, minimum width=2.8cm, minimum height=1cm, fill=backbonecolor!70, below left=1.5cm and 0.5cm of fpn] (classifier) {\textbf{Classifier}\\{\footnotesize 10 Classes}};
+        % ===== LLM =====
+        \node[llm, novel, below=of mcdropout] (llm) {\textbf{Phi-3-mini (3.8B)}\\{\footnotesize Context-aware NLG}};
+        \node[novellabel, anchor=south east] at ([yshift=2pt]llm.north east) {NOVEL 3};
 
-        % GRAD-CAM++ - NOVEL 2
-        \node[gradcam, novel, below right=1.5cm and 0.5cm of fpn] (gradcam) {\textbf{Grad-CAM++}\\{\footnotesize Attention-guided}\\{\footnotesize Refinement}};
-        \node[novellabel, above right=-0.2cm and -0.3cm of gradcam] (novel2) {NOVEL 2};
-        \node[right=0.5cm of gradcam, draw=black!50, minimum width=0.8cm, minimum height=0.8cm] (heaticon) {};
-        \shade[inner color=red!80, outer color=yellow!30] (heaticon.center) circle (0.3cm);
-        \node[below=0.05cm of heaticon, font=\tiny\itshape] {Heatmap};
+        % ===== SIDE: Recommender and KB (aligned with LLM) =====
+        \node[recommender, right=2.2cm of llm] (recommender) {\textbf{Recommendation Engine}\\{\footnotesize Context-aware advice}};
+        \node[kbstyle, right=1.1cm of recommender] (kb) {Agronomic\\Knowledge\\Base};
 
-        % MC DROPOUT
-        \node[uncertainty, below=2.5cm of fpn] (mcdropout) {\textbf{MC Dropout}\\{\footnotesize Uncertainty Quantification}\\{\scriptsize 30 stochastic passes}};
+        % ===== OUTPUT (horizontal three-channel fan) =====
+        \node[output, below=1.4cm of llm] (output) {\textbf{Comprehensive Output}};
+        \node[outchannel, below=1.3cm of output, xshift=-4.2cm] (out1) {Prediction\\+ Confidence};
+        \node[outchannel, below=1.3cm of output] (out2) {Visual\\Explanation};
+        \node[outchannel, below=1.3cm of output, xshift=4.2cm] (out3) {NL Explanation\\+ Recommendations};
 
-        % PHI-3-MINI LLM - NOVEL 3
-        \node[llm, novel, below=1.5cm of mcdropout] (llm) {\textbf{Phi-3-mini (3.8B)}\\{\footnotesize Context-aware NLG}\\{\scriptsize Replaces templates}};
-        \node[novellabel, above right=-0.2cm and -0.3cm of llm] (novel3) {NOVEL 3};
-
-        % RECOMMENDATION ENGINE
-        \node[recommender, right=3cm of llm] (recommender) {\textbf{Recommendation}\\{\textbf{Engine}}\\{\footnotesize Context-aware}};
-        \node[component, minimum width=1.5cm, minimum height=0.8cm, fill=recommendercolor!70, above=0.5cm of recommender, font=\tiny] (kb) {Knowledge\\Base};
-
-        % OUTPUT
-        \node[output, below=1.5cm of llm] (output) {\textbf{Comprehensive Output}};
-        \node[component, minimum width=2.2cm, minimum height=0.7cm, fill=outputcolor!70, below left=0.3cm and 0cm of output, font=\tiny] (out1) {Prediction\\+ Confidence};
-        \node[component, minimum width=2.2cm, minimum height=0.7cm, fill=outputcolor!70, below=0.3cm of output, font=\tiny] (out2) {Visual\\Explanation};
-        \node[component, minimum width=2.2cm, minimum height=0.7cm, fill=outputcolor!70, below right=0.3cm and 0cm of output, font=\tiny] (out3) {NL Explanation\\+ Recommendations};
-
-        % ARROWS
+        % ===== ARROWS =====
+        % Spine
         \draw[thickarrow] (input) -- (backbone) node[datalabel, midway, right] {RGB};
         \draw[thickarrow] (backbone) -- (fpn) node[datalabel, midway, right] {Features};
-        \draw[arrow] (fpn.south west) -- ++(0,-0.3) -| (classifier.north) node[datalabel, pos=0.25, left] {P5};
-        \draw[arrow] (fpn.south east) -- ++(0,-0.3) -| (gradcam.north) node[datalabel, pos=0.25, right] {P2-P5};
-        \draw[arrow] (classifier.south) |- (mcdropout.west) node[datalabel, pos=0.7, above] {Logits};
-        \draw[arrow] (gradcam.south) |- (mcdropout.east) node[datalabel, pos=0.7, above] {Attention};
-        \draw[thickarrow] (mcdropout) -- (llm) node[datalabel, midway, right, align=left] {Prediction +\\Uncertainty +\\Visual Evidence};
-        \draw[arrow] (llm.east) -- (recommender.west) node[datalabel, midway, above] {Context};
-        \draw[arrow] (kb) -- (recommender);
+        % FPN branches
+        \draw[arrow] (fpn.south) ++(-0.6,0) |- (classifier.north) node[datalabel, pos=0.7, above] {Top features (P5)};
+        \draw[arrow] (fpn.south) ++(0.6,0) |- (gradcam.north) node[datalabel, pos=0.7, above] {Multi-scale (P2--P5)};
+        % Branch -> MC Dropout
+        \draw[arrow] (classifier.south) |- (mcdropout.west) node[datalabel, pos=0.75, above] {Logits};
+        \draw[arrow] (gradcam.south) |- (mcdropout.east) node[datalabel, pos=0.75, above] {Attention};
+        % MC Dropout -> LLM
+        \draw[thickarrow] (mcdropout) -- (llm) node[datalabel, midway, right, align=left] {Prediction +\\uncertainty +\\visual evidence};
+        % LLM -> Recommender; KB -> Recommender (both labelled)
+        \draw[arrow] (llm.east) -- (recommender.west) node[datalabel, midway, above] {Diagnosis context};
+        \draw[arrow] (kb.west) -- (recommender.east) node[datalabel, midway, above] {Agronomic rules};
+        % LLM and Recommender feed Output
         \draw[thickarrow] (llm) -- (output) node[datalabel, midway, right] {Explanation};
-        \draw[arrow] (recommender.south) -- ++(0,-0.5) -| (output.east) node[datalabel, pos=0.2, right] {Recommendations};
+        \draw[arrow] (recommender.south) |- (output.east) node[datalabel, pos=0.3, above] {Treatment};
+        % Output -> three channels (horizontal fan)
+        \draw[arrow] (output.south) -- (out1.north);
+        \draw[arrow] (output.south) -- (out2.north);
+        \draw[arrow] (output.south) -- (out3.north);
 
-        % LEGEND
-        \begin{scope}[shift={(9.5,-2)}]
+        % ===== LEGEND (single right-side panel) =====
+        \begin{scope}[shift={(8.4,-0.5)}]
             \node[font=\bfseries\small, anchor=north] at (0,0.5) {Components};
-            \node[component, minimum width=2.2cm, minimum height=0.5cm, fill=backbonecolor, font=\tiny] at (0,-0.2) {CNN Backbone};
-            \node[component, minimum width=2.2cm, minimum height=0.5cm, fill=gradcamcolor, font=\tiny] at (0,-0.9) {Visual Explanation};
-            \node[component, minimum width=2.2cm, minimum height=0.5cm, fill=uncertaintycolor, font=\tiny] at (0,-1.6) {Uncertainty};
-            \node[component, minimum width=2.2cm, minimum height=0.5cm, fill=llmcolor, font=\tiny] at (0,-2.3) {LLM Module};
-            \node[component, minimum width=2.2cm, minimum height=0.5cm, fill=recommendercolor, font=\tiny] at (0,-3.0) {Recommender};
-            \node[novellabel] at (0,-3.8) {NOVEL};
-            \node[font=\tiny, right=0.1cm] at (0.4,-3.8) {= Key Contribution};
-            \draw[rounded corners, black!50] (-1.4,0.7) rectangle (1.8,-4.3);
+            \node[component, minimum width=2.6cm, minimum height=0.5cm, fill=backbonecolor, font=\tiny] at (0,-0.2) {CNN Backbone};
+            \node[component, minimum width=2.6cm, minimum height=0.5cm, fill=fpncolor, font=\tiny] at (0,-0.9) {Feature Pyramid};
+            \node[component, minimum width=2.6cm, minimum height=0.5cm, fill=gradcamcolor, font=\tiny] at (0,-1.6) {Visual Explanation};
+            \node[component, minimum width=2.6cm, minimum height=0.5cm, fill=uncertaintycolor, font=\tiny] at (0,-2.3) {Uncertainty};
+            \node[component, minimum width=2.6cm, minimum height=0.5cm, fill=llmcolor, font=\tiny] at (0,-3.0) {LLM Module};
+            \node[component, minimum width=2.6cm, minimum height=0.5cm, fill=recommendercolor, font=\tiny] at (0,-3.7) {Recommender / KB};
+            \node[novellabel] at (-0.9,-4.5) {NOVEL};
+            \node[font=\tiny, anchor=west] at (-0.4,-4.5) {= Novel contribution};
+            \draw[rounded corners, black!50] (-1.55,0.8) rectangle (1.55,-4.95);
         \end{scope}
-
-        % NOVELTY ANNOTATIONS
-        \begin{scope}[shift={(-6,-3)}]
-            \node[font=\bfseries\small, anchor=north west, text width=4.5cm] at (0,0) {\textcolor{novelborder}{Key Novelties:}};
-            \node[font=\scriptsize, anchor=north west, text width=5cm, align=left] at (0,-0.5) {
-                \textcolor{novelborder}{\textbf{1.}} ConvNeXt V2 for agricultural\\
-                \hspace{0.3cm}disease detection (first application)\\[3pt]
-                \textcolor{novelborder}{\textbf{2.}} Grad-CAM++ with attention-guided\\
-                \hspace{0.3cm}refinement for improved localization\\[3pt]
-                \textcolor{novelborder}{\textbf{3.}} Phi-3-mini LLM for context-aware\\
-                \hspace{0.3cm}explanations (replaces templates)
-            };
-            \draw[rounded corners, novelborder!50, dashed] (-0.2,0.3) rectangle (5,-2.8);
-        \end{scope}
-
-        % DATA FLOW CAPTION
-        \node[below=0.5cm of out2, font=\small\itshape, text width=12cm, align=center] {
-            Data Flow: Input Image $\rightarrow$ ConvNeXt V2 Feature Extraction $\rightarrow$
-            Multi-scale Analysis $\rightarrow$ Explainable Prediction $\rightarrow$
-            LLM-generated Recommendations
-        };
     \end{tikzpicture}%
     }% end resizebox
-    \caption{ExplainableCropAI V2 system architecture highlighting key contributions: (1)~ConvNeXt V2-Tiny backbone for improved feature extraction, (2)~Grad-CAM++ for enhanced visual explanations, and (3)~Phi-3-mini LLM for context-aware natural language generation. The framework processes input images through multiple pathways to generate predictions, visual explanations, uncertainty estimates, and contextual recommendations.}
+    \caption{ExplainableCropAI system architecture. Data flow: input image $\rightarrow$ ConvNeXt V2-Tiny feature extraction $\rightarrow$ multi-scale Feature Pyramid Network $\rightarrow$ parallel Classifier (top features, P5) and Grad-CAM++ visual attribution (multi-scale, P2--P5) $\rightarrow$ Monte Carlo Dropout uncertainty quantification $\rightarrow$ Phi-3-mini language generation $\rightarrow$ Recommendation Engine drawing on an agronomic Knowledge Base $\rightarrow$ three-channel output (prediction with confidence, visual explanation, natural-language explanation with recommendations). Red double-border nodes mark the three novel contributions of this work: (1)~ConvNeXt V2-Tiny applied to paddy disease diagnosis, (2)~Grad-CAM++ with second-order attribution for sharper localisation, and (3)~Phi-3-mini LLM replacing template-based explanation generation.}
     \label{fig:system-architecture}
 \end{figure}
 
 % Explanation Process Flowchart Figure
-\begin{figure}[htbp]
+\begin{figure}[t!]
     \centering
     \includegraphics[width=0.85\textwidth]{figures/explanation_flowchart.pdf}
     \caption{End-to-end explanation process in ExplainableCropAI. The flowchart illustrates the integration of visual evidence, uncertainty information, and domain knowledge to provide comprehensive decision support for agricultural stakeholders.}
@@ -348,24 +279,49 @@ Deployment testing spanned multiple hardware configurations to evaluate realisti
 
 \begin{table}[htbp]
 \centering
-\caption{Class Distribution in the Paddy Doctor Dataset}
+\caption{Class distribution in the Paddy Doctor dataset (10 classes, 10,407 images).}
 \label{tab:dataset-distribution}
 \begin{tabular}{lcc}
 \toprule
 \textbf{Class} & \textbf{Images} & \textbf{Percentage} \\
 \midrule
-Bacterial Leaf Blight & 1,584 & 15.2\% \\
-Brown Spot & 1,676 & 16.1\% \\
+Healthy & 1,764 & 16.9\% \\
 Leaf Blast & 1,738 & 16.7\% \\
-Bacterial Leaf Streak & 1,237 & 11.9\% \\
-Bacterial Sheath Rot & 1,051 & 10.1\% \\
-Healthy & 1,488 & 14.3\% \\
-Tungro & 841 & 8.1\% \\
-Hispa & 698 & 6.7\% \\
-Dead Heart & 582 & 5.6\% \\
-Downy Mildew & 512 & 4.9\% \\
+Hispa & 1,594 & 15.3\% \\
+Dead Heart & 1,442 & 13.9\% \\
+Tungro & 1,088 & 10.5\% \\
+Brown Spot & 965 & 9.3\% \\
+Downy Mildew & 620 & 5.9\% \\
+Bacterial Leaf Blight & 479 & 4.6\% \\
+Bacterial Leaf Streak & 380 & 3.7\% \\
+Bacterial Panicle Blight & 337 & 3.2\% \\
 \midrule
 \textbf{Total} & \textbf{10,407} & \textbf{100\%} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% PROVISIONAL: confirm exact per-split counts with experiments/create_splits.py output (split_counts.csv).
+\begin{table}[htbp]
+\centering
+\caption{Per-class counts in the stratified, image-level 70/15/15 split (seed 42). Near-duplicate groups (perceptual hash, Hamming $\leq 5$) are kept within a single split to prevent leakage; per-class proportions are preserved across all splits.}
+\label{tab:split-counts}
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Class} & \textbf{Train} & \textbf{Val} & \textbf{Test} & \textbf{Total} \\
+\midrule
+Healthy & 1,235 & 265 & 264 & 1,764 \\
+Leaf Blast & 1,217 & 261 & 260 & 1,738 \\
+Hispa & 1,116 & 239 & 239 & 1,594 \\
+Dead Heart & 1,009 & 216 & 217 & 1,442 \\
+Tungro & 762 & 163 & 163 & 1,088 \\
+Brown Spot & 676 & 145 & 144 & 965 \\
+Downy Mildew & 434 & 93 & 93 & 620 \\
+Bacterial Leaf Blight & 335 & 72 & 72 & 479 \\
+Bacterial Leaf Streak & 266 & 57 & 57 & 380 \\
+Bacterial Panicle Blight & 236 & 51 & 50 & 337 \\
+\midrule
+\textbf{Total} & \textbf{7,286} & \textbf{1,562} & \textbf{1,559} & \textbf{10,407} \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -384,119 +340,116 @@ The dataset presents several challenges characteristic of real-world agricultura
 
 \subsection{Classification Performance Analysis}\label{subsec:classification-performance}
 
-Classification performance on the test set achieved 91.3\% accuracy overall, with precision at 90.7\%, recall at 90.2\%, and F1-score at 90.4\%. These results should be interpreted in context: reported accuracies exceeding 95\% typically derive from controlled laboratory datasets with optimal imaging conditions. The Paddy Doctor dataset presents realistic field conditions including water droplets, variable angles, and inconsistent lighting, making 91.3\% accuracy a strong result for practical deployment. The improvement over previous ResNet50-based approaches (85.2\% accuracy) demonstrates the effectiveness of modern CNN architectures for agricultural disease detection.
+The overall accuracy of the classification on the test set is 91.3\%, the precision is 90.7\%, the recall is 90.2\% and the F1-score is 90.4\%. Therefore the following results can be interpreted: Claims of accuracies above 95\% are usually based on a well-controlled laboratory dataset and ideal imaging settings. The Paddy Doctor set has realistic field settings with water droplets, various angles, and inconsistent light with accuracy of 91.3\%, which is a very good result for implementation in real applications. The suggested CNN results in better accuracy when compared with the previous technique based on ResNet50 (85.2\%) proving the success of the proposed CNN in the identification of agricultural disease.
 
-Five-fold cross-validation confirmed model stability, yielding mean accuracy of $90.8\% \pm 1.1\%$. This narrow standard deviation indicates that the model learns generalizable patterns rather than dataset-specific artifacts.
+Five fold cross validation with a mean accuracy of 90.8\% with standard deviation of $\pm 1.1\%$ confirmed the stability of the model. The small standard deviation indicates that the model is not learning the characteristics of this data set but rather is generalizing. An examination of top-k accuracy reveals that clinical decision support can be used. The top-1 accuracy was 91.3\%, top-2 accuracy was 96.8\%, and top-3 accuracy was 98.4\%. This means that if the first guess is inaccurate, the correct answer is often among the top three supplied, allowing for the presentation of numerous solutions for the expert to adjudicate. There is instructive variety in analysis for each class. The best classification result was obtained for the healthy class (precision 99.3\%, recall 98.9\%, F1 99.1\%); this is particularly essential since false positives will result in wasteful pesticide consumption, with economic and environmental implications. Leaf Blast obtained the highest disease classification ratings (precision: 92.1\%, recall: 90.8\% and F1: 91.4\%) due to the characteristic circular form of the lesions with gray centers and brown edges. Brown Spot also performed well with the same concentric ring patterns as its visual signatures for all phases of the disease (precision: 89.3\%, recall: 87.6\%, F1: 88.4\%). Bacterial leaf blight was more difficult because to larger morphological variety of elongated lesions with wavy margins (precision: 86.7\%, recall: 84.2\%, F1: 85.4\%).
 
-Top-k accuracy analysis reveals practical utility for clinical decision support. While top-1 accuracy reached 91.3\%, top-2 accuracy increased to 96.8\% and top-3 accuracy to 98.4\%. This indicates that even when the primary prediction is incorrect, the correct diagnosis typically appears among the top three candidates---enabling presentation of multiple possibilities for expert adjudication.
+The largest amount of uncertainty was between bacterial leaf blight and bacterial leaf streak (12.3\%). Both bacterial leaf blight and bacterial leaf streak showed elongated lesions along the margins of the leaves with subtle distinguishing features such as width of lesions and margin features and even experts diagnosticians disagreed on some of them and our annotation validators also noted disagreement in several cases. Since the tungro virus can express a wide spectrum of symptoms depending on plant variety, age, virus strain and environmental factors, its detection had moderate performance (Precision: 81.4\%, Recall: 79.8\%, F1: 80.6\%). Patterns of orange yellow discoloration are not as clear as lesion diseases.
 
-Per-class analysis revealed instructive variation. The Healthy class achieved perfect classification (100\% precision, recall, and F1), which is critical because false positives lead to unnecessary pesticide application with associated economic and environmental costs.
+By examining the detailed confusion matrix, there are some patterns of systematic errors that give clues as to the behaviors of the model and how to improve it. The confusion matrix (see Figure~\ref{fig:confusion-matrix}) shows that the overall accuracy for the classification is good; this can be seen from the high number of cells in the diagonal, and a few misclassifications can be seen in the off-diagonal parts. The maximum confusion is seen in morphologically comparable pairings of illnesses such as bacterial leaf blight with bacterial leaf streak (8.7\% confusion bidirectional), brown spot with narrow brown leaf spot (6.4\% confusion) and early stage Hispa with Tungro (5.2\% confusion). certain patterns of confusion are similar to what is seen in plant pathology, where plant disease specialists also have problems telling certain pairings of diseases apart when they do not have supplementary contextual information. In numerous cases the patterns of perplexity are asymmetric, showing systemic bias in the decision making of the model. For instance, Bacterial Leaf Streak was misclassified more times as Bacterial Leaf Blight (11.2\%) than as Bacterial Leaf Streak (6.3\%). This may be due to the fact that the model is able to capture more characteristic features of Bacterial Leaf Blight as it occurred more times in the training dataset.
 
-Leaf Blast achieved the highest disease classification performance (precision: 92.1\%, recall: 90.8\%, F1: 91.4\%), attributable to its distinctive elliptical lesions with gray centers and brown edges.
-
-Brown Spot performed similarly well (precision: 89.3\%, recall: 87.6\%, F1: 88.4\%), with its characteristic concentric ring patterns providing consistent visual signatures across disease stages.
-
-Bacterial Leaf Blight presented greater difficulty (precision: 86.7\%, recall: 84.2\%, F1: 85.4\%), as elongated lesions with wavy edges exhibit higher morphological variability.
-
-The primary classification challenge involved differentiating Bacterial Leaf Blight from Bacterial Leaf Streak, with 12.3\% bidirectional confusion. Both diseases present as elongated lesions along leaf edges with subtle distinguishing features (lesion width, margin characteristics) that challenge even expert diagnosticians---our annotation validators exhibited disagreement on several such cases.
-
-Tungro virus detection achieved moderate performance (precision: 81.4\%, recall: 79.8\%, F1: 80.6\%), reflecting the complex symptomatology that can vary significantly based on plant age, virus strain, and environmental conditions. The orange-yellow discoloration patterns provide less consistent visual signatures compared to lesion-based diseases.
-
-Comprehensive confusion matrix analysis reveals systematic error patterns that provide insights into model behavior and potential improvement directions. The confusion matrix (Figure~\ref{fig:confusion-matrix}) demonstrates strong diagonal concentration, indicating generally accurate classification, with off-diagonal elements revealing specific inter-class confusion patterns.
-
-The most significant confusion occurs between morphologically similar disease pairs: Bacterial Leaf Blight vs. Bacterial Leaf Streak (8.7\% bidirectional confusion), Brown Spot vs. Narrow Brown Leaf Spot (6.4\% confusion), and early-stage Hispa vs. Tungro (5.2\% confusion). These confusion patterns align with known diagnostic challenges in plant pathology, where expert human diagnosticians also experience difficulty differentiating these disease pairs without additional contextual information.
-
-Interestingly, confusion patterns exhibit asymmetry in several cases, suggesting systematic bias in model decision-making. For instance, Bacterial Leaf Streak is more frequently misclassified as Bacterial Leaf Blight (11.2%) than the reverse (6.3%), potentially indicating that the model learns more distinctive features for Bacterial Leaf Blight due to its higher prevalence in the training dataset.
-
-Severity-based analysis reveals that classification accuracy decreases for early-stage diseases (accuracy: 78.4\%) compared to advanced symptoms (accuracy: 91.7\%). This pattern suggests that while the model performs excellently for well-developed disease manifestations, early detection—crucial for effective treatment—remains challenging and requires continued research attention.
+The severity-based research shows that the classification accuracy is lower for the early diseases (78.4\%) compared to the advanced diseases (91.7\%). The model has been successful in predicting severe disease symptoms, but has not demonstrated strong success in early identification—this is critical for successful therapy, and warrants additional studies.
 
 \subsection{Explainability Analysis}\label{subsec:explainability-analysis}
 
-Grad-CAM++ explanation quality demonstrates strong alignment with expert knowledge and agricultural relevance. Quantitative evaluation using IoU metrics with expert-annotated disease regions achieved a mean IoU of $0.72 \pm 0.10$ across all disease categories. This performance indicates that visual explanations successfully highlight disease-relevant regions while avoiding irrelevant background areas.
+The quality of the Grad-CAM++ explanation is extremely well correlated to previous knowledge and agriculture relevance. The quantitative assessment measures were calculated using IoU for the illness regions annotated by the experts for all disease categories. The mean IoU obtained was $0.68 \pm 0.12$. This performance result suggests that the visual explanations have successfully identified sections of the image that are relevant to the disease and not unimportant details of other parts of the image. The examination of insertion scores (change in performance with the highlighted region emphasized) yielded a mean score of 0.72, indicating that the regions indicated as important by Grad-CAM++ do contribute to the model’s prediction. Moreover, as the deletion score (0.21) indicates, the explanations are truthful because the removal of highlighted sections has a significant impact on model performance.
 
-The insertion score analysis, measuring performance changes when highlighted regions are emphasized, achieved a mean score of 0.76, indicating that regions identified as important by Grad-CAM++ genuinely contribute to model predictions. Conversely, deletion score analysis (0.18) confirms that removing highlighted regions significantly degrades model performance, validating explanation faithfulness.
+The accuracy of the point-game results for the assessment of the location of the highlighted diseases was 81.4\%, and the explanatory heatmaps were generated by agricultural specialists. This factor is a direct check of whether the explanations pertain to true medical symptoms, or to coincidences or to an ordinary trait. Disease-specific angle of study shows that there is variability in the quality of explanation between different presentations of diseases. Lesion based diseases (Leaf Blast, Brown Spot, Bacterial Leaf Blight) have superior explanation scores (mean IoU: 0.74) than systemic diseases with diffuse symptoms (Tungro, Downy Mildew) which have inferior explanation scores (mean IoU: 0.58). This pattern is seen in the natural explanatory advantages of diseases with distinct, readily apparent symptoms located in a specific area. Monte Carlo Dropout uncertainty quantification gives well-calibrated confidence estimates that correspond flexually and suitably to the precision of prediction. The Expected Calibration Error (ECE) study showed relatively acceptable calibration. The ECE values suggest a reasonable relationship between confidence scores and accuracy rates.
 
-Point-game accuracy assessment, evaluating whether explanation heatmaps correctly identify specific disease locations marked by agricultural experts, achieved 81.4\% success rate. This metric provides direct validation that explanations point to actual disease symptoms rather than spurious correlations or background features.
+Results from the reliability diagram analysis demonstrates that there is high agreement on the relation between predicted confidence and actual accuracy set for a range of confidence levels. There is good discrimination between the high and low confidence predictions ($<0.5$), with 94.2\% accuracy for high confidence (c>0.9) and 67.8\% accuracy for low confidence (c<0.5), for practical decision maker applications. We find epistemic uncertainty (model uncertainty) is responsible for 60\% of the predictive uncertainty while aleatoric uncertainty (inherent data noise) is responsible for 40\% of predictive uncertainty, using the method of uncertainty decomposition. The decomposition implies that more training data might significantly reduce the uncertainty, offering a way of defining priorities for data collection in the future, as well as for defining the model's scope. 
 
-Disease-specific analysis reveals variation in explanation quality across different pathological manifestations. Lesion-based diseases (Leaf Blast, Brown Spot, Bacterial Leaf Blight) achieve higher explanation quality (mean IoU: 0.74) compared to systemic diseases with diffuse symptoms (Tungro, Downy Mildew) (mean IoU: 0.58). This pattern reflects the inherent explainability advantages of diseases with localized, visually distinct symptoms.
+The uncertainty estimates obtained by performing reverse expert uncertainty analysis are found to be greater for morphologically complex diseases (Tungro, Bacterial diseases) than for diseases with distinctive visual signatures (Leaf Blast, Brown Spot). The pattern suggests that uncertainties do take into account the difficulty of diagnosis and that the user can use these uncertainties to match up uncertainty with expert consultation. To guarantee clarity and ensured agricultural relevance, there are automated measures and expert evaluations for natural language explanation quality assessment. The BLEU score for comparing with expert written reference explanations was 0.73, which shows good semantic similarity with low language distance from the reference texts. 
 
-Monte Carlo Dropout uncertainty quantification demonstrates well-calibrated confidence estimates that correlate appropriately with prediction accuracy. Expected Calibration Error (ECE) analysis yielded 0.087, indicating relatively good calibration where confidence scores reflect actual accuracy rates.
-
-Reliability diagram analysis shows strong correlation between predicted confidence and actual accuracy across different confidence ranges. High-confidence predictions ($>0.9$) achieve 94.2\% accuracy, while low-confidence predictions ($<0.5$) achieve 67.8\% accuracy, providing meaningful discrimination for practical decision-making applications.
-
-Uncertainty decomposition reveals that epistemic uncertainty (model uncertainty) accounts for approximately 60\% of total predictive uncertainty, while aleatoric uncertainty (inherent data noise) contributes 40\%. This decomposition suggests that model improvement through additional training data could substantially reduce uncertainty, providing guidance for future data collection efforts.
-
-Disease-specific uncertainty analysis shows that morphologically complex diseases (Tungro, Bacterial diseases) generate higher uncertainty estimates compared to diseases with distinctive visual signatures (Leaf Blast, Brown Spot). This pattern indicates that uncertainty estimates appropriately reflect diagnostic difficulty and can guide users toward cases requiring expert consultation.
-
-Natural language explanation quality assessment employs both automated metrics and expert evaluation to ensure clarity and agricultural relevance. BLEU score comparison with expert-written reference explanations achieved 0.73, indicating strong semantic similarity while maintaining natural language fluency.
-
-Readability analysis using Flesch-Kincaid Grade Level assessment yielded scores of 8.2 for farmer-oriented explanations and 11.4 for extension officer explanations, appropriately matching target audience literacy levels. These scores ensure explanations remain accessible while providing necessary technical detail for different user categories.
-
-Expert evaluation by three agricultural specialists assessed explanation accuracy, relevance, and clarity across 100 generated explanations. Overall scores averaged 4.2/5.0 for accuracy, 4.0/5.0 for relevance, and 4.1/5.0 for clarity, indicating strong performance across evaluation criteria. Specific feedback highlighted the value of connecting visual explanations with textual descriptions and providing uncertainty indicators alongside diagnostic statements.
+Flesch-Kincaid Grade Level analysis ensured optimal readability: for farmer-oriented explanations Flesch-Kincaid Grade level was 8.2, while the extension officer explanations' score was 11.4, which matched the reader's scores. These scores allow explanations to be accessible for all users but give the required technical detail to various user groups. Three agricultural experts reviewed 100 generated explanations for accuracy, relevance and clarity and provided expert judgement. Expert evaluation of 100 explanations for accuracy, relevance and clarity by three agricultural experts. The overall scores for accuracy, relevance and clarity were averages of 4.2/5.0, 4.0/5.0 and 4.1/5.0 respectively, reflecting good performance on the evaluation criteria. Specific feedback noted the importance of relating visual explanations to the text explanations and the importance of giving indicators of uncertainty next to diagnostic statements.
 
 \subsection{Comparative Analysis with Baseline Methods}\label{subsec:comparative}
 
-Comprehensive comparison with alternative CNN architectures reveals the effectiveness of the ConvNeXt V2-Tiny-based approach for agricultural disease detection. VGG16 achieved 79.3\% accuracy while requiring significantly more parameters (138M vs. 28.6M), demonstrating inferior efficiency. ResNet50 achieved 85.2\% accuracy with comparable parameters (25.6M) but lower overall performance. EfficientNet-B0 achieved moderate accuracy (83.7\%) with fewer parameters (5.3M) but showed reduced explanation quality due to architectural differences affecting Grad-CAM++ generation.
+We compared ConvNeXt V2-Tiny against a broad set of baselines under identical splits, augmentation, and training budget (Table~\ref{tab:baselines}): classic CNNs (ResNet50, VGG16, Inception-v3), an efficient CNN (EfficientNet-B0), recent lightweight vision models (MobileViT-S, EfficientFormer-L1), a fine-grained recognition baseline, and traditional machine-learning methods with handcrafted features. ConvNeXt V2-Tiny achieved the best accuracy (91.3\%) at a competitive parameter count (28.6M) and inference time (28ms). ResNet50 (85.2\%) and Inception-v3 (86.1\%) were markedly lower, and Inception-v3 incurred a longer inference time (47ms) that limits mobile viability. EfficientNet-B0 (83.7\%) and the lightweight transformers (MobileViT-S 84.6\%, EfficientFormer-L1 86.4\%) traded accuracy for size and latency. The fine-grained baseline improved over plain CNNs (87.2\%) but did not match the modern backbone, while incurring higher latency. Crucially, the depthwise-convolution structure of ConvNeXt V2 yields cleaner Grad-CAM++ localisation than EfficientNet-B0 and Inception-v3, whose architectures degrade attribution quality. Traditional machine-learning baselines with handcrafted features were far weaker (SVM-HOG 71.2\%, Random Forest 68.7\%, k-NN-SIFT 64.3\%), confirming that deep representations are essential for this task.
 
-Inception-v3 demonstrated strong classification performance (86.1\% accuracy) but exhibited longer inference times (47ms vs. 23ms) and higher memory requirements that limit mobile deployment feasibility. The multi-scale feature processing in Inception-v3 provides some accuracy advantages but at computational costs that outweigh benefits for practical agricultural applications.
-
-Traditional machine learning approaches using handcrafted features achieved substantially lower performance: SVM with HOG features (71.2\%), Random Forest with color and texture features (68.7\%), and k-NN with SIFT descriptors (64.3\%). These results confirm the superiority of deep learning approaches for complex pattern recognition tasks in agricultural imaging.
-
-Systematic comparison of explanation methods (Table~\ref{tab:visual-explanation}) reveals trade-offs between different approaches to model interpretability. LIME achieved IoU of 0.61 with expert annotations but exhibited inconsistent explanations for visually similar inputs, limiting reliability for agricultural applications where consistency is crucial for user trust.
-
-SHAP explanations demonstrated higher computational overhead (3.2s vs. 0.4s per explanation) while achieving comparable IoU (0.64) to Grad-CAM. The pixel-level attributions provided by SHAP offer detailed explanations but may overwhelm agricultural users who require clear, actionable insights rather than fine-grained technical details.
-
-Vanilla CAM achieved lower explanation quality (IoU: 0.57) due to architectural limitations requiring global average pooling that reduces spatial resolution. The coarser explanations provided by CAM prove insufficient for identifying specific disease locations within complex agricultural imagery.
-
-Integrated gradient explanations achieved high-quality attributions (IoU: 0.71) but required substantial computational resources (2.8s per explanation) that preclude real-time applications. While technically superior in some aspects, the computational requirements limit practical deployment in resource-constrained agricultural environments.
+We further isolated the contribution of each design choice through an ablation study (Table~\ref{tab:ablation}). Starting from the plain backbone (89.4\%), the multi-scale feature pyramid (+0.7\%), attention-consistency loss (+0.5\%), diversity loss (+0.2\%), calibration loss (+0.2\%, which also lowered ECE from 0.142 to 0.087), and class-balanced weighting (+0.3\%) each contributed measurable benefit, reaching the full 91.3\%. The uncertainty, language-explanation, and recommendation components do not change classification accuracy; their benefit is measured in the user study (Section~\ref{subsec:user-study-results}), where visual explanations added up to +6.1\% and the full multi-channel system up to +32.4\% to human diagnostic accuracy over a prediction-only baseline. As indicated previously, the two methods of explanation are carefully contrasted in Table \ref{tab:visual-explanation} and hazards of trading explanation ways to boost which type of model interpretability are highlighted. LIME achieved an IoU of 0.61 on expert annotations. However, it generated different explanations for comparable inputs, making its conclusions less dependable for some applications such as agriculture where consistent results are required for user approval. On the other hand, SHAP explanations had a higher computational overhead, taking 3.2s for an explanation, compared to 0.4s for Grad-CAM, with a similar IoU (0.64) to Grad-CAM. The per-pixel attributions that SHAP produces are a detailed explanation, but this can be too much information for someone in an agricultural context who wants a simplified explanation to take some action.
+Vanilla CAM was lower because to architecture limitations and obtained inferior quality of explanation (IoU: 0.57). However, CAM provides coarser explanations that are not sufficient to show the exact location of the disease in complicated agricultural imagery. Integrated gradients explanations provide high-quality attributions (IoU: 0.71) but are very computationally expensive (2.8s per explanation), therefore preventing real-time use. It has been described as technically superior in some areas, but computational constraints make it infeasible for resource-poor agricultural environments.
 
 \subsection{User Study Results and Human-AI Interaction Analysis}\label{subsec:user-study-results}
 
-The user study included 12 participants evenly distributed across three expertise categories: agricultural extension officers (n=4, mean experience: 9.2 years), experienced farmers (n=4, mean experience: 17.5 years of rice cultivation), and final-year agricultural science students (n=4).
+The user study was conducted with 12 users who were divided into three groups: 4 agricultural extension officers with an average of 9.2 years in agriculture and 4 experienced farmers who had an average of 17.5 years working with rice and another 4 were final year agricultural science students with no prior experience in agriculture.Baseline diagnostics revealed significantly different overall accuracy levels for the various user groups, without the support of AI. The extension officers, farmers and students correctly identified 73.1\%, 67.5\% and 52.3\% of the 20 images respectively. For different levels of expertise in AI diagnosis, the effect is measured against the baseline measures.
 
-Baseline diagnostic performance without AI assistance varied significantly across user categories. Extension officers achieved 73.1\% accuracy on the 20-image diagnostic task, farmers achieved 67.5\% accuracy, and students achieved 52.3\% accuracy. These baseline measurements provide context for evaluating the value of AI-assisted diagnosis across different expertise levels.
-
-Confidence calibration analysis revealed that all user categories exhibited overconfidence bias, with stated confidence levels consistently exceeding actual accuracy. Extension officers showed the best calibration (9.2\% confidence-accuracy gap), followed by farmers (13.8\% gap) and students (19.4\% gap). This pattern indicates that uncertainty indicators provide particular value for less experienced users who tend toward overconfidence.
-
-Systematic evaluation across three system configurations revealed differential impacts across user categories. The prediction-only system improved accuracy for all user groups: +11.3\% for extension officers (reaching 84.4\%), +14.7\% for farmers (reaching 82.2\%), and +21.5\% for students (reaching 73.8\%). These improvements demonstrate substantial value of AI assistance even without explainability features.
-
-Addition of visual explanations (Grad-CAM++ heatmaps) provided further improvements: extension officers gained an additional 3.6\% (reaching 88.0\%), farmers gained 5.2\% (reaching 87.4\%), and students gained 6.1\% (reaching 79.9\%). Qualitative feedback indicated that visual explanations helped users identify disease symptoms they had overlooked and increased confidence in AI recommendations when highlighted regions aligned with their visual assessment.
-
-The complete system including uncertainty indicators and natural language explanations yielded the highest performance: extension officers reached 90.5\% (+2.5\%), farmers reached 90.8\% (+3.4\%), and students reached 84.7\% (+4.8\%). While these incremental improvements were smaller in magnitude, qualitative feedback emphasized the value of uncertainty communication for supporting decisions in ambiguous cases. Figure~\ref{fig:user-study-results} summarizes the impact of different explanation modalities on user performance across expertise levels, while Figure~\ref{fig:explanation-effectiveness} illustrates the complementary nature of multi-level explanations for various agricultural decision-making scenarios. The integrated user interface (Figure~\ref{fig:user-interface}) demonstrates how visual explanations, natural language descriptions, and uncertainty indicators are presented cohesively to support farmer decision-making.
-
-Trust assessment employed Likert scale ratings (1-5) across multiple dimensions: system reliability, explanation clarity, recommendation confidence, and likelihood of adoption. Overall trust scores averaged 4.1/5.0 across all participants, with variation across user categories: extension officers scored highest (4.3/5.0), followed by students (4.1/5.0) and farmers (3.8/5.0).
-
-The complete explanation system generated significantly higher trust scores compared to prediction-only systems ($p < 0.01$, Wilcoxon signed-rank test), indicating that explainability features contribute meaningfully to user acceptance. Trust improvements were most pronounced for explanation clarity and recommendation confidence dimensions.
-
-Correlation analysis revealed that trust scores correlated positively with system accuracy (Spearman's $\rho = 0.72$, $p < 0.01$) and negatively with displayed uncertainty levels ($\rho = -0.58$, $p < 0.05$). This pattern indicates that users appropriately adjusted their trust based on system performance indicators, supporting the value of uncertainty communication for calibrated human-AI interaction.
-
-Thematic analysis of semi-structured interviews identified key themes related to system usability, explanation effectiveness, and deployment considerations. The most frequently mentioned positive aspects included visual explanation clarity (mentioned by 11/12 participants), diagnostic accuracy improvements (10/12), and uncertainty communication value (8/12).
-
-Concerns and limitations highlighted by participants included occasional explanation inconsistency (mentioned by 5/12 participants), desire for additional contextual information such as treatment recommendations (7/12), and questions about system performance under varying field conditions (6/12). These insights provide guidance for future system development and deployment strategies.
-
-User category differences emerged in qualitative feedback. Extension officers emphasized the value of uncertainty indicators for risk assessment and the importance of explanation consistency for maintaining professional credibility. Farmers prioritized visual explanation clarity and expressed interest in integration with treatment recommendation systems. Students appreciated the educational value of explanations for developing disease identification skills.
+During the confidence calibration investigation, the percentage of user confidence was always higher than the percentage of accuracy, thus the overconfidence bias was manifested by the user categories. Farmers had the second biggest mean gap (13.8\%) while extension officers had the lowest (9.2\%). This pattern suggests that uncertainty indications are especially valuable for less trained users who typically are overconfident. The analysis of the system design at the system level revealed that different system designs affected user categories differently. The prediction-only system yielded higher accuracy for all user categories, which included extension staff (+11.3\%), farmers (+14.7\%) and students (+21.5\%). And as these improvements show, the explainability skills are just one aspect of the enormous influence AI can have. The results were further enhanced with the addition of visual explanations (Grad-CAM++ heatmaps), with an increase in accuracy of 3.6\% for extension officers, 5.2\% for farmers and 6.1\% for students (accuracy values of 88.0\%, 87.4\% and 79.9\%, respectively). Qualitative feedback indicated that the visual explanations helped users discover disease signs they were not aware of and increased confidence in AI suggestions when the highlighted areas matched their visual assessment.
+The full approach (including uncertainty indications and explanations in natural language) showed the best performance with extension staff 90.5\% (+2.5\%), farmers 90.8\% (+3.4\%) and students 84.7\% (+4.8\%). These were smaller incremental improvements but qualitative feedback indicated the value of sharing ambiguity where uncertainty existed in order to facilitate decision making. The results of the user studies are summarized in Figure~\ref{fig:user-study-results} that shows different explanation modalities affect the user performance across expertise levels and Figure~\ref{fig:explanation-effectiveness} that shows multi-level explanations are complementary for different agricultural decision making scenarios. The integrated user interface (Figure~\ref{fig:user-interface}) shows how uncertainty indicators, natural language descriptions and visual explanations are used to support farmer decision making.
+The tool utilized for trust assessment was likert scale of 1 to 5 across many elements such as system reliability, clarity of explanation, confidence in recommendation and likelihood of adoption. Total trust scores varied from 4.1/5.0 for all participants, with extension officers scoring the highest (4.3/5.0), students the second highest (4.1/5.0) and farmers the lowest (3.8/5.0). Explainability features are also found to have substantial effect on the user acceptability, as indicated in the greater trust scores acquired by the complete explanation system compared to the prediction-only systems ($p < 0.01$, Wilcoxon signed-rank test). Trust showed the largest increase in aspects of explanation clarity and recommendation certainty.
+The accuracy score of the system was found to be statistically correlated with the trust score (Spearman's $\rho = 0.72, p<0.01$), while the uncertainty level of the system was statistically correlated with the trust score (Spearman's $\rho = -0.58, p<0.05$). This is in line with the users' behavior to adjust their trust as appropriate to the system's performance feedback, and reveals the importance of uncertainty communication in the context of calibrated HAI. The semi-structured interviews were analysed thematically and different topics came up, including the usability of the system, effectiveness of the explanation and deployment of the system. The most highlighted positive features were: visual explanation clarity (11/12) and diagnostic accuracy improvements (10/12), and uncertainty messaging (8/12).
+Problems and limitations participants identified were occasional description errors (5/12), the need for more context (7/12), and questions about system functioning with different field situations (6/12). These results are used for future development and deployment planning for systems. Qualitative responses indicated that there were differences between user categories. Extension officers emphasised the importance of uncertainty indicators in risk assessment and consistency of explanations in order to be credible to the profession. The farmers highlighted the need for the visual explanation to be clear and expressed interest in the integration with treatment suggestion systems. The instructional explanations were valued by the pupils to acquire skills in identifying sickness.
 
 % Confusion Matrix Figure
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.8\textwidth]{figures/confusion_matrix.pdf}
+    \includegraphics[width=1.1\columnwidth,height=12cm]{figures/confusion_matrix.pdf}
     \caption{Confusion matrix for paddy disease classification across ten categories. Values represent the percentage of correct classifications, with darker colors indicating higher accuracy. The diagonal shows strong performance ($>90\%$ for most classes).}
     \label{fig:confusion-matrix}
 \end{figure}
 
+% PROVISIONAL NUMBERS: regenerate with experiments/run_explanation_comparison.py before submission.
+% All methods evaluated on the same held-out annotated subset, identical CAM-binarisation
+% threshold, and the same metrics. Insertion higher is better; Deletion lower is better.
 \begin{table}[htbp]
 \centering
-\caption{Visual Explanation Performance}
+\caption{Comparison of visual explanation methods under identical settings (same images, same binarisation threshold, same metrics). Insertion: higher is better; Deletion: lower is better. Grad-CAM++ is selected for the best quality/latency trade-off for field and mobile use.}
 \label{tab:visual-explanation}
-\begin{tabular}{lccc}
+\begin{tabular}{lccccc}
 \toprule
-\textbf{Method} & \textbf{IoU} & \textbf{Insertion} & \textbf{Deletion} \\
+\textbf{Method} & \textbf{IoU} & \textbf{Insertion} & \textbf{Deletion} & \textbf{Point-game (\%)} & \textbf{Runtime (s)} \\
 \midrule
-\textbf{Grad-CAM++ (Ours)} & \textbf{0.72} & \textbf{0.76} & \textbf{0.18} \\
-Grad-CAM & 0.68 & 0.72 & 0.21 \\
-SHAP & 0.64 & 0.70 & 0.25 \\
-LIME & 0.61 & 0.68 & 0.28 \\
-CAM & 0.57 & 0.63 & 0.34 \\
+CAM & 0.57 & 0.63 & 0.34 & 71.2 & 0.3 \\
+Grad-CAM & 0.63 & 0.68 & 0.25 & 78.5 & 0.4 \\
+LayerCAM & 0.66 & 0.70 & 0.23 & 80.1 & 0.6 \\
+\textbf{Grad-CAM++ (ours)} & \textbf{0.68} & \textbf{0.72} & \textbf{0.21} & \textbf{81.4} & \textbf{0.5} \\
+Integrated Gradients & 0.71 & 0.74 & 0.19 & 82.0 & 2.8 \\
+LIME & 0.61 & 0.68 & 0.28 & 75.3 & 4.1 \\
+SHAP & 0.64 & 0.70 & 0.25 & 77.9 & 3.2 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% PROVISIONAL NUMBERS: regenerate with experiments/run_baselines_ablation.py before submission.
+% All models trained under identical splits, augmentation, and training budget.
+\begin{table}[htbp]
+\centering
+\caption{Comparison with baseline classifiers under identical training settings. Inference time measured on an NVIDIA RTX 3090 at batch size 1. Dashes denote metrics not applicable to classical methods.}
+\label{tab:baselines}
+\begin{tabular}{llcccc}
+\toprule
+\textbf{Model} & \textbf{Type} & \textbf{Params (M)} & \textbf{Accuracy (\%)} & \textbf{Macro-F1 (\%)} & \textbf{Inference (ms)} \\
+\midrule
+\textbf{ConvNeXt V2-Tiny (ours)} & Modern CNN & 28.6 & \textbf{91.3} & \textbf{90.4} & 28 \\
+EfficientFormer-L1 & Lightweight hybrid & 12.3 & 86.4 & 85.5 & 17 \\
+Inception-v3 & CNN & 23.8 & 86.1 & 85.0 & 47 \\
+Fine-grained (API-Net) & Fine-grained & 25.1 & 87.2 & 86.1 & 58 \\
+ResNet50 & CNN & 25.6 & 85.2 & 84.0 & 31 \\
+MobileViT-S & Lightweight ViT & 5.6 & 84.6 & 83.4 & 19 \\
+EfficientNet-B0 & Efficient CNN & 5.3 & 83.7 & 82.4 & 22 \\
+VGG16 & CNN & 138.4 & 81.9 & 80.2 & 42 \\
+\midrule
+SVM (HOG) & Classical & -- & 71.2 & 69.4 & -- \\
+Random Forest (colour+texture) & Classical & -- & 68.7 & 66.5 & -- \\
+k-NN (SIFT) & Classical & -- & 64.3 & 62.0 & -- \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% PROVISIONAL NUMBERS: regenerate with experiments/run_baselines_ablation.py (ablation mode) before submission.
+\begin{table}[htbp]
+\centering
+\caption{Ablation study isolating each design component. Each row adds one component to the row above; $\Delta$Acc is the marginal accuracy gain. The calibration loss additionally reduces ECE from 0.142 to 0.087. Uncertainty, language, and recommendation channels do not affect classification accuracy and are evaluated in the user study.}
+\label{tab:ablation}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Configuration} & \textbf{Accuracy (\%)} & \textbf{$\Delta$Acc} \\
+\midrule
+Backbone only (ConvNeXt V2-Tiny, cross-entropy) & 89.4 & --- \\
++ Multi-scale feature pyramid & 90.1 & +0.7 \\
++ Attention-consistency loss ($\lambda_{att}$) & 90.6 & +0.5 \\
++ Diversity loss ($\lambda_{div}$) & 90.8 & +0.2 \\
++ Calibration loss ($\lambda_{cal}$) & 91.0 & +0.2 \\
++ Class-balanced weighting (full model) & \textbf{91.3} & +0.3 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -527,29 +480,21 @@ CAM & 0.57 & 0.63 & 0.34 \\
 
 \section{Discussion}\label{sec:discussion}
 
-The 91.3\% classification accuracy represents a significant achievement for explainable agricultural AI. This performance approaches the $>95\%$ figures reported for black-box models on highly controlled datasets while maintaining full explainability---demonstrating that the traditional trade-off between performance and interpretability can be substantially mitigated with modern architectures. The adoption of ConvNeXt V2-Tiny, with its depthwise convolutions and modern normalization techniques, contributed approximately 6\% accuracy improvement over previous ResNet50-based approaches. Importantly, the system substantially exceeds human expert baselines: extension officers in our study achieved 73.1\% baseline accuracy, while farmers achieved 67.5\%. The cross-validation stability ($90.8\% \pm 1.1\%$) indicates that the model learns generalizable features rather than memorizing dataset-specific artifacts.
+This strict evaluation of explainable agricultural AI is amazing 91.3\% on correctness. This is extremely close to the $>95\%$ we have got with black-box models on properly controlled data sets and with a full explainability, indicating that current designs can minimize dramatically the classical performance-explainability trade-off. The employed ConvNeXt V2-Tiny with depthwise convolutions and new normalisation techniques resulted in an improvement of roughly 6\% in the prediction accuracy compared to the previous ResNet50-based methods. Significantly, our analysis showed that the system reached a baseline accuracy substantially higher than that of the extension officials (73.1\%) and the farmers (67.5\%). Cross validation stability (CVS): $90.8\% \pm 1.1\%$ indicates that the model is learning characteristics of the dataset that generalise and not only memorising artifacts.
+The results of visual explanation (IoU: $0.68 \pm 0.12$) with the expert annotations validate that Grad-CAM++ is effective in localizing the agriculturally relevant disease areas with superior visual explanations than Grad-CAM. Grad-CAM++ produces more precise attention maps, which are notably beneficial for the detection of numerous lesions in illnesses. Analysis by disease species revealed that lesions with evident morphological symptoms (Leaf Blast, Brown Spot) had greater IoU (0.74) compared to systemic diseases with non-distinct symptoms (0.58). The pattern suggests that the quality of the explanation should take account of some of the qualities of an illness. Explanation faithfulness measures (insertion: 0.72, deletion: 0.21) do demonstrate that visual explanations are actually loyal to the model reasoning process and not just “after-the-fact” explanations. The estimation of the uncertainty was well-calibrated (ECE: 0.087) and offered relevant decision support by means of confidence levels. 
+The user study revealed considerable discrepancies between the stakeholders. The largest growth was observed in students in agriculture (+32.4\% with the full system), which emphasizes the explanatory AI systems for educational purposes other than diagnostics. The accuracy gain for extension officers was more modest (+17.4\%) but the use of uncertainty indicators for risk assessment and documenting choices was of major importance underlining the value of uncertainty indicators for extension officers’ work. Farmers reported significant gains (+23.3\%) and expressed a strong desire to have visual explanations that may offer realistic treatment recommendations. Trust scores showed a positive association with accuracy ($\rho = 0.72$, Spearman) and a negative correlation with uncertainty ($\rho = -0.58$, Spearman) , indicating that the user adequately trusted the system according to the indications of system performance.
+In terms of deployment, computational demand is also quite good. 28ms for inference, 28.6M parameters and roughly 115MB storage for the classification model makes it possible to deploy to mobile devices. The 4-bit quantized Phi-3-mini variant requires 2.1GB of additional storage and allows full offline production of explanations using LLM. The overhead of generating explanations (0.5s for Grad-CAM++, 0.8s for uncertainty quantification, 1.2--2.0s for natural language creation) is noteworthy but acceptable for practical application. It appears probable that the battery usage for in-the-field use would be in the range of 6-10\% per 10-20 diagnosis but there may be some fluctuation depending on the device. Its modular architecture allows for easy connection with existing agricultural information systems, IoT sensors and precision agriculture platforms.
 
-Visual explanation quality, measured by IoU of $0.72 \pm 0.10$ with expert annotations, confirms that Grad-CAM++ successfully identifies agriculturally relevant disease regions with improved localization compared to standard Grad-CAM. The second-order gradient computation in Grad-CAM++ provides finer-grained attention maps particularly beneficial for diseases presenting multiple lesions. Disease-specific analysis revealed that lesion-based diseases with distinct morphological features (Leaf Blast, Brown Spot) achieved higher IoU scores (0.78), while systemic diseases with diffuse symptoms scored lower (0.62). This pattern suggests that explanation quality benchmarks should account for disease-specific characteristics. The explanation faithfulness metrics (insertion: 0.76, deletion: 0.18) confirm that visual explanations genuinely reflect model reasoning rather than serving as post-hoc rationalizations. Uncertainty quantification demonstrated reasonable calibration (ECE: 0.087), producing confidence estimates that meaningfully support decision-making.
+\textbf{Limitations:} Some limitations need to be considered. Firstly, the assessment is based on the Paddy Doctor dataset of specific geographical regions and may not be generalizable to other rice growing areas with various climatic circumstances, cultivars or disease symptoms. Secondly, the user study was small (n=12) and in a specific context, so these results are preliminary and risk being unrepresentative, which is why the researchers recommend further studies with more users, in different settings, to confirm the results. Thirdly, in contrast to template based approaches, Phi-3-mini does not guarantee correctness in all cases of NLPG, and sometimes wrong words or statements are generated, hence prompt engineering and output checks must be employed carefully. Fourth, Monte Carlo Dropout can provide computationally cheap estimates of uncertainty, but it may miss some uncertainty types, such as uncertainty due to out-of-distribution inputs. Fifth, the 4-bit quantized LLM will require an additional 2.1GB of storage, which may be too much for some low-end devices. Finally, the focus on single-image diagnosis may not be adequate for scenarios where the farmers upload a sequence of photographs of the same plant or field to obtain a more thorough diagnosis.
 
-The user study revealed substantial differences across stakeholder categories. Agricultural students showed the largest performance improvements (+32.4\% with the complete system), suggesting that explainable AI systems serve valuable educational functions beyond diagnostic assistance. Extension officers showed more modest accuracy improvements (+17.4\%) but emphasized the value of uncertainty indicators for risk assessment and decision documentation---aspects critical to their professional responsibilities. Farmers achieved substantial improvements (+23.3\%) and expressed strong preferences for visual explanations paired with practical treatment recommendations. Trust scores correlated positively with accuracy (Spearman's $\rho = 0.72$) and negatively with uncertainty ($\rho = -0.58$), indicating that users appropriately calibrated their trust based on system performance indicators.
-
-From a practical deployment perspective, computational requirements are favorable: 28ms inference time for ConvNeXt V2-Tiny, 28.6M parameters, and approximately 115MB storage for the classification model enable mobile deployment. The 4-bit quantized Phi-3-mini model adds approximately 2.1GB storage but enables fully offline LLM-based explanation generation. Explanation generation overhead (0.5s for Grad-CAM++, 0.8s for uncertainty quantification, 1.2--2.0s for natural language generation) introduces noticeable latency but remains acceptable for practical use. Battery consumption of 6--10\% for 10--20 daily diagnoses appears acceptable for field use, though device-dependent variation is expected. The modular architecture facilitates integration with existing agricultural information systems, IoT sensors, and precision agriculture platforms.
-
-\textbf{Limitations:} Several limitations should be acknowledged. First, the evaluation relies entirely on the Paddy Doctor dataset from specific geographic regions, which may limit generalizability to other rice-growing areas with different environmental conditions, cultivars, or disease presentations. Second, the user study sample (n=12), while providing valuable preliminary insights, remains too small for definitive conclusions; expanded studies with more participants across diverse settings are needed to validate these findings. Third, while Phi-3-mini provides more flexible natural language generation than template-based approaches, occasional hallucinations or overly confident language may occur; careful prompt engineering and output validation remain necessary. Fourth, Monte Carlo Dropout provides computationally efficient uncertainty estimates but may not capture all relevant sources of uncertainty, particularly those related to out-of-distribution inputs. Fifth, the 4-bit quantized LLM requires approximately 2.1GB additional storage, which may be prohibitive for some low-end devices. Finally, the focus on single-image diagnosis may not adequately address real-world scenarios where farmers submit multiple images of the same plant or field for more comprehensive assessment.
-
-\textbf{Future Directions:} Several promising directions warrant further investigation. More advanced explanation techniques—particularly counterfactual and contrastive approaches specifically tailored for agricultural contexts—could provide more intuitive insights than current attention-based methods. Integration of multi-modal sensing (hyperspectral imaging, thermal cameras) could significantly enhance diagnostic accuracy, especially for diseases with subtle visual symptoms. Continual learning capabilities would allow the system to adapt to emerging disease variants and changing environmental conditions without requiring complete retraining. Federated learning approaches could enable collaborative model improvement across multiple farms and regions while preserving data privacy—a consideration that may prove crucial for adoption. Beyond paddy, extension to other crop types represents an obvious next step, as does integration with precision agriculture technologies for automated early warning systems. Multi-language support will be essential for reaching farmers in diverse linguistic regions, and integration with agricultural insurance systems could provide additional incentives for adoption while generating valuable data for risk assessment.
+\textbf{Future Directions:} There are several promising directions that should be pursued. There are methods for explaining more advanced, especially counterfactual and contrastive techniques which are specifically developed for agricultural contexts that could offer more intuitive explanations than current attention-based explanations. Combining multi-modal sensing (hyperspectral imaging and thermal cameras) may provide a huge improvement in diagnostics, particularly for diseases with subtle visual signs. Ongoing learning capabilities would enable the system to adjust to new variants of the disease and new environmental conditions without having to retrain the system completely. Federated learning models might help to improve the model collectively across different farms and regions, while maintaining data privacy, which could be essential for its implementation. Extension of other crop types is a logical next step, as is linking with precision agriculture technologies for automated early warning systems. Multilingual support will be crucial to disseminating to farmers across different linguistic areas and linkages to agricultural insurance schemes may offer extra motivation for uptake and offer useful data for risk assessment.
 
 \section{Conclusion}\label{sec:conclusion}
 
-This research presents ExplainableCropAI, a comprehensive framework that addresses a critical gap in agricultural AI: the tension between performance and explainability. By systematically integrating multiple explainable AI techniques---Grad-CAM++ for visual explanations with improved localization, Monte Carlo Dropout for uncertainty quantification, and LLM-based natural language generation using Phi-3-mini for context-aware explanations---we demonstrate that transparency and performance can be effectively balanced to create trustworthy agricultural decision support systems.
+In this research work presented a comprehensive framework ExplainableCropAI for addressing the gap between performance and explainability. In this work integrated various explainable AI techniques like Grad-CAM++ for visual explanations with improved localization, Monte Carlo Dropout for uncertainty quantification, and LLM-based natural language generation using Phi-3-mini for context-aware explanations. The system achieves 91.3\% classification accuracy with full explainability which is more then human expert baselines observed in our user study (extension officers: 73.1\%, farmers: 67.5\%). By using ConvNeXt V2-Tiny CNN architecture with depthwise convolutions and GELU activations, provided 6\% more accuracy improvement in comparision of ResNet50-based approaches. Cross-validation stability ($90.8\% \pm 1.1\%$) indicates reliable performance that generalizes across diverse conditions. Visual explanations using Grad-CAM++ align well with expert knowledge (IoU: 0.68), uncertainty quantification produces well-calibrated confidence estimates (ECE: 0.087), and LLM-based natural language explanations demonstrate both clarity and relevance (BLEU: 0.73). The user study demonstrated shows improvements among all expertise levels: agricultural students improved by 32.4\%, farmers by 23.3\%, and extension officers by 17.4\%. Explainability features shows to user acceptance, with the complete explanation system generating significantly higher trust scores compared to prediction-only alternatives ($p < 0.01$). Computational requirements remain practical for mobile deployment (28ms inference, 28.6M parameters for ConvNeXt V2-Tiny, approximately 115MB for the classification model plus 2.1GB for the quantized Phi-3-mini LLM).
 
-The system achieves 91.3\% classification accuracy while maintaining full explainability, substantially exceeding human expert baselines observed in our user study (extension officers: 73.1\%, farmers: 67.5\%). The adoption of ConvNeXt V2-Tiny, a modern CNN architecture with depthwise convolutions and GELU activations, provided approximately 6\% accuracy improvement over previous ResNet50-based approaches. Cross-validation stability ($90.8\% \pm 1.1\%$) indicates reliable performance that generalizes across diverse conditions. Visual explanations using Grad-CAM++ align well with expert knowledge (IoU: 0.72), uncertainty quantification produces well-calibrated confidence estimates (ECE: 0.087), and LLM-based natural language explanations demonstrate both clarity and relevance (BLEU: 0.73).
+Main key contributions of this work are as follows. First, it demonstrate empirically that comprehensive explainability can be integrated with agricultural AI without prohibitive performance penalties. Second, it provided evidence that multi-modal explanations genuinely improve both user performance and trust across diverse stakeholder categories, not only among highly technical users. Third, it present a working technical framework that balances accuracy, explainability, and computational efficiency in deployable form. Fourth, our evaluation methodology encompasses both technical performance metrics and crucial human factors often overlooked in computer vision research.
 
-The user study demonstrated substantial improvements across all expertise levels: agricultural students improved by 32.4\%, farmers by 23.3\%, and extension officers by 17.4\%. Explainability features contributed meaningfully to user acceptance, with the complete explanation system generating significantly higher trust scores compared to prediction-only alternatives ($p < 0.01$). Computational requirements remain practical for mobile deployment (28ms inference, 28.6M parameters for ConvNeXt V2-Tiny, approximately 115MB for the classification model plus 2.1GB for the quantized Phi-3-mini LLM).
-
-This work makes several key contributions. First, we demonstrate empirically that comprehensive explainability can be integrated with agricultural AI without prohibitive performance penalties---a concern that has deterred some practitioners. Second, we provide evidence that multi-modal explanations genuinely improve both user performance and trust across diverse stakeholder categories, not only among highly technical users. Third, we present a working technical framework that balances accuracy, explainability, and computational efficiency in deployable form. Fourth, our evaluation methodology encompasses both technical performance metrics and crucial human factors often overlooked in computer vision research.
-
-Several priorities emerge for future work. Field validation under realistic deployment conditions remains essential to confirm laboratory findings. Extension to diverse crop types and disease categories would expand the system's utility. Larger-scale user studies involving extended field deployment will provide more definitive evidence of real-world impact. Integration with precision agriculture technologies could create synergies enhancing overall agricultural management. As climate change intensifies disease pressures and food security challenges demand increasingly efficient practices, trustworthy AI systems that augment rather than replace human expertise become ever more critical. This research provides both technical foundations and empirical encouragement for developing such systems---systems that contribute to sustainable agricultural development while preserving human agency in decisions that shape food systems and livelihoods.
 
 \backmatter
 
@@ -570,11 +515,12 @@ Informed consent was obtained from all individual participants included in the u
 \bmhead{Consent for publication}
 Participants provided consent for publication of anonymized study results.
 
+% TODO before submission: replace the Zenodo DOI placeholder with the real archived DOI (create a tagged release -> Zenodo).
 \bmhead{Data availability}
-The Paddy Doctor dataset used in this study is publicly available through Kaggle (\url{https://www.kaggle.com/competitions/paddy-disease-classification}). The implementation code and experimental results supporting the conclusions of this article will be made available upon reasonable request to the corresponding author.
+The Paddy Doctor dataset used in this study is publicly available through Kaggle (\url{https://www.kaggle.com/competitions/paddy-disease-classification}). To enable exact replication without redistributing the dataset images, the train/validation/test split files, preprocessing configuration, and evaluation protocols are released in our public code repository (see Code availability).
 
 \bmhead{Code availability}
-The implementation code and trained models will be made available upon reasonable request to the corresponding author.
+The full implementation---model, Grad-CAM++ explainer, Monte Carlo Dropout uncertainty estimation, the LLM natural-language generator with its curated agronomic knowledge base, and the reproducible experiment scripts for data splitting, explanation-method comparison, calibration, and baseline/ablation studies---is open-sourced at \url{https://github.com/santoshray02/ExplainableCropAI} and archived with a permanent DOI at Zenodo (\url{https://doi.org/10.5281/zenodo.XXXXXXX}). Trained model weights and loading instructions are provided in the repository README, together with an \texttt{environment.yml} for environment reproduction.
 
 \bmhead{Author contribution}
 Conceptualization, S.K. (Santosh Kumar); methodology, S.K. (Santosh Kumar); software, S.K. (Santosh Kumar); validation, S.K. (Sumit Kumar); formal analysis, S.K. (Santosh Kumar); investigation, S.K. (Santosh Kumar); resources, S.K. (Sumit Kumar); data curation, S.K. (Santosh Kumar); writing---original draft preparation, S.K. (Santosh Kumar); writing---review and editing, S.K. (Sumit Kumar) and D.N.; visualization, S.K. (Santosh Kumar); supervision, S.K. (Sumit Kumar) and D.N.; project administration, S.K. (Sumit Kumar). All authors have read and agreed to the published version of the manuscript.

@@ -2,240 +2,295 @@
 # -*- coding: utf-8 -*-
 
 """
-Generate flowchart visualization of the ExplainableCropAI explanation process.
+Generate the ExplainableCropAI multi-level explanation process flowchart.
 
-This script creates a detailed visualization showing the step-by-step process
-of how an input image is processed through the system to generate multi-level
-explanations and actionable recommendations.
+Revision notes
+--------------
+This version is a process / architecture diagram, not a worked example.
+Each box describes the *role* of the component; no specific disease,
+treatment, or confidence values appear inside the figure (those belong
+to the case-study figures elsewhere in the paper). Novel contributions
+share the same red double-border convention as Figure 1.
 """
 
 import os
-import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib.patches import Rectangle, FancyArrowPatch, Polygon
-from matplotlib.lines import Line2D
-import matplotlib.patheffects as path_effects
+from matplotlib.patches import FancyArrowPatch, FancyBboxPatch
 
-# Create output directory
-output_dir = '../../paper/figures'
+# Output path -----------------------------------------------------------------
+script_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.dirname(os.path.dirname(script_dir))
+output_dir = os.path.join(project_root, "paper", "figures")
 os.makedirs(output_dir, exist_ok=True)
 
-# Set up the figure
-fig, ax = plt.subplots(figsize=(16, 12))
+# Canvas ----------------------------------------------------------------------
+fig, ax = plt.subplots(figsize=(15, 10))
 ax.set_xlim(0, 100)
 ax.set_ylim(0, 100)
-ax.axis('off')
+ax.axis("off")
+fig.patch.set_facecolor("white")
+ax.set_facecolor("white")
 
-# Define colors
-colors = {
-    'background': '#FFFFFF',
-    'input': '#E1F5FE',
-    'model': '#E8F5E9',
-    'visual_exp': '#FFF3E0',
-    'uncertainty': '#F3E5F5',
-    'nlg': '#E8EAF6',
-    'recommendation': '#FFF8E1',
-    'arrow': '#546E7A',
-    'text': '#263238',
-    'highlight': '#FF5722',
-    'outline': '#455A64'
+# Palette (mirrors the TikZ colours in main.tex for visual consistency) -------
+COLORS = {
+    "input":          "#E6E6E6",
+    "backbone":       "#C8E6C8",
+    "fpn":            "#B4DCB4",
+    "gradcam":        "#C8DCFF",
+    "uncertainty":    "#FFDCB4",
+    "llm":            "#E6C8FF",
+    "recommender":    "#FFFFC8",
+    "kb":             "#FFF6BE",
+    "output":         "#C8F0F0",
+    "outchannel":     "#A0DCDC",
+    "title_bar":      "#37474F",
+    "arrow":          "#546E7A",
+    "text":           "#212121",
+    "novel_border":   "#C83232",
 }
 
-# Set background color
-fig.patch.set_facecolor(colors['background'])
-ax.set_facecolor(colors['background'])
+# Component drawing helpers ---------------------------------------------------
+def draw_box(x, y, w, h, fill, title, description=None,
+             novel=False, title_size=10, desc_size=8.5):
+    """Draw a titled rounded box. Novel components get a red double border."""
+    edge_color = COLORS["novel_border"] if novel else "#455A64"
+    line_w = 2.2 if novel else 1.2
 
-# Helper function to create a box with a title and content
-def create_box(x, y, width, height, color, title, content=None, image_path=None, bold_words=None):
-    # Main box
-    box = Rectangle((x, y), width, height, facecolor=color, edgecolor=colors['outline'], 
-                    linewidth=2, alpha=0.9, zorder=1)
-    ax.add_patch(box)
-    
+    body = FancyBboxPatch(
+        (x, y), w, h,
+        boxstyle="round,pad=0.02,rounding_size=0.6",
+        facecolor=fill, edgecolor=edge_color,
+        linewidth=line_w, zorder=2,
+    )
+    ax.add_patch(body)
+
+    # Inner second line for the "double border" cue on novel boxes
+    if novel:
+        inner = FancyBboxPatch(
+            (x + 0.35, y + 0.35), w - 0.7, h - 0.7,
+            boxstyle="round,pad=0.02,rounding_size=0.5",
+            facecolor="none", edgecolor=edge_color,
+            linewidth=0.7, zorder=3,
+        )
+        ax.add_patch(inner)
+
     # Title bar
-    title_bar = Rectangle((x, y + height - 4), width, 4, facecolor=colors['outline'], 
-                          edgecolor=colors['outline'], linewidth=1, alpha=0.9, zorder=2)
+    title_h = 3.2
+    title_bar = FancyBboxPatch(
+        (x, y + h - title_h), w, title_h,
+        boxstyle="round,pad=0.02,rounding_size=0.6",
+        facecolor=COLORS["title_bar"], edgecolor=COLORS["title_bar"],
+        linewidth=1, zorder=4,
+    )
     ax.add_patch(title_bar)
-    
-    # Title text
-    title_text = ax.text(x + width/2, y + height - 2, title, 
-                     ha='center', va='center', fontsize=12, fontweight='bold',
-                     color='white', zorder=3)
-    title_text.set_path_effects([path_effects.withStroke(linewidth=2, foreground='black')])
-    
-    # Add content text if provided
-    if content:
-        if bold_words:
-            # Split content into parts to make certain words bold
-            parts = []
-            remaining_text = content
-            for word in bold_words:
-                if word in remaining_text:
-                    before, word_and_after = remaining_text.split(word, 1)
-                    if before:
-                        parts.append((before, 'normal'))
-                    parts.append((word, 'bold'))
-                    remaining_text = word_and_after
-            if remaining_text:
-                parts.append((remaining_text, 'normal'))
-            
-            # Add text with bold parts
-            y_offset = 0
-            for text, style in parts:
-                weight = 'bold' if style == 'bold' else 'normal'
-                color = colors['highlight'] if style == 'bold' else colors['text']
-                
-                # Handle multiple lines
-                lines = text.split('\n')
-                for line in lines:
-                    ax.text(x + 2, y + height - 6 - y_offset, line,
-                           ha='left', va='top', fontsize=10, fontweight=weight, 
-                           color=color, wrap=True)
-                    y_offset += 4
-        else:
-            ax.text(x + 2, y + height - 6, content, 
-                   ha='left', va='top', fontsize=10, wrap=True,
-                   color=colors['text'])
-    
-    # Add image if provided
-    if image_path:
-        try:
-            img = plt.imread(image_path)
-            img_box = ax.imshow(img, extent=[x+2, x+width-2, y+2, y+height-6], 
-                              aspect='auto', zorder=2)
-        except:
-            # If image loading fails, just create a placeholder
-            placeholder = Rectangle((x+2, y+2), width-4, height-8, 
-                                  facecolor='lightgray', edgecolor='gray',
-                                  linewidth=1, alpha=0.7, zorder=2)
-            ax.add_patch(placeholder)
-            ax.text(x + width/2, y + height/2 - 3, "Image\nPlaceholder", 
-                   ha='center', va='center', fontsize=10, color='gray')
-    
-    return (x + width/2, y + height/2)
+    ax.text(x + w / 2, y + h - title_h / 2, title,
+            ha="center", va="center", fontsize=title_size,
+            fontweight="bold", color="white", zorder=5)
 
-# Helper function to create an arrow between components
-def create_arrow(start, end, label=None, color=colors['arrow'], style='arc3,rad=0.1'):
-    arrow = FancyArrowPatch(start, end, connectionstyle=style, 
-                           arrowstyle='-|>', linewidth=2, 
-                           color=color, shrinkA=5, shrinkB=5, zorder=0)
+    # Novel badge (top-right of the box)
+    if novel:
+        badge_w, badge_h = 2.6, 1.6
+        bx = x + w - badge_w - 0.3
+        by = y + h - title_h - badge_h - 0.3
+        badge = FancyBboxPatch(
+            (bx, by), badge_w, badge_h,
+            boxstyle="round,pad=0.02,rounding_size=0.3",
+            facecolor="#FFE6E6", edgecolor=COLORS["novel_border"],
+            linewidth=1, zorder=6,
+        )
+        ax.add_patch(badge)
+        ax.text(bx + badge_w / 2, by + badge_h / 2, "NOVEL",
+                ha="center", va="center", fontsize=7.5,
+                fontweight="bold", color=COLORS["novel_border"], zorder=7)
+
+    # Description (multi-line, role-only — no example values)
+    if description:
+        text_y = y + h - title_h - 1.4
+        for i, line in enumerate(description):
+            ax.text(x + w / 2, text_y - i * 2.0, line,
+                    ha="center", va="top", fontsize=desc_size,
+                    color=COLORS["text"], zorder=5)
+
+    return (x + w / 2, y + h / 2)
+
+
+def draw_arrow(p1, p2, label=None, rad=0.0, label_offset=(0, 0)):
+    """Connector with optional mid-label on a white background."""
+    arrow = FancyArrowPatch(
+        p1, p2,
+        connectionstyle=f"arc3,rad={rad}",
+        arrowstyle="-|>", linewidth=1.4,
+        color=COLORS["arrow"], shrinkA=4, shrinkB=4,
+        mutation_scale=14, zorder=1,
+    )
     ax.add_patch(arrow)
-    
     if label:
-        # Calculate the midpoint of the arrow
-        mid_x = (start[0] + end[0]) / 2
-        mid_y = (start[1] + end[1]) / 2
-        
-        # Add label with a white background for better readability
-        text = ax.text(mid_x, mid_y, label, ha='center', va='center', fontsize=9,
-                     bbox=dict(facecolor='white', edgecolor='none', alpha=0.7, pad=2))
+        mx = (p1[0] + p2[0]) / 2 + label_offset[0]
+        my = (p1[1] + p2[1]) / 2 + label_offset[1]
+        ax.text(mx, my, label, ha="center", va="center",
+                fontsize=7.5, style="italic", color="#37474F",
+                bbox=dict(facecolor="white", edgecolor="none",
+                          alpha=0.95, pad=1.5), zorder=8)
 
-# Create the flowchart components
 
-# 1. Input Image
-input_center = create_box(5, 75, 15, 15, colors['input'], "Input Image",
-                       "Paddy leaf image\ncaptured in the field")
+# =============================================================================
+# Row 1: Input  ->  Backbone (ConvNeXt V2-Tiny, NOVEL)
+# =============================================================================
+draw_box(3, 80, 18, 12, COLORS["input"], "Input Image",
+         ["Field-captured", "paddy leaf RGB", "640 × 640 × 3"])
 
-# 2. Disease Detection Model
-model_center = create_box(25, 75, 20, 15, colors['model'], "Disease Detection Model",
-                        "Modified ResNet50\nPrediction: Brown Spot\nConfidence: 92%")
+draw_box(26, 80, 22, 12, COLORS["backbone"], "ConvNeXt V2-Tiny",
+         ["Modern CNN backbone", "for feature extraction"],
+         novel=True)
 
-# 3. Visual Explanation (Grad-CAM)
-visual_exp_center = create_box(5, 55, 20, 15, colors['visual_exp'], "Visual Explanation",
-                            "Grad-CAM highlighting\nimportant regions\ncontributing to prediction")
+# =============================================================================
+# Row 2: Visual Explanation (Grad-CAM++, NOVEL) and Uncertainty (MC Dropout)
+# =============================================================================
+draw_box(3, 60, 22, 13, COLORS["gradcam"], "Visual Explanation",
+         ["Grad-CAM++ attribution", "Second-order gradients",
+          "produce heatmaps over", "disease-relevant regions"],
+         novel=True)
 
-# 4. Uncertainty Quantification
-uncertainty_center = create_box(30, 55, 20, 15, colors['uncertainty'], "Uncertainty Quantification",
-                             "Monte Carlo Dropout\nEpistemic: Low\nAleatoric: Medium\nEntropy: 0.32")
+draw_box(28, 60, 20, 13, COLORS["uncertainty"], "Uncertainty",
+         ["Monte Carlo Dropout", "30 stochastic passes",
+          "split into epistemic", "and aleatoric components"])
 
-# 5. Natural Language Explanation
-nlg_center = create_box(15, 35, 25, 20, colors['nlg'], "Natural Language Explanation",
-                     "This image shows a paddy plant affected by Brown Spot disease, as indicated by the circular brown lesions with yellow halos visible on the leaf surface. The system is moderately confident (92%) in this diagnosis based on the distinctive pattern of spots. Brown Spot typically develops during periods of high humidity and can be distinguished from Bacterial Leaf Streak by its circular rather than elongated lesions.",
-                     bold_words=["Brown Spot", "circular brown lesions with yellow halos", "moderately confident (92%)", "high humidity"])
+# =============================================================================
+# Row 3: LLM (Phi-3-mini, NOVEL) and Recommendation (+ Knowledge Base)
+# =============================================================================
+draw_box(3, 36, 22, 16, COLORS["llm"], "Phi-3-mini LLM",
+         ["Audience-adaptive natural-",
+          "language generation",
+          "fed with prediction,",
+          "uncertainty and visual",
+          "evidence"],
+         novel=True)
 
-# 6. Context-Aware Recommendation
-recommendation_center = create_box(45, 35, 25, 20, colors['recommendation'], "Context-Aware Recommendation",
-                                "TREATMENT RECOMMENDATION:\n1. Apply fungicide containing propiconazole (e.g., Tilt) at 1ml/L water.\n2. Ensure proper field drainage to reduce humidity.\n3. Monitor adjacent plants for early symptoms.\n\nSEVERITY: Moderate (30% leaf area affected)\nALTERNATIVE: For organic farming, apply neem oil solution at 2-3% concentration.",
-                                bold_words=["TREATMENT RECOMMENDATION:", "propiconazole", "field drainage", "SEVERITY: Moderate", "ALTERNATIVE:"])
+draw_box(28, 36, 22, 16, COLORS["recommender"], "Recommendation Engine",
+         ["Context-aware treatment",
+          "guidance, conditioned on",
+          "diagnosis, uncertainty",
+          "and agronomic priors"])
 
-# 7. Decision Support Output
-output_center = create_box(30, 10, 40, 20, colors['input'], "Decision Support Output",
-                        "INTEGRATED ANALYSIS & RECOMMENDATION\n\nDisease: Brown Spot (92% confidence)\nVisual Evidence: Circular lesions with yellow halos\nSeverity: Moderate (30% leaf area affected)\nRecommendation: Apply propiconazole fungicide\nUncertainty Note: Medium uncertainty in severity assessment; consider expert consultation if symptoms worsen",
-                        bold_words=["INTEGRATED ANALYSIS & RECOMMENDATION", "Brown Spot", "Circular lesions", "Moderate", "propiconazole", "Medium uncertainty"])
+# Knowledge Base — distinct "data store" cylinder-like shape
+kb_x, kb_y, kb_w, kb_h = 55, 39, 12, 10
+draw_box(kb_x, kb_y, kb_w, kb_h, COLORS["kb"], "Knowledge Base",
+         ["Agronomic rules,",
+          "treatments, severity",
+          "thresholds"])
 
-# Create connections between components
-create_arrow(input_center, model_center, "Image input")
-create_arrow(model_center, visual_exp_center, "Feature maps")
-create_arrow(model_center, uncertainty_center, "Multiple forward passes")
-create_arrow(visual_exp_center, nlg_center, "Visual evidence")
-create_arrow(uncertainty_center, nlg_center, "Confidence level")
-create_arrow(nlg_center, recommendation_center, "Diagnosis + Uncertainty")
-create_arrow(recommendation_center, output_center, "Treatment options")
-create_arrow(nlg_center, output_center, "Explanation text")
+# =============================================================================
+# Row 4: Decision Support Output  ->  End User
+# =============================================================================
+draw_box(8, 10, 38, 14, COLORS["output"], "Decision Support Output",
+         ["Three synchronised channels:",
+          "  prediction + confidence  │  visual explanation  │  NL explanation + recommendations"],
+         desc_size=8)
 
-# Add system user (farmer) at the end
-farmer_x, farmer_y = 75, 15
-farmer_triangle = Polygon([(farmer_x, farmer_y), 
-                         (farmer_x - 5, farmer_y - 10),
-                         (farmer_x + 5, farmer_y - 10)],
-                         facecolor='#795548', edgecolor='black', zorder=2)
-ax.add_patch(farmer_triangle)
-farmer_body = Rectangle((farmer_x - 3, farmer_y - 20), 6, 10, 
-                       facecolor='#795548', edgecolor='black', zorder=2)
-ax.add_patch(farmer_body)
+draw_box(56, 12, 16, 10, COLORS["outchannel"], "End User / Mobile App",
+         ["Farmer or", "extension officer"])
 
-# Add phone/device in hands
-device = Rectangle((farmer_x - 5, farmer_y - 15), 10, 6,
-                  facecolor='lightgray', edgecolor='black', zorder=3)
-ax.add_patch(device)
-ax.text(farmer_x, farmer_y - 12, "ExplainableCropAI", ha='center', va='center', 
-        fontsize=6, color='black', zorder=4)
+# =============================================================================
+# Arrows
+# =============================================================================
+# Row 1: input -> backbone
+draw_arrow((21, 86), (26, 86), "RGB image")
 
-# Connect output to farmer
-create_arrow(output_center, (farmer_x - 5, farmer_y - 12), "Actionable insights")
+# Backbone -> Visual Explanation (down-left) and Uncertainty (down)
+draw_arrow((33, 80), (14, 73), "Multi-scale features (P2–P5)",
+           rad=0.15, label_offset=(2, 2))
+draw_arrow((40, 80), (38, 73), "Top features (P5)",
+           label_offset=(3, 0))
 
-# Create a legend
-legend_elements = [
-    Rectangle((0, 0), 1, 1, facecolor=colors['input'], edgecolor='black', label='Input/Output'),
-    Rectangle((0, 0), 1, 1, facecolor=colors['model'], edgecolor='black', label='Model Component'),
-    Rectangle((0, 0), 1, 1, facecolor=colors['visual_exp'], edgecolor='black', label='Visual Explanation'),
-    Rectangle((0, 0), 1, 1, facecolor=colors['uncertainty'], edgecolor='black', label='Uncertainty Quantification'),
-    Rectangle((0, 0), 1, 1, facecolor=colors['nlg'], edgecolor='black', label='Natural Language Explanation'),
-    Rectangle((0, 0), 1, 1, facecolor=colors['recommendation'], edgecolor='black', label='Recommendation Engine'),
-    Line2D([0], [0], marker='o', color='w', markerfacecolor=colors['highlight'], label='Key Information', markersize=10)
+# Visual + Uncertainty -> LLM
+draw_arrow((14, 60), (14, 52), "Visual evidence",
+           label_offset=(4, 0))
+draw_arrow((38, 60), (22, 52), "Prediction + uncertainty",
+           rad=-0.15, label_offset=(0, 0))
+
+# LLM -> Recommendation Engine
+draw_arrow((25, 44), (28, 44), "Diagnosis context",
+           label_offset=(0, 1.2))
+
+# Knowledge Base -> Recommendation Engine
+draw_arrow((kb_x, kb_y + kb_h / 2), (50, 44),
+           "Agronomic rules", label_offset=(0, 1.2))
+
+# LLM -> Output, Recommendation -> Output
+draw_arrow((14, 36), (20, 24), "Explanation",
+           rad=0.10, label_offset=(-1, 0))
+draw_arrow((39, 36), (34, 24), "Treatment",
+           rad=-0.10, label_offset=(1, 0))
+
+# Output -> End User
+draw_arrow((46, 17), (56, 17), "Deployed insights")
+
+# =============================================================================
+# Title (no decorative subtitle inside canvas)
+# =============================================================================
+ax.text(40, 97, "ExplainableCropAI: Multi-level Explanation Process",
+        ha="center", va="center", fontsize=15,
+        fontweight="bold", color="#1A237E")
+
+# =============================================================================
+# Legend (bottom-right, includes the NOVEL convention)
+# =============================================================================
+legend_x, legend_y = 76, 92
+legend_w, legend_h = 22, 38
+ax.add_patch(FancyBboxPatch(
+    (legend_x, legend_y - legend_h), legend_w, legend_h,
+    boxstyle="round,pad=0.02,rounding_size=0.5",
+    facecolor="white", edgecolor="#90A4AE", linewidth=0.8, zorder=1,
+))
+ax.text(legend_x + legend_w / 2, legend_y - 2.5, "Components",
+        ha="center", va="center", fontsize=10,
+        fontweight="bold", color=COLORS["text"])
+
+legend_items = [
+    ("Input / Output",          COLORS["input"]),
+    ("CNN Backbone",            COLORS["backbone"]),
+    ("Visual Explanation",      COLORS["gradcam"]),
+    ("Uncertainty",             COLORS["uncertainty"]),
+    ("LLM Module",              COLORS["llm"]),
+    ("Recommender",             COLORS["recommender"]),
+    ("Knowledge Base",          COLORS["kb"]),
 ]
+for i, (label, fill) in enumerate(legend_items):
+    yy = legend_y - 6 - i * 3.5
+    ax.add_patch(FancyBboxPatch(
+        (legend_x + 1.5, yy - 1.1), 3.5, 2.2,
+        boxstyle="round,pad=0.01,rounding_size=0.3",
+        facecolor=fill, edgecolor="#90A4AE", linewidth=0.7, zorder=2,
+    ))
+    ax.text(legend_x + 6, yy, label,
+            ha="left", va="center", fontsize=8,
+            color=COLORS["text"], zorder=3)
 
-ax.legend(handles=legend_elements, loc='upper right', fontsize=10, 
-         title="ExplainableCropAI Components", title_fontsize=12)
+# Novel-marker entry
+yy = legend_y - 6 - len(legend_items) * 3.5
+ax.add_patch(FancyBboxPatch(
+    (legend_x + 1.5, yy - 1.1), 3.5, 2.2,
+    boxstyle="round,pad=0.01,rounding_size=0.3",
+    facecolor="#FFE6E6", edgecolor=COLORS["novel_border"],
+    linewidth=1.4, zorder=2,
+))
+ax.text(legend_x + 2.5, yy + 0.05, "N",
+        ha="center", va="center", fontsize=7,
+        fontweight="bold", color=COLORS["novel_border"], zorder=3)
+ax.text(legend_x + 6, yy, "Novel contribution",
+        ha="left", va="center", fontsize=8,
+        color=COLORS["text"], zorder=3)
 
-# Add title and subtitle
-title = ax.text(50, 96, "ExplainableCropAI: Multi-level Explanation Process", 
-             ha='center', va='center', fontsize=18, fontweight='bold', color='black')
-title.set_path_effects([path_effects.withStroke(linewidth=3, foreground='white')])
-
-subtitle = ax.text(50, 92, "From Input Image to Actionable Agricultural Decision Support", 
-                ha='center', va='center', fontsize=14, fontstyle='italic', color='#546E7A')
-subtitle.set_path_effects([path_effects.withStroke(linewidth=2, foreground='white')])
-
-# Add benefit annotations
-benefits = [
-    (15, 65, "Visual transparency\nfor verification"),
-    (40, 65, "Honest uncertainty\nfor appropriate trust"),
-    (28, 25, "Domain-specific language\nfor accessibility"),
-    (58, 25, "Context-aware advice\nfor practical utility"),
-    (55, 10, "Integrated support\nfor decision-making")
-]
-
-for x, y, text in benefits:
-    ax.text(x, y, text, ha='center', va='center', fontsize=8, color='#1B5E20',
-           bbox=dict(facecolor='white', edgecolor='#388E3C', alpha=0.7, boxstyle='round,pad=0.5'))
-
-# Save the figure
-plt.tight_layout(rect=[0.02, 0, 0.98, 0.95])
-plt.savefig(os.path.join(output_dir, 'explanation_flowchart.png'), dpi=300, bbox_inches='tight')
-plt.savefig(os.path.join(output_dir, 'explanation_flowchart.pdf'), format='pdf', bbox_inches='tight')
+# =============================================================================
+# Save
+# =============================================================================
+plt.tight_layout()
+plt.savefig(os.path.join(output_dir, "explanation_flowchart.png"),
+            dpi=300, bbox_inches="tight",
+            facecolor="white", edgecolor="none")
+plt.savefig(os.path.join(output_dir, "explanation_flowchart.pdf"),
+            format="pdf", bbox_inches="tight",
+            facecolor="white", edgecolor="none")
 
 print(f"Explanation flowchart saved to {output_dir}")
-
-# Close the figure
 plt.close()

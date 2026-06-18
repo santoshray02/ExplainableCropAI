@@ -29,7 +29,7 @@ classes = [
     'Brown Spot',
     'Leaf Blast',
     'Bacterial Leaf Streak',
-    'Bacterial Sheath Rot',
+    'Bacterial Panicle Blight',
     'Healthy',
     'Tungro',
     'Hispa',
@@ -49,14 +49,16 @@ def generate_confusion_matrix(num_classes=10):
     - Brown Spot: 94%
     - Leaf Blast: 96%
     - Bacterial Leaf Streak: 88% (confused with BLB due to visual similarity)
-    - Bacterial Sheath Rot: 90%
+    - Bacterial Panicle Blight: 90%
     - Healthy: 99%
     - Tungro: 85% (complex symptoms, confused with multiple diseases)
     - Hispa: 92%
     - Dead Heart: 91%
     - Downy Mildew: 87%
 
-    Overall accuracy: 91.5%
+    Overall accuracy: 91.3% (matches the manuscript headline)
+    NOTE: illustrative/synthetic confusion matrix. Regenerate from real test-set
+    predictions (experiments/run_baselines_ablation.py outputs) before submission.
     """
     conf_matrix = np.zeros((num_classes, num_classes), dtype=int)
 
@@ -64,7 +66,7 @@ def generate_confusion_matrix(num_classes=10):
     # Primary confusion with Bacterial Leaf Streak (similar bacterial symptoms)
     conf_matrix[0, 0] = 93
     conf_matrix[0, 3] = 4   # Confused with Bacterial Leaf Streak
-    conf_matrix[0, 4] = 2   # Confused with Bacterial Sheath Rot
+    conf_matrix[0, 4] = 2   # Confused with Bacterial Panicle Blight
     conf_matrix[0, 1] = 1   # Minor confusion with Brown Spot
 
     # Class 1: Brown Spot (94% accuracy)
@@ -83,10 +85,10 @@ def generate_confusion_matrix(num_classes=10):
     # High confusion with BLB due to similar bacterial etiology and visual appearance
     conf_matrix[3, 3] = 88
     conf_matrix[3, 0] = 7   # Primary confusion with Bacterial Leaf Blight
-    conf_matrix[3, 4] = 3   # Confused with Bacterial Sheath Rot
+    conf_matrix[3, 4] = 3   # Confused with Bacterial Panicle Blight
     conf_matrix[3, 1] = 2   # Minor confusion with Brown Spot
 
-    # Class 4: Bacterial Sheath Rot (90% accuracy)
+    # Class 4: Bacterial Panicle Blight (90% accuracy)
     conf_matrix[4, 4] = 90
     conf_matrix[4, 0] = 3   # Confused with Bacterial Leaf Blight
     conf_matrix[4, 3] = 3   # Confused with Bacterial Leaf Streak
@@ -97,11 +99,11 @@ def generate_confusion_matrix(num_classes=10):
     conf_matrix[5, 5] = 99
     conf_matrix[5, 1] = 1   # Very minor misclassification
 
-    # Class 6: Tungro (85% accuracy)
+    # Class 6: Tungro (83% accuracy)
     # Complex viral symptoms can resemble multiple conditions
-    conf_matrix[6, 6] = 85
+    conf_matrix[6, 6] = 83
     conf_matrix[6, 9] = 5   # Confused with Downy Mildew (yellowing symptoms)
-    conf_matrix[6, 1] = 4   # Confused with Brown Spot
+    conf_matrix[6, 1] = 6   # Confused with Brown Spot
     conf_matrix[6, 7] = 3   # Confused with Hispa (leaf discoloration)
     conf_matrix[6, 0] = 2   # Minor confusion with BLB
     conf_matrix[6, 5] = 1   # Early stage confused with Healthy
@@ -115,7 +117,7 @@ def generate_confusion_matrix(num_classes=10):
     # Class 8: Dead Heart (91% accuracy)
     conf_matrix[8, 8] = 91
     conf_matrix[8, 7] = 4   # Confused with Hispa (both insect-related)
-    conf_matrix[8, 4] = 3   # Confused with Bacterial Sheath Rot (stem damage)
+    conf_matrix[8, 4] = 3   # Confused with Bacterial Panicle Blight (stem damage)
     conf_matrix[8, 2] = 2   # Minor confusion with Leaf Blast
 
     # Class 9: Downy Mildew (87% accuracy)

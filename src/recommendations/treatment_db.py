@@ -116,28 +116,32 @@ class PaddyDiseaseKnowledgeBase:
                     }
                 }
             },
-            "Bacterial Sheath Rot": {
-                "symptoms": "brown to dark brown discoloration on leaf sheaths with foul odor",
-                "treatment": "apply copper-based bactericides and remove affected plant parts",
-                "prevention": "avoid plant injuries, ensure proper drainage, use disease-free seeds",
-                "impact": "reduce yield by 20-50% and affect grain quality",
-                "similar_diseases": "Sheath Blight",
-                "distinguishing_features": "dark brown discoloration with characteristic foul smell",
+            # NOTE: Bacterial Panicle Blight (Burkholderia glumae/gladioli). There is no
+            # fully effective curative chemical control; guidance below is conservative and
+            # referral-based. Verify region-specific options with a plant pathologist /
+            # agricultural extension service before recommending any chemical treatment.
+            "Bacterial Panicle Blight": {
+                "symptoms": "discoloration of florets and grains on the panicle (light to dark brown), grain sterility and unfilled grains; affected panicles often remain upright, and seedling rot can occur",
+                "treatment": "no fully effective curative chemical control; use certified disease-free seed, avoid excessive nitrogen, and consult local agricultural extension for region-approved management",
+                "prevention": "use certified disease-free seed and tolerant varieties where available, apply balanced nitrogen (avoid excess), and adjust planting time to avoid high temperatures during flowering",
+                "impact": "grain sterility and unfilled grains reduce yield and grain quality; losses are most severe under hot, humid conditions",
+                "similar_diseases": "other grain-discoloration disorders",
+                "distinguishing_features": "discoloration concentrated on grains and panicles with sterility, rather than on leaf sheaths or leaves",
                 "severity_levels": {
                     "low": {
-                        "description": "Few lesions on lower leaf sheaths, limited spread",
-                        "treatment": "improve drainage and remove affected plant parts",
-                        "expected_yield_impact": "5-10% if disease progression is halted"
+                        "description": "Few panicles with limited grain discoloration",
+                        "treatment": "monitor the crop and consult extension; ensure balanced nitrogen and clean seed",
+                        "expected_yield_impact": "minor if conditions do not favour spread"
                     },
                     "medium": {
-                        "description": "Multiple sheaths affected with spreading discoloration",
-                        "treatment": "apply copper-based bactericides and improve field sanitation",
-                        "expected_yield_impact": "potential yield reduction of 15-30% if untreated"
+                        "description": "Several panicles affected with noticeable grain sterility",
+                        "treatment": "consult local agricultural extension for region-approved management; avoid excess nitrogen",
+                        "expected_yield_impact": "variable yield reduction; depends on weather and variety"
                     },
                     "high": {
-                        "description": "Extensive infection with panicle emergence affected",
-                        "treatment": "aggressive bactericide application, remove severely affected plants",
-                        "expected_yield_impact": "severe yield losses of 30-50% if untreated"
+                        "description": "Widespread panicle discoloration and grain sterility across the field",
+                        "treatment": "seek expert/extension guidance; prioritise clean seed and tolerant varieties for the next season",
+                        "expected_yield_impact": "substantial losses under prolonged hot, humid conditions"
                     }
                 }
             },

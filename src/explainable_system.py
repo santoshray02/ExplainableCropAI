@@ -104,7 +104,7 @@ class ExplainableCropAI:
             "Brown Spot",
             "Leaf Blast",
             "Bacterial Leaf Streak",
-            "Bacterial Sheath Rot",
+            "Bacterial Panicle Blight",
             "Healthy",
             "Tungro",
             "Hispa",
@@ -382,13 +382,17 @@ class ExplainableCropAI:
         # In a real system, this would analyze the activation maps
         # and map them to domain-specific visual features
         
-        # Simple mapping based on disease name
+        # Simple mapping based on disease name (covers all 10 dataset classes).
         feature_mapping = {
-            "Bacterial Leaf Blight": ["leaf_lesions", "leaf_discoloration"],
+            "Bacterial Leaf Blight": ["leaf_lesions", "leaf_discoloration", "wavy_margins"],
             "Brown Spot": ["leaf_spots", "leaf_discoloration"],
-            "Leaf Blast": ["leaf_lesions", "leaf_discoloration"],
-            "Bacterial Leaf Streak": ["leaf_lesions"],
-            "Sheath Blight": ["stem_lesions", "leaf_discoloration"],
+            "Leaf Blast": ["leaf_lesions", "diamond_shaped"],
+            "Bacterial Leaf Streak": ["leaf_lesions", "leaf_discoloration"],
+            "Bacterial Panicle Blight": ["leaf_discoloration", "necrosis"],
+            "Tungro": ["leaf_discoloration", "chlorosis", "stunted_growth"],
+            "Hispa": ["leaf_lesions", "necrosis"],
+            "Dead Heart": ["wilting", "necrosis"],
+            "Downy Mildew": ["white_powder", "chlorosis"],
             "Healthy": []
         }
         
