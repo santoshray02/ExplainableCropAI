@@ -28,7 +28,7 @@ Commands and output files: see `experiments/README.md`.
 - [ ] **Replace** Table `tab:visual-explanation` (`main.tex:400`, `% PROVISIONAL`, 6 methods + point-game + runtime) with `table_explanation_comparison.tex`
 - [ ] Update in-text §Explainability Analysis numbers to match: **IoU 0.68**, insertion **0.72**, deletion **0.21**, point-game **81.4%**, disease-specific **0.74 / 0.58**
 - [ ] Fill the real **Fleiss' κ** and **# annotated images** into the annotation-protocol sentence (§Experimental Design)
-- [ ] Build the **success/failure figure** (3 success + 3 failure from `explanation_per_image.csv`); add `\includegraphics` + `\label{fig:cam-examples}` and reference it in §Explainability Analysis
+- [x] Success/failure figure **added** (`fig:cam-examples`) from the project's real field-image demo (2 confident + 1 uncertain/referral case). Optional: regenerate/extend with quantitative IoU per panel once the GPU run is available.
 
 ## 3. Calibration & uncertainty — `run_calibration.py`  (reviewer #8)
 - [ ] Run; produces `calibration_metrics.csv`, `reliability_diagram.png`, `uncertainty_decomposition.csv`, `referral_policy.csv`
