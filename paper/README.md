@@ -1,104 +1,52 @@
-# ExplainableCropAI - Springer Nature (SN) Article Format
+# ExplainableCropAI — manuscript (The Visual Computer, Springer Nature)
 
-This folder contains the ExplainableCropAI paper converted to Springer Nature article template format.
+LaTeX sources for the paper *"ExplainableCropAI: Interpretable Deep Learning for
+Agricultural Disease Detection and Decision Support"*, submitted to **The Visual
+Computer** (Springer Nature, `sn-jnl.cls`). **Status: major revision in progress.**
 
 ## Contents
 
-- `main.tex` - Main LaTeX document in SN format
-- `references.bib` - Bibliography file
-- `sn-jnl.cls` - Springer Nature journal class file
-- `bst/` - Bibliography style files directory
-- `paper/figures/` - All figures in PDF format
+| File | Purpose |
+|------|---------|
+| `main.tex` | Main manuscript (single-file, SN `sn-mathphys-num` style) |
+| `references.bib` | Bibliography |
+| `sn-jnl.cls`, `bst/` | Springer Nature class + bibliography styles |
+| `figures/` | All figures (PDF + PNG) — referenced from `main.tex` as `figures/...` |
+| `Revisionfeedback.md` | Reviewer/editor feedback (points #6–#16 + 3 required questions) |
+| `RESPONSE_TO_REVIEWERS.md` | Point-by-point response letter for resubmission |
+| `REVISION_RESPONSE_TRACKER.md` | Per-point action tracker / status |
+| `PUBLICATION_CHECKLIST.md` | Pre-submission checklist |
 
-## Key Changes from MDPI Format
+## Compiling
 
-1. **Document Class**: Changed from `\documentclass[agriculture,article,submit,pdftex,moreauthors]{Definitions/mdpi}` to `\documentclass[pdflatex,sn-mathphys-num]{sn-jnl}`
+```bash
+cd paper
+pdflatex main.tex     # 1st pass — generates .aux
+bibtex main           # process bibliography (needs bst/ + .bst in dir)
+pdflatex main.tex     # 2nd pass — include bibliography
+pdflatex main.tex     # 3rd pass — resolve cross-references
+```
 
-2. **Author Format**: Converted from MDPI's format to SN's structured format:
-   - Uses `\fnm{}` for first name and `\sur{}` for surname
-   - Affiliations use `\affil[]{}` with structured fields (`\orgdiv`, `\orgname`, `\orgaddress`, etc.)
+Confirm **zero undefined references** before submitting (grep the `.log` for
+`undefined` / `??`). Overleaf: upload the whole `paper/` folder including `bst/` and
+`figures/`. VS Code: LaTeX Workshop "Build LaTeX project".
 
-3. **Abstract**: Simplified to unstructured format (SN template supports both structured and unstructured)
+## Reference style
 
-4. **Keywords**: Changed from `\keyword{}` to `\keywords{}`
+`sn-mathphys-num` (Math & Physical Sciences, numbered). To change, edit the document
+class option in `main.tex` (e.g. `sn-basic`, `sn-vancouver-num`, `sn-mathphys-ay`).
 
-5. **Section Labels**: Added descriptive labels to all sections for better cross-referencing
+## Revision notes (current round)
 
-6. **Tables**: Updated to use SN's preferred format with `\toprule`, `\midrule`, and `\botrule` from booktabs
-
-7. **Declarations Section**: Added comprehensive declarations section at the end with:
-   - Funding
-   - Conflict of interest
-   - Ethics approval
-   - Consent to participate
-   - Consent for publication
-   - Data availability
-   - Code availability
-   - Author contribution
-   - Acknowledgements
-
-8. **Bibliography**: Uses `\bibliography{references}` instead of MDPI's `\externalbibliography` approach
-
-9. **Figure Paths**: Updated figure paths to use relative paths (`../paper/figures/`)
-
-## Compilation Instructions
-
-**IMPORTANT**: All `.bst` bibliography style files have been copied to the main directory to ensure BibTeX can find them. This is required for the references to compile correctly.
-
-To compile the document:
-
-1. **Using pdfLaTeX** (recommended):
-   ```bash
-   cd c:\Users\raysk\projects\mtech\ExplainableCropAI\sn-format
-   pdflatex main.tex    # First pass - generates .aux file
-   bibtex main          # Process bibliography (requires .bst files in current dir)
-   pdflatex main.tex    # Second pass - include bibliography
-   pdflatex main.tex    # Third pass - resolve all references
-   ```
-
-2. **Using LaTeX Workshop in VS Code**:
-   - Open `main.tex`
-   - Use the "Build LaTeX project" command (Ctrl+Alt+B on Windows/Linux)
-
-3. **Using Overleaf**:
-   - Upload all files to Overleaf
-   - The document should compile automatically
-   - Make sure to upload the entire folder structure including `bst/` and `paper/figures/`
-
-## Reference Style
-
-The document uses `sn-mathphys-num` style which is:
-- **Math and Physical Sciences Numbered Reference Style**
-- Numbered citations in the text
-- Suitable for computer science and engineering journals
-
-If you need a different reference style, change the document class option:
-- `sn-basic` - Basic Springer Nature Reference Style
-- `sn-nature` - Nature Portfolio journals
-- `sn-mathphys-ay` - Math and Physical Sciences Author Year
-- `sn-aps` - American Physical Society
-- `sn-vancouver-num` - Vancouver Numbered
-- `sn-chicago` - Chicago-based Humanities
-
-## Notes
-
-- All content from the original MDPI format has been preserved
-- Mathematical equations, algorithms, and code listings are compatible with the SN template
-- Figure and table formatting follows SN guidelines
-- The paper structure (Introduction, Materials and Methods, Results, Discussion, Conclusion) is maintained
-
-## Troubleshooting
-
-If you encounter compilation errors:
-
-1. **Missing figures**: Ensure the `paper/figures/` directory contains all PDF figures
-2. **Bibliography errors**: Run `bibtex` after the first `pdflatex` compilation
-3. **Class file errors**: Ensure `sn-jnl.cls` and the `bst/` directory are in the same folder as `main.tex`
-4. **Package conflicts**: The template includes all necessary packages; avoid adding conflicting packages
+- Backbone/results updated to **ConvNeXt V2-Tiny, 91.3%** (ResNet50/85.2% is a baseline).
+- Dataset table corrected to the **official Paddy Doctor distribution**; class
+  **Bacterial Panicle Blight** (not "Bacterial Sheath Rot").
+- New tables (6-method explanation comparison, baselines, ablation, per-split counts)
+  carry **provisional numbers** marked `% PROVISIONAL` — replace with the outputs of
+  `../experiments/*.py` before submission.
+- Reproducibility, calibration, and uncertainty additions per reviewer points #6–#15.
 
 ## Contact
 
-For questions about the paper content, contact:
-- **Corresponding Author**: Sumit Kumar (sumitkumar@sitpune.edu.in)
-
-For template-related issues, refer to the [Springer Nature LaTeX template documentation](https://www.springernature.com/gp/authors/campaigns/latex-author-support).
+Corresponding author: **Sumit Kumar** — `er.sumitkumar21@gmail.com` —
+Symbiosis Institute of Technology, Symbiosis International (Deemed University), Pune.
