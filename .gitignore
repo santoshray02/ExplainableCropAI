@@ -30,9 +30,7 @@ runs/
 
 # ── Local tooling / agent artifacts (DO NOT publish) ─────
 .claude/
-.claude-flow/
 memory/
-vectors.db
 
 # ── OS / editor cruft ────────────────────────────────────
 .DS_Store
