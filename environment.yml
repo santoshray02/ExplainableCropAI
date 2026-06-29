@@ -1,0 +1,38 @@
+# Conda environment for ExplainableCropAI.
+# Mirrors requirements.txt. Create with:  conda env create -f environment.yml
+# Then:  conda activate explainablecropai
+name: explainablecropai
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.10
+  - pip
+  - pip:
+      # Core deep learning
+      - torch>=2.0.0
+      - torchvision>=0.15.0
+      - timm>=0.9.0            # ConvNeXt V2
+      # LLM support (Phi-3-mini)
+      - transformers>=4.36.0
+      - accelerate>=0.25.0
+      - bitsandbytes>=0.41.0   # 4-bit quantization
+      # Data processing
+      - numpy>=1.24.0
+      - pandas>=2.0.0
+      - scipy>=1.10.0
+      # Visualization
+      - matplotlib>=3.7.0
+      - seaborn>=0.12.0
+      - Pillow>=10.0.0
+      - opencv-python>=4.8.0
+      # Classical ML baselines
+      - scikit-learn>=1.3.0
+      # Explanation / NLG metrics & near-duplicate dedup
+      - imagehash>=4.3.1       # perceptual-hash dedup in experiments/create_splits.py
+      - nltk>=3.8.1            # BLEU / ROUGE scoring
+      # Utilities
+      - tqdm>=4.65.0
+      # Jupyter
+      - ipykernel>=6.25.0
+      - notebook>=7.0.0

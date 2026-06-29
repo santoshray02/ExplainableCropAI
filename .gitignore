@@ -49,3 +49,10 @@ paper/*.synctex.gz
 paper/*.fls
 paper/*.fdb_latexmk
 paper/*.toc
+
+# ── Internal / not for public release ────────────────────
+CLAUDE.md
+docs/
+paper/REVISION_RESPONSE_TRACKER.md
+paper/RESPONSE_TO_REVIEWERS*
+*.docx

@@ -1,0 +1,30 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite the associated paper and this archived release."
+title: "ExplainableCropAI: Interpretable Deep Learning for Agricultural Disease Detection and Decision Support"
+abstract: >-
+  Code and reproducibility artifacts for ExplainableCropAI: a ConvNeXt V2-Tiny
+  paddy-disease classifier coupled with Grad-CAM++ visual explanations, Monte
+  Carlo Dropout uncertainty estimation, and grounded LLM-based natural-language
+  explanations. Includes the model, explainers, uncertainty and recommendation
+  modules, and the reproducible experiment scripts (leakage-controlled splits,
+  explanation-method comparison, calibration, baselines/ablation). The Paddy
+  Doctor dataset images are NOT redistributed here (per their license); only
+  split/preprocessing/evaluation scripts and small sample files are included.
+authors:
+  - family-names: Kumar
+    given-names: Santosh
+  - family-names: Nandan
+    given-names: Durgesh
+  - family-names: Kumar
+    given-names: Sumit
+version: "1.0.0"
+date-released: "2026-06-29"
+license: MIT
+doi: 10.5281/zenodo.21030215
+repository-code: "https://github.com/santoshray02/ExplainableCropAI"
+keywords:
+  - explainable AI
+  - crop disease detection
+  - Grad-CAM++
+  - uncertainty quantification
+  - ConvNeXt V2

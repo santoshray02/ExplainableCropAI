@@ -198,8 +198,8 @@ def run_ablation(args, device):
     base_acc = df.iloc[0]['accuracy']
     df['delta_acc'] = df['accuracy'] - base_acc
     df.to_csv(os.path.join(args.output_dir, 'ablation.csv'), index=False)
-    print("\n=== Ablation (note: NLG & recommendation are scored on their own "
-          "metrics in run_explanation_comparison / user study, not accuracy) ===")
+    print("\n=== Ablation (note: NLG & recommendation are evaluated on their own "
+          "metrics in run_explanation_comparison, not classification accuracy) ===")
     print(df.to_string(index=False))
 
 

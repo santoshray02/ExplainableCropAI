@@ -20,8 +20,7 @@ This directory contains the implementation of the ExplainableCropAI system.
   - `treatment_db.py` - Database of treatments for different diseases
   - `recommendation_engine.py` - Logic for generating context-aware recommendations
 - `evaluation/` - Evaluation metrics and tools
-  - `explanation_metrics.py` - Metrics for evaluating explanation quality
-  - `user_study.py` - Tools for user study data collection and analysis
+  - `explanation_metrics.py` - Metrics for evaluating explanation quality (insertion/deletion faithfulness, runtime)
 - `visualization/` - Visualization tools for explanations
   - `heatmap_visualizer.py` - Tools for visualizing attention heatmaps
   - `dashboard.py` - Interactive dashboard for explanation exploration
