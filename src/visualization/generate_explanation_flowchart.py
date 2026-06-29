@@ -51,7 +51,7 @@ COLORS = {
 
 # Component drawing helpers ---------------------------------------------------
 def draw_box(x, y, w, h, fill, title, description=None,
-             novel=False, title_size=10, desc_size=8.5):
+             novel=False, title_size=13, desc_size=11):
     """Draw a titled rounded box. Novel components get a red double border."""
     edge_color = COLORS["novel_border"] if novel else "#455A64"
     line_w = 2.2 if novel else 1.2
@@ -128,7 +128,7 @@ def draw_arrow(p1, p2, label=None, rad=0.0, label_offset=(0, 0)):
         mx = (p1[0] + p2[0]) / 2 + label_offset[0]
         my = (p1[1] + p2[1]) / 2 + label_offset[1]
         ax.text(mx, my, label, ha="center", va="center",
-                fontsize=7.5, style="italic", color="#37474F",
+                fontsize=9.5, style="italic", color="#37474F",
                 bbox=dict(facecolor="white", edgecolor="none",
                           alpha=0.95, pad=1.5), zorder=8)
 
@@ -184,8 +184,9 @@ draw_box(kb_x, kb_y, kb_w, kb_h, COLORS["kb"], "Knowledge Base",
 # =============================================================================
 draw_box(8, 10, 38, 14, COLORS["output"], "Decision Support Output",
          ["Three synchronised channels:",
-          "  prediction + confidence  │  visual explanation  │  NL explanation + recommendations"],
-         desc_size=8)
+          "prediction + confidence  │  visual explanation",
+          "│  NL explanation + recommendations"],
+         desc_size=9.5)
 
 draw_box(56, 12, 16, 10, COLORS["outchannel"], "End User / Mobile App",
          ["Farmer or", "extension officer"])
@@ -229,7 +230,7 @@ draw_arrow((46, 17), (56, 17), "Deployed insights")
 # Title (no decorative subtitle inside canvas)
 # =============================================================================
 ax.text(40, 97, "ExplainableCropAI: Multi-level Explanation Process",
-        ha="center", va="center", fontsize=15,
+        ha="center", va="center", fontsize=17,
         fontweight="bold", color="#1A237E")
 
 # =============================================================================
@@ -243,7 +244,7 @@ ax.add_patch(FancyBboxPatch(
     facecolor="white", edgecolor="#90A4AE", linewidth=0.8, zorder=1,
 ))
 ax.text(legend_x + legend_w / 2, legend_y - 2.5, "Components",
-        ha="center", va="center", fontsize=10,
+        ha="center", va="center", fontsize=12,
         fontweight="bold", color=COLORS["text"])
 
 legend_items = [
@@ -263,7 +264,7 @@ for i, (label, fill) in enumerate(legend_items):
         facecolor=fill, edgecolor="#90A4AE", linewidth=0.7, zorder=2,
     ))
     ax.text(legend_x + 6, yy, label,
-            ha="left", va="center", fontsize=8,
+            ha="left", va="center", fontsize=11,
             color=COLORS["text"], zorder=3)
 
 # Novel-marker entry

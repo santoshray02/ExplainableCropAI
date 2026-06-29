@@ -211,8 +211,8 @@ Development and training were performed on a deep learning workstation with an N
         \node[novellabel, anchor=south east] at ([yshift=2pt]llm.north east) {NOVEL 3};
 
         % ===== SIDE: Recommender and KB (aligned with LLM) =====
-        \node[recommender, right=2.2cm of llm] (recommender) {\textbf{Recommendation Engine}\\{\footnotesize Context-aware advice}};
-        \node[kbstyle, right=1.1cm of recommender] (kb) {Agronomic\\Knowledge\\Base};
+        \node[recommender, right=2.2cm of llm] (recommender) {\textbf{Recommendation}\\\textbf{Engine}\\{\footnotesize Context-aware advice}};
+        \node[kbstyle, right=2.0cm of recommender] (kb) {Agronomic\\Knowledge\\Base};
 
         % ===== OUTPUT (horizontal three-channel fan) =====
         \node[output, below=1.4cm of llm] (output) {\textbf{Comprehensive Output}};
@@ -265,7 +265,7 @@ Development and training were performed on a deep learning workstation with an N
 % Explanation Process Flowchart Figure
 \begin{figure}[t!]
     \centering
-    \includegraphics[width=0.85\textwidth]{figures/explanation_flowchart.pdf}
+    \includegraphics[width=\textwidth]{figures/explanation_flowchart.pdf}
     \caption{End-to-end explanation process in ExplainableCropAI. The flowchart illustrates the integration of visual evidence, uncertainty information, and domain knowledge to provide comprehensive decision support for agricultural stakeholders.}
     \label{fig:explanation-flowchart}
 \end{figure}
