@@ -154,17 +154,24 @@ def run_baselines(args, device):
     rows = []
     for bb in args.backbones:
         print(f"\n=== Baseline: {bb} ===")
-        set_seed(args.seed)
-        model = build_model(bb, args.num_classes, drop_rate=0.3, pretrained=True)
-        params = count_params(model)
-        model = train_one(model, train_loader, val_loader, device, args.epochs, args.lr)
-        test = evaluate(model, test_loader, device)
-        lat = measure_latency(model, device, args.input_size)
-        rows.append({'backbone': bb, 'params_M': round(params, 1),
-                     'latency_ms': round(lat, 2), **test})
-        torch.save({'model_state_dict': model.state_dict(), 'config': {'backbone': bb}},
-                   os.path.join(args.output_dir, f'baseline_{bb}.pth'))
-        print(f"  test: {test}")
+        try:
+            set_seed(args.seed)
+            model = build_model(bb, args.num_classes, drop_rate=0.3, pretrained=True)
+            params = count_params(model)
+            model = train_one(model, train_loader, val_loader, device, args.epochs, args.lr)
+            test = evaluate(model, test_loader, device)
+            lat = measure_latency(model, device, args.input_size)
+            rows.append({'backbone': bb, 'params_M': round(params, 1),
+                         'latency_ms': round(lat, 2), **test})
+            torch.save({'model_state_dict': model.state_dict(), 'config': {'backbone': bb}},
+                       os.path.join(args.output_dir, f'baseline_{bb}.pth'))
+            print(f"  test: {test}")
+            # incremental save so a later failure never loses earlier results
+            pd.DataFrame(rows).sort_values('accuracy', ascending=False).to_csv(
+                os.path.join(args.output_dir, 'baselines.csv'), index=False)
+        except Exception as e:
+            print(f"  [SKIP] {bb} failed: {e}")
+            continue
 
     df = pd.DataFrame(rows).sort_values('accuracy', ascending=False)
     df.to_csv(os.path.join(args.output_dir, 'baselines.csv'), index=False)

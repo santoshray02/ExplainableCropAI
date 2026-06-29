@@ -110,35 +110,24 @@ def build_model(backbone: str = 'convnextv2_tiny', num_classes: int = 10,
 
 
 class _TimmClassifier(nn.Module):
-    """Minimal timm wrapper that mirrors the project's forward contract.
+    """Minimal timm wrapper for the additional baselines (#11).
 
-    Used for the additional baselines requested in reviewer point #11
-    (lightweight + fine-grained vision models).
+    Uses timm's native classifier head, which is correct across all
+    architectures -- including VGG-style models that have a pre-logits MLP
+    (where ``forward_features`` channels != ``num_features``). Returns
+    ``(logits, extras)`` to honour the project's forward contract; the
+    baselines only consume the logits.
     """
 
     def __init__(self, backbone: str, num_classes: int, drop_rate: float, pretrained: bool):
         super().__init__()
         import timm
-        self.backbone = timm.create_model(
-            backbone, pretrained=pretrained, num_classes=0, drop_rate=drop_rate)
-        self.global_pool = nn.AdaptiveAvgPool2d(1)
-        feat = self.backbone.num_features
-        self.classifier = nn.Sequential(
-            nn.Dropout(p=drop_rate) if drop_rate > 0 else nn.Identity(),
-            nn.Linear(feat, num_classes),
-        )
-        self.activations = None
-        self.gradients = None
+        self.model = timm.create_model(
+            backbone, pretrained=pretrained, num_classes=num_classes, drop_rate=drop_rate)
 
     def forward(self, x):
-        feats = self.backbone.forward_features(x)
-        if feats.dim() == 4:
-            self.activations = feats
-            pooled = self.global_pool(feats).flatten(1)
-        else:
-            pooled = feats
-        logits = self.classifier(pooled)
-        return logits, {'activations': self.activations, 'features': pooled}
+        logits = self.model(x)
+        return logits, {}
 
 
 def load_checkpoint(model: nn.Module, checkpoint_path: str, device: torch.device) -> nn.Module:
@@ -163,10 +152,25 @@ def load_checkpoint(model: nn.Module, checkpoint_path: str, device: torch.device
     return model
 
 
+def _paddy_collate(batch):
+    """Collate that keeps image/label tensors and path/class_name as lists,
+    dropping the PIL 'original_image' field returned by PaddyDiseaseDataset
+    (not needed for training/eval and not collatable by torch.default_collate)."""
+    return {
+        'image': torch.stack([b['image'] for b in batch]),
+        'label': torch.stack([b['label'] for b in batch]),
+        'path': [b['path'] for b in batch],
+        'class_name': [b['class_name'] for b in batch],
+    }
+
+
 def build_loader(csv_file: str, split: str, batch_size: int = 32,
                  num_workers: int = 4, input_size: int = 224, shuffle: bool = False):
     """Return a DataLoader for one split of a splits.csv produced by
     experiments/create_splits.py (columns: image_path,label,split).
+
+    The train split gets augmentation transforms; val/test get deterministic
+    resize/center-crop.
     """
     import pandas as pd
     from torch.utils.data import DataLoader
@@ -177,8 +181,10 @@ def build_loader(csv_file: str, split: str, batch_size: int = 32,
         df = df[df['split'] == split]
     tmp = csv_file.replace('.csv', f'_{split}.csv')
     df.to_csv(tmp, index=False)
-    ds = PaddyDiseaseDataset(csv_file=tmp, transform=get_transforms('test', input_size), mode=split)
-    return DataLoader(ds, batch_size=batch_size, shuffle=shuffle, num_workers=num_workers)
+    tf_mode = 'train' if split == 'train' else 'test'
+    ds = PaddyDiseaseDataset(csv_file=tmp, transform=get_transforms(tf_mode, input_size), mode=split)
+    return DataLoader(ds, batch_size=batch_size, shuffle=shuffle, num_workers=num_workers,
+                      collate_fn=_paddy_collate)
 
 
 def common_args(description: str) -> argparse.ArgumentParser:
