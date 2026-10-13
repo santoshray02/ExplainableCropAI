@@ -91,8 +91,9 @@ python src/visualization/generate_gradcam_examples.py
 ## Trained weights
 
 The ConvNeXt V2-Tiny checkpoint that produces every number in the paper is attached to the
-GitHub release `v1.1` as `convnextv2_tiny_paddy_doctor.pth`
-(111 MB, SHA-256 `cd0f3da78674441fc0475594f8732a89c68d991bbee5a4477eaceec2eda15d1f`)
+GitHub release `v1.1` as `convnextv2_tiny_paddy_doctor.zip` (103 MB), which unpacks to
+`convnextv2_tiny_paddy_doctor.pth`
+(111 MB, SHA-256 `cd0f3da78674441fc0475594f8732a89c68d991bbee5a4477eaceec2eda15d1f`),
 and archived on Zenodo under the DOI above. To load it:
 
 ```python
