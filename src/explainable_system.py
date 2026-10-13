@@ -367,37 +367,114 @@ class ExplainableCropAI:
 
         return result
     
+    # Knowledge-base symptom vocabulary per class. These are the typed symptom
+    # terms the language model may use; they come from the knowledge base, not
+    # from the image.
+    KB_SYMPTOMS = {
+        "Bacterial Leaf Blight": ["leaf_lesions", "leaf_discoloration", "wavy_margins"],
+        "Brown Spot": ["leaf_spots", "leaf_discoloration"],
+        "Leaf Blast": ["leaf_lesions", "diamond_shaped"],
+        "Bacterial Leaf Streak": ["leaf_lesions", "leaf_discoloration"],
+        "Bacterial Panicle Blight": ["leaf_discoloration", "necrosis"],
+        "Tungro": ["leaf_discoloration", "chlorosis", "stunted_growth"],
+        "Hispa": ["leaf_lesions", "necrosis"],
+        "Dead Heart": ["wilting", "necrosis"],
+        "Downy Mildew": ["white_powder", "chlorosis"],
+        "Healthy": []
+    }
+
+    _GRID_NAMES = ["top-left", "top-centre", "top-right",
+                   "middle-left", "centre", "middle-right",
+                   "bottom-left", "bottom-centre", "bottom-right"]
+
+    def _cam_descriptors(self, cam, threshold=0.5):
+        """
+        Reduce an attribution map to three typed descriptors.
+
+        The language model never sees the image or the raw map; it receives
+        only these quantities, so that any spatial statement in the generated
+        text can be traced back to a computed value.
+
+        Returns:
+            dict with keys
+              dominant_region  - names of the 3x3 grid cells that together hold
+                                 at least half of the attribution mass
+              coverage         - fraction of the image above `threshold`
+              multiplicity     - number of connected components above `threshold`
+        """
+        cam = np.asarray(cam, dtype=np.float32)
+        if cam.ndim != 2 or cam.size == 0:
+            return {"dominant_region": [], "coverage": 0.0, "multiplicity": 0}
+        cam = cam - cam.min()
+        if cam.max() > 0:
+            cam = cam / cam.max()
+
+        # (a) dominant region on a 3x3 grid
+        h, w = cam.shape
+        hs = [0, h // 3, 2 * h // 3, h]
+        ws = [0, w // 3, 2 * w // 3, w]
+        mass = []
+        for i in range(3):
+            for j in range(3):
+                mass.append(float(cam[hs[i]:hs[i + 1], ws[j]:ws[j + 1]].sum()))
+        total = sum(mass)
+        dominant = []
+        if total > 0:
+            acc = 0.0
+            for idx in sorted(range(9), key=lambda k: -mass[k]):
+                dominant.append(self._GRID_NAMES[idx])
+                acc += mass[idx]
+                if acc >= 0.5 * total:
+                    break
+
+        # (b) coverage
+        binary = cam > threshold
+        coverage = float(binary.mean())
+
+        # (c) multiplicity: 4-connected components of the thresholded map
+        visited = np.zeros_like(binary, dtype=bool)
+        components = 0
+        for sy in range(h):
+            for sx in range(w):
+                if binary[sy, sx] and not visited[sy, sx]:
+                    components += 1
+                    stack = [(sy, sx)]
+                    visited[sy, sx] = True
+                    while stack:
+                        y, x = stack.pop()
+                        for ny, nx in ((y - 1, x), (y + 1, x), (y, x - 1), (y, x + 1)):
+                            if 0 <= ny < h and 0 <= nx < w and binary[ny, nx] and not visited[ny, nx]:
+                                visited[ny, nx] = True
+                                stack.append((ny, nx))
+
+        return {"dominant_region": dominant, "coverage": coverage, "multiplicity": components}
+
     def _extract_visual_features(self, visual_explanation, disease_name):
         """
-        Extract visual features from explanation based on disease.
-        
+        Build the typed visual-evidence fields passed to the language model.
+
         Args:
-            visual_explanation (dict): Visual explanation from Grad-CAM
-            disease_name (str): Predicted disease name
-            
+            visual_explanation (dict): Visual explanation containing the
+                attribution map under the key 'cam'.
+            disease_name (str): Predicted disease name.
+
         Returns:
-            list: Detected visual features
+            list: Human-readable descriptor strings (three computed from the
+                  attribution map, followed by the knowledge-base symptom terms
+                  for the predicted class).
         """
-        # This is a placeholder implementation
-        # In a real system, this would analyze the activation maps
-        # and map them to domain-specific visual features
-        
-        # Simple mapping based on disease name (covers all 10 dataset classes).
-        feature_mapping = {
-            "Bacterial Leaf Blight": ["leaf_lesions", "leaf_discoloration", "wavy_margins"],
-            "Brown Spot": ["leaf_spots", "leaf_discoloration"],
-            "Leaf Blast": ["leaf_lesions", "diamond_shaped"],
-            "Bacterial Leaf Streak": ["leaf_lesions", "leaf_discoloration"],
-            "Bacterial Panicle Blight": ["leaf_discoloration", "necrosis"],
-            "Tungro": ["leaf_discoloration", "chlorosis", "stunted_growth"],
-            "Hispa": ["leaf_lesions", "necrosis"],
-            "Dead Heart": ["wilting", "necrosis"],
-            "Downy Mildew": ["white_powder", "chlorosis"],
-            "Healthy": []
-        }
-        
-        # Return mapped features or empty list
-        return feature_mapping.get(disease_name, ["leaf_discoloration"])
+        features = []
+        cam = visual_explanation.get('cam') if isinstance(visual_explanation, dict) else None
+        if cam is not None:
+            d = self._cam_descriptors(cam)
+            if d["dominant_region"]:
+                features.append("attribution concentrated in: " + ", ".join(d["dominant_region"]))
+            features.append("attribution coverage: {:.0f}% of the image".format(100.0 * d["coverage"]))
+            features.append("distinct attributed regions: {}".format(d["multiplicity"]))
+            visual_explanation['descriptors'] = d
+
+        features.extend(self.KB_SYMPTOMS.get(disease_name, ["leaf_discoloration"]))
+        return features
     
     def _estimate_affected_area(self, visual_explanation):
         """

@@ -1,6 +1,6 @@
 # ExplainableCropAI
 
-**Interpretable Deep Learning for Agricultural Disease Detection and Decision Support**
+**Interpretable Deep Learning for Agricultural Disease Diagnosis and Decision Support**
 
 [![GitHub Repository](https://img.shields.io/badge/GitHub-ExplainableCropAI-blue)](https://github.com/santoshray02/ExplainableCropAI)
 
@@ -10,8 +10,9 @@ produces three complementary explanations: a **Grad-CAM++ visual heatmap**, a
 natural-language explanation** grounded in a curated treatment knowledge base. It is the
 reference implementation for the paper submitted to *The Visual Computer* (Springer Nature).
 
-> **Status:** under major revision. Some experimental numbers in the paper are being
-> finalised from the scripts in [`experiments/`](experiments/README.md). See
+> **Status:** revised manuscript under review. Every number in the paper is produced by the
+> scripts in [`experiments/`](experiments/README.md); their outputs (split files, per-image
+> predictions, metric tables) are committed under `experiments/outputs/`. See
 > [Reproducing the results](#reproducing-the-results-paper-tables).
 
 ## Key features
@@ -55,7 +56,6 @@ ExplainableCropAI/
 │   └── explainable_system.py        # ExplainableCropAI — unified interface
 ├── experiments/                     # reproducible scripts for the paper tables (see its README)
 ├── notebooks/system_demo.ipynb      # end-to-end demo
-├── paper/                           # LaTeX manuscript (sn-jnl.cls) + response docs
 └── requirements.txt
 ```
 
@@ -100,6 +100,13 @@ consume its `splits.csv`:
 | `run_explanation_comparison.py` | #7 | 6-method attribution comparison table |
 | `run_calibration.py` | #8 | ECE/MCE/Brier + reliability diagram |
 | `run_baselines_ablation.py` | #11 | baselines and ablation tables |
+| `run_eval.py` | — | headline metrics, per-class metrics, confusion matrix, per-image predictions |
+| `run_confidence_intervals.py` | R1.4, R1.6 | bootstrap 95% CIs, confidence bands, referral curve |
+| `run_baseline_eval.py` | R1.4, R2.19 | per-model ECE / Brier / AUROC and exact McNemar tests vs. ConvNeXt V2-Tiny |
+| `run_uncertainty_error.py` | R2.10, R2.11 | MC-Dropout entropy / mutual information vs. error; CIs for ECE, Brier, referral |
+| `run_robustness.py` | R2.17, R2.19 | 8 corruptions × 5 severities for all seven models |
+| `run_background_test.py` | R2.9 | background-replacement / leaf-removal test |
+| `run_external_eval.py`, `run_external_finetune.py` | R2.6 | zero-shot and few-shot evaluation on RiceLeafBD and Sethy et al. |
 
 See `experiments/README.md` for exact commands and the output→paper mapping.
 
@@ -112,21 +119,14 @@ agreement is low, the system surfaces an explicit **"consult an agricultural exp
 referral and does not assert firm treatment advice. Pesticide/chemical guidance should be
 verified against local agricultural-extension recommendations before field use.
 
-## Compiling the paper
-
-```bash
-cd paper
-pdflatex main.tex && bibtex main && pdflatex main.tex && pdflatex main.tex
-```
-
 ## Citation
 
-A DOI-archived release (Zenodo) will accompany the published paper. Until then:
+The code and result files are archived at Zenodo, DOI [10.5281/zenodo.21030215](https://doi.org/10.5281/zenodo.21030215). To cite the paper:
 
 ```bibtex
 @article{explainablecropai2026,
   title   = {ExplainableCropAI: Interpretable Deep Learning for Agricultural
-             Disease Detection and Decision Support},
+             Disease Diagnosis and Decision Support},
   author  = {Kumar, Santosh and Kumar, Sumit and Nandan, Durgesh},
   journal = {The Visual Computer (under review)},
   year    = {2026},

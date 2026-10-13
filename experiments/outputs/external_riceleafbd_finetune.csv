@@ -1,0 +1,8 @@
+dataset,init,shots_per_class,n_train,n_test,accuracy,acc_ci_lo,acc_ci_hi,macro_f1,f1_ci_lo,f1_ci_hi,recall_bacterial_leaf_blight,recall_brown_spot,recall_normal,recall_tungro
+riceleafbd,paddy,0,0,780,47.7,44.2,51.2,47.3,43.9,50.6,19.4,74.7,63.5,44.5
+riceleafbd,paddy,5,20,780,75.6,72.6,78.5,77.5,74.7,80.1,85.8,87.6,92.9,51.3
+riceleafbd,paddy,10,40,780,83.6,80.8,86.0,84.7,82.2,87.0,72.5,89.3,97.6,81.9
+riceleafbd,paddy,25,100,780,87.9,85.5,90.1,89.2,87.1,91.3,86.3,96.6,98.4,78.5
+riceleafbd,paddy,50,200,780,92.2,90.3,94.0,92.8,91.1,94.4,82.9,97.8,99.2,92.5
+riceleafbd,paddy,all,780,780,95.8,94.4,97.1,96.4,95.1,97.5,95.7,97.2,100.0,92.8
+riceleafbd,imagenet,all,780,780,95.8,94.2,97.2,96.4,95.1,97.6,94.3,97.2,100.0,94.0

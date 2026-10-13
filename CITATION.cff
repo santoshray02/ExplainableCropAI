@@ -1,6 +1,6 @@
 cff-version: 1.2.0
 message: "If you use this software, please cite the associated paper and this archived release."
-title: "ExplainableCropAI: Interpretable Deep Learning for Agricultural Disease Detection and Decision Support"
+title: "ExplainableCropAI: Interpretable Deep Learning for Agricultural Disease Diagnosis and Decision Support"
 abstract: >-
   Code and reproducibility artifacts for ExplainableCropAI: a ConvNeXt V2-Tiny
   paddy-disease classifier coupled with Grad-CAM++ visual explanations, Monte

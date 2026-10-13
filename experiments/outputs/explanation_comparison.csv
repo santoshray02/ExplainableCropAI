@@ -1,0 +1,7 @@
+method,name,n,insertion,deletion,runtime_s
+gradcam,Grad-CAM,30,0.885,0.558,0.09
+gradcampp,Grad-CAM++,30,0.886,0.561,0.05
+layercam,LayerCAM,30,0.887,0.559,0.05
+ig,Integrated Gradients,30,0.833,0.648,0.23
+lime,LIME,30,0.831,0.5,15.9
+shap,SHAP,30,0.842,0.658,14.12

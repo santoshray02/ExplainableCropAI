@@ -1,0 +1,9 @@
+{
+  "accuracy": 97.5,
+  "macro_precision": 97.2,
+  "macro_recall": 96.6,
+  "macro_f1": 96.9,
+  "top2_accuracy": 99.5,
+  "top3_accuracy": 99.7,
+  "n_test": 1540
+}

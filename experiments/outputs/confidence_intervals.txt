@@ -1,0 +1,25 @@
+n=1540 acc=97.47 CI95 96.69-98.25
+macroF1=96.89 CI95 95.73-97.92
+  bacterial_leaf_blight      n=  74 F1= 95.0 CI95  91.0- 98.5
+  bacterial_leaf_streak      n=  51 F1= 98.0 CI95  94.4-100.0
+  bacterial_panicle_blight   n=  49 F1= 97.0 CI95  93.0-100.0
+  blast                      n= 249 F1= 97.6 CI95  96.1- 98.8
+  brown_spot                 n= 142 F1= 97.9 CI95  96.1- 99.3
+  dead_heart                 n= 217 F1= 99.8 CI95  99.2-100.0
+  downy_mildew               n=  96 F1= 91.2 CI95  86.6- 95.0
+  hispa                      n= 245 F1= 98.4 CI95  97.2- 99.4
+  normal                     n= 266 F1= 98.3 CI95  97.0- 99.3
+  tungro                     n= 151 F1= 95.7 CI95  93.1- 98.0
+Wilson 95% CI acc: 96.56-98.14
+errors=39  AUROC(conf -> correct)=0.929
+mean conf correct=0.992  mean conf wrong=0.810
+  conf [0,0.5): n=   3 ( 0.2%) acc=  0.0
+  conf [0.5,0.7): n=  22 ( 1.4%) acc= 63.6
+  conf [0.7,0.9): n=  30 ( 1.9%) acc= 66.7
+  conf [0.9,0.99): n=  67 ( 4.4%) acc= 89.6
+  conf [0.99,1.01): n=1418 (92.1%) acc= 99.2
+  refer 5%: kept acc=99.04  errors captured=25/39
+  refer 10%: kept acc=99.35  errors captured=30/39
+  refer 20%: kept acc=99.51  errors captured=33/39
+  refer 30%: kept acc=99.81  errors captured=37/39
+top confusions: [(('bacterial_leaf_blight', 'tungro'), 5), (('blast', 'downy_mildew'), 4), (('downy_mildew', 'blast'), 3), (('tungro', 'hispa'), 3), (('bacterial_leaf_blight', 'downy_mildew'), 2), (('blast', 'hispa'), 2)]

@@ -1,0 +1,6 @@
+signal,accuracy,n_errors,auroc_error,auroc_ci_lo,auroc_ci_hi,mean_score_correct,mean_score_wrong
+softmax_conf_T (1-conf),97.47,39,0.929,0.89,0.964,0.0143,0.2468
+mc_mean_conf (1-conf),97.53,38,0.931,0.896,0.963,0.0093,0.2022
+mc_predictive_entropy,97.53,38,0.931,0.896,0.963,0.0274,0.4846
+mc_mutual_information,97.53,38,0.932,0.895,0.963,0.0024,0.0497
+mc_aleatoric_entropy,97.53,38,0.931,0.895,0.963,0.025,0.4349

@@ -1,0 +1,63 @@
+{
+  "dataset": "sethy",
+  "n": 5932,
+  "shared_classes": [
+    "bacterial_leaf_blight",
+    "blast",
+    "brown_spot",
+    "tungro"
+  ],
+  "checkpoint": "baseline_convnextv2_tiny.pth",
+  "closed_accuracy": 40.5,
+  "closed_accuracy_ci95": [
+    39.2,
+    41.7
+  ],
+  "closed_macro_f1": 42.2,
+  "closed_macro_f1_ci95": [
+    41.0,
+    43.5
+  ],
+  "closed_per_class_recall": {
+    "bacterial_leaf_blight": 24.6,
+    "blast": 60.3,
+    "brown_spot": 38.0,
+    "tungro": 40.7
+  },
+  "open_accuracy": 29.8,
+  "open_accuracy_ci95": [
+    28.7,
+    31.0
+  ],
+  "open_macro_f1": 35.4,
+  "open_macro_f1_ci95": [
+    34.2,
+    36.7
+  ],
+  "open_per_class_recall": {
+    "bacterial_leaf_blight": 11.8,
+    "blast": 42.3,
+    "brown_spot": 30.1,
+    "tungro": 37.6
+  },
+  "open_pred_distribution": {
+    "bacterial_leaf_blight": 377,
+    "bacterial_leaf_streak": 504,
+    "bacterial_panicle_blight": 230,
+    "blast": 2512,
+    "brown_spot": 885,
+    "dead_heart": 172,
+    "downy_mildew": 389,
+    "hispa": 275,
+    "normal": 44,
+    "tungro": 544
+  },
+  "referral_rate_conf<0.5": 14.6,
+  "accuracy_on_kept_conf>=0.5": 40.9,
+  "referral_rate_conf<0.7": 49.8,
+  "accuracy_on_kept_conf>=0.7": 41.1,
+  "referral_rate_conf<0.9": 80.8,
+  "accuracy_on_kept_conf>=0.9": 39.2,
+  "auroc_conf_vs_correct_closed": 0.51,
+  "mean_conf_closed": 0.707
+}

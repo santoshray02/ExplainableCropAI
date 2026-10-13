@@ -1,0 +1,2 @@
+temperature,ece,brier,acc_kept_10pct_referral,acc_kept_30pct_referral,ece_ci_lo,ece_ci_hi,brier_ci_lo,brier_ci_hi,acc_kept_10pct_referral_ci_lo,acc_kept_10pct_referral_ci_hi,acc_kept_30pct_referral_ci_lo,acc_kept_30pct_referral_ci_hi
+1.423,0.0074,0.0399,99.28,99.81,0.0062,0.0166,0.0298,0.0511,98.8456,99.7114,99.4434,100.0

@@ -1,0 +1,8 @@
+backbone,clean_accuracy,mean_corrupted_accuracy,mean_corruption_error,relative_drop_points,acc_brightness,acc_contrast,acc_gaussian_blur,acc_jpeg,acc_gaussian_noise,acc_rotation,acc_occlusion,acc_colour_temperature
+convnextv2_tiny,97.47,89.65,10.35,7.81,92.25,94.23,74.36,95.21,94.26,93.01,88.61,85.29
+resnet50,96.75,75.61,24.39,21.14,72.38,60.97,61.6,93.6,88.48,85.18,78.82,63.84
+vgg16,96.62,76.2,23.8,20.43,80.36,73.61,60.12,91.94,78.74,83.45,75.77,65.6
+efficientformer_l1,96.49,78.03,21.97,18.46,74.21,73.64,55.49,93.25,89.96,84.27,80.81,72.62
+mobilevit_s,95.58,74.57,25.43,21.01,73.97,65.19,65.95,91.16,74.73,83.68,74.39,67.53
+efficientnet_b0,95.52,72.42,27.58,23.1,65.96,52.61,55.12,91.53,88.45,78.31,75.45,71.94
+inception_v3,95.0,72.22,27.78,22.78,71.69,59.7,63.78,92.0,86.77,78.44,49.49,75.88

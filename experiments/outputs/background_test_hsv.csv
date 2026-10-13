@@ -1,0 +1,6 @@
+condition,n,accuracy,mean_confidence,agreement_with_original,referral_rate_conf<0.9
+original,178,96.63,0.969,100.0,7.87
+bg_grey,178,96.07,0.946,98.31,17.98
+bg_noise,178,92.7,0.935,94.94,17.98
+bg_swap,178,94.38,0.944,96.63,16.29
+fg_masked,178,30.34,0.347,32.02,98.31

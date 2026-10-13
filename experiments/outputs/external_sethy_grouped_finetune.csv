@@ -1,0 +1,12 @@
+dataset,init,shots_per_class,n_train,n_test,accuracy,acc_ci_lo,acc_ci_hi,macro_f1,f1_ci_lo,f1_ci_hi,recall_bacterial_leaf_blight,recall_blast,recall_brown_spot,recall_tungro
+sethy_grouped,paddy,0,0,2947,40.7,38.9,42.5,42.4,40.5,44.2,22.5,60.7,41.0,40.4
+sethy_grouped,paddy,5,20,2947,78.5,77.0,79.9,78.1,76.7,79.5,78.5,50.7,92.5,92.2
+sethy_grouped,paddy,10,40,2947,79.3,77.9,80.7,79.7,78.4,81.0,79.2,57.9,84.3,97.5
+sethy_grouped,paddy,25,100,2947,88.3,87.1,89.4,88.2,87.1,89.3,80.8,78.9,94.7,100.0
+sethy_grouped,paddy,50,200,2947,91.9,90.9,92.9,92.0,91.0,93.0,88.3,85.1,95.1,100.0
+sethy_grouped,paddy,all,2985,2947,99.6,99.4,99.8,99.6,99.4,99.8,100.0,98.5,100.0,100.0
+sethy_grouped,imagenet,5,20,2947,70.8,69.2,72.4,71.7,70.2,73.3,67.8,76.9,48.4,95.5
+sethy_grouped,imagenet,10,40,2947,84.8,83.5,86.0,85.2,83.9,86.4,84.2,80.6,77.0,100.0
+sethy_grouped,imagenet,25,100,2947,92.5,91.5,93.5,92.6,91.5,93.5,87.8,89.6,93.8,100.0
+sethy_grouped,imagenet,50,200,2947,96.9,96.2,97.5,97.0,96.3,97.5,98.6,92.8,96.4,100.0
+sethy_grouped,imagenet,all,2985,2947,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0

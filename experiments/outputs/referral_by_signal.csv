@@ -1,0 +1,26 @@
+signal,referral_rate,accuracy_on_kept,errors_captured,total_errors
+softmax_conf_T (1-conf),0.0,97.47,0,39
+softmax_conf_T (1-conf),0.05,99.04,25,39
+softmax_conf_T (1-conf),0.1,99.28,29,39
+softmax_conf_T (1-conf),0.2,99.51,33,39
+softmax_conf_T (1-conf),0.3,99.81,37,39
+mc_mean_conf (1-conf),0.0,97.53,0,38
+mc_mean_conf (1-conf),0.05,99.11,25,38
+mc_mean_conf (1-conf),0.1,99.35,29,38
+mc_mean_conf (1-conf),0.2,99.51,32,38
+mc_mean_conf (1-conf),0.3,99.81,36,38
+mc_predictive_entropy,0.0,97.53,0,38
+mc_predictive_entropy,0.05,99.11,25,38
+mc_predictive_entropy,0.1,99.35,29,38
+mc_predictive_entropy,0.2,99.51,32,38
+mc_predictive_entropy,0.3,99.81,36,38
+mc_mutual_information,0.0,97.53,0,38
+mc_mutual_information,0.05,98.91,22,38
+mc_mutual_information,0.1,99.28,28,38
+mc_mutual_information,0.2,99.51,32,38
+mc_mutual_information,0.3,99.91,37,38
+mc_aleatoric_entropy,0.0,97.53,0,38
+mc_aleatoric_entropy,0.05,99.11,25,38
+mc_aleatoric_entropy,0.1,99.35,29,38
+mc_aleatoric_entropy,0.2,99.51,32,38
+mc_aleatoric_entropy,0.3,99.81,36,38

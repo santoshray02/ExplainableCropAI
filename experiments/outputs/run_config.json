@@ -1,0 +1,21 @@
+{
+  "mode": "ablation",
+  "splits_csv": "experiments/outputs/splits.csv",
+  "backbone": "convnextv2_tiny",
+  "backbones": [
+    "convnextv2_tiny",
+    "resnet50",
+    "efficientnet_b0",
+    "inception_v3",
+    "mobilevit_s"
+  ],
+  "num_classes": 10,
+  "epochs": 40,
+  "batch_size": 128,
+  "lr": 0.0001,
+  "input_size": 224,
+  "mc_samples": 30,
+  "output_dir": "experiments/outputs",
+  "seed": 42,
+  "cpu": false
+}
