@@ -9,7 +9,7 @@ Revision notes
 This version is a process / architecture diagram, not a worked example.
 Each box describes the *role* of the component; no specific disease,
 treatment, or confidence values appear inside the figure (those belong
-to the case-study figures elsewhere in the paper). Novel contributions
+to the case-study figures elsewhere in the paper). Components
 share the same red double-border convention as Figure 1.
 """
 
@@ -134,37 +134,34 @@ def draw_arrow(p1, p2, label=None, rad=0.0, label_offset=(0, 0)):
 
 
 # =============================================================================
-# Row 1: Input  ->  Backbone (ConvNeXt V2-Tiny, NOVEL)
+# Row 1: Input  ->  Backbone (ConvNeXt V2-Tiny)
 # =============================================================================
 draw_box(3, 80, 18, 12, COLORS["input"], "Input Image",
-         ["Field-captured", "paddy leaf RGB", "640 × 640 × 3"])
+         ["Field-captured", "paddy leaf RGB", "224 × 224 × 3"])
 
 draw_box(26, 80, 22, 12, COLORS["backbone"], "ConvNeXt V2-Tiny",
-         ["Modern CNN backbone", "for feature extraction"],
-         novel=True)
+         ["CNN backbone (Woo et al.)", "used unmodified"])
 
 # =============================================================================
-# Row 2: Visual Explanation (Grad-CAM++, NOVEL) and Uncertainty (MC Dropout)
+# Row 2: Visual Explanation (Grad-CAM++) and Uncertainty (MC Dropout)
 # =============================================================================
 draw_box(3, 60, 22, 13, COLORS["gradcam"], "Visual Explanation",
          ["Grad-CAM++ attribution", "Second-order gradients",
-          "produce heatmaps over", "disease-relevant regions"],
-         novel=True)
+          "produce heatmaps over", "disease-relevant regions"])
 
 draw_box(28, 60, 20, 13, COLORS["uncertainty"], "Uncertainty",
          ["Monte Carlo Dropout", "30 stochastic passes",
           "split into epistemic", "and aleatoric components"])
 
 # =============================================================================
-# Row 3: LLM (Phi-3-mini, NOVEL) and Recommendation (+ Knowledge Base)
+# Row 3: LLM (Phi-3-mini) and Recommendation (+ Knowledge Base)
 # =============================================================================
 draw_box(3, 36, 22, 16, COLORS["llm"], "Phi-3-mini LLM",
-         ["Audience-adaptive natural-",
-          "language generation",
-          "fed with prediction,",
-          "uncertainty and visual",
-          "evidence"],
-         novel=True)
+         ["Grounded natural-language",
+          "generation from typed fields:",
+          "prediction, certainty level,",
+          "attribution descriptors,",
+          "knowledge-base entry"])
 
 draw_box(28, 36, 22, 16, COLORS["recommender"], "Recommendation Engine",
          ["Context-aware treatment",
@@ -234,10 +231,10 @@ ax.text(40, 97, "ExplainableCropAI: Multi-level Explanation Process",
         fontweight="bold", color="#1A237E")
 
 # =============================================================================
-# Legend (bottom-right, includes the NOVEL convention)
+# Legend (bottom-right)
 # =============================================================================
 legend_x, legend_y = 76, 92
-legend_w, legend_h = 22, 38
+legend_w, legend_h = 22, 33
 ax.add_patch(FancyBboxPatch(
     (legend_x, legend_y - legend_h), legend_w, legend_h,
     boxstyle="round,pad=0.02,rounding_size=0.5",
@@ -266,21 +263,6 @@ for i, (label, fill) in enumerate(legend_items):
     ax.text(legend_x + 6, yy, label,
             ha="left", va="center", fontsize=11,
             color=COLORS["text"], zorder=3)
-
-# Novel-marker entry
-yy = legend_y - 6 - len(legend_items) * 3.5
-ax.add_patch(FancyBboxPatch(
-    (legend_x + 1.5, yy - 1.1), 3.5, 2.2,
-    boxstyle="round,pad=0.01,rounding_size=0.3",
-    facecolor="#FFE6E6", edgecolor=COLORS["novel_border"],
-    linewidth=1.4, zorder=2,
-))
-ax.text(legend_x + 2.5, yy + 0.05, "N",
-        ha="center", va="center", fontsize=7,
-        fontweight="bold", color=COLORS["novel_border"], zorder=3)
-ax.text(legend_x + 6, yy, "Novel contribution",
-        ha="left", va="center", fontsize=8,
-        color=COLORS["text"], zorder=3)
 
 # =============================================================================
 # Save

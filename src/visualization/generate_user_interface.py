@@ -36,11 +36,11 @@ def create_user_interface():
     header = Rectangle((0, 90), 100, 10, facecolor=primary_color, edgecolor='none')
     ax.add_patch(header)
     ax.text(5, 95, 'ExplainableCropAI', fontsize=20, color=white, weight='bold', va='center')
-    ax.text(5, 92, 'Paddy Disease Detection & Decision Support System', fontsize=12, color=white, va='center')
+    ax.text(5, 92, 'Paddy Disease Diagnosis & Decision Support System', fontsize=12, color=white, va='center')
     
     # Navigation tabs
     tab_y = 87
-    tabs = ['Upload Image', 'Disease Detection', 'Explanations', 'Recommendations', 'History']
+    tabs = ['Upload Image', 'Diagnosis', 'Explanations', 'Recommendations', 'History']
     tab_width = 15
     for i, tab in enumerate(tabs):
         x = 5 + i * (tab_width + 1)
