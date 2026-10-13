@@ -1,114 +1,60 @@
-# Experiments — reproducing the reviewer-requested results
+# Experiments — reproducing every number in the paper
 
-These scripts regenerate the numbers in the manuscript. Run them on any
-CUDA-capable GPU machine, then copy the emitted values/tables into the paper.
+All scripts share `--seed 42` and write to `experiments/outputs/` (default). The
+committed files in that directory are the exact outputs behind the manuscript's
+tables; re-running a script overwrites them. A CUDA GPU is assumed; every script
+accepts `--cpu` for smoke tests.
 
-**Run order:** `create_splits.py` first (everything else consumes `splits.csv`),
-then the other three in any order.
-
-All scripts share: `--seed 42`, `--output-dir experiments/outputs` (default), and a
-`--cpu` flag for smoke-testing without a GPU.
-
----
-
-## 0. Setup
+## Setup
 
 ```bash
-cd ExplainableCropAI
-pip install -r requirements.txt          # torch, timm, scikit-learn, pandas, imagehash, Pillow, matplotlib
-export DATA=/data/paddy-doctor/train_images   # one sub-folder per class
-export CKPT=/path/to/convnextv2_tiny_best.pth # trained classifier checkpoint
+pip install -r requirements.txt            # torch, timm, scikit-learn, pandas, imagehash, Pillow, opencv-python
+export DATA=/path/to/paddy-doctor/train_images   # one sub-folder per class (Kaggle release)
+# trained checkpoint: GitHub release v1.1 -> experiments/outputs/baseline_convnextv2_tiny.pth
 ```
 
----
+Paths in the committed `splits.csv` are relative to the dataset root; run the
+scripts from the repository root with the dataset at `train_images/`, or
+regenerate the split with your own path (step 1).
 
-## 1. `create_splits.py` — Reviewer #6 (data splitting & leakage)
+## Scripts, in the order the paper uses them
 
-```bash
-python experiments/create_splits.py \
-    --data-dir "$DATA" \
-    --train 0.70 --val 0.15 --test 0.15 --seed 42 --phash-threshold 5
-```
+| Step | Script | Produces | Paper |
+|---|---|---|---|
+| 1 | `create_splits.py --data-dir $DATA` | `splits.csv`, `split_counts.csv`, `split_summary.txt` — stratified 70/15/15 image-level split with perceptual-hash near-duplicate groups kept together | §2.5, Table 2 |
+| 2 | `run_baselines_ablation.py --mode baselines` / `--mode ablation` | `baselines.csv`, `ablation.csv`, `baseline_<backbone>.pth` — seven backbones trained under one protocol | Tables 6–7 |
+| 3 | `run_eval.py --checkpoint outputs/baseline_convnextv2_tiny.pth` | `headline_metrics.json`, `per_class_metrics.csv`, `confusion_matrix*.csv`, `predictions.csv` | §3.1, Table 3, Fig. 4 |
+| 4 | `run_confidence_intervals.py outputs/predictions.csv` | `confidence_intervals.txt` — bootstrap 95% CIs, confidence bands, referral curve | §3.1–3.2 |
+| 5 | `run_calibration.py --checkpoint ...` | `calibration_metrics.csv`, `reliability_diagram.png`, `uncertainty_decomposition.csv`, `referral_policy.csv` | §3.2, Fig. 6 |
+| 6 | `run_uncertainty_error.py --checkpoint ...` | `uncertainty_error.csv`, `referral_by_signal.csv`, `calibration_ci.csv`, `mc_predictions.csv` — AUROC of each uncertainty signal for identifying errors, CIs for ECE / Brier / referral | §3.2, Table 4 |
+| 7 | `run_explanation_faithfulness.py --checkpoint ...` | `explanation_comparison.csv`, `explanation_per_image.csv` — insertion / deletion / runtime for six attribution methods on 30 sampled test images | Table 5 |
+| 8 | `run_baseline_eval.py` | `baselines_extended.csv`, `mcnemar.csv`, `predictions_<backbone>.csv` — per-model temperature scaling, ECE, Brier, AUROC, exact McNemar tests vs. ConvNeXt V2-Tiny | Table 6 |
+| 9 | `run_robustness.py --backbones convnextv2_tiny resnet50 ...` | `robustness.csv`, `robustness_summary.csv` — 8 corruptions × 5 severities for every model | §3.5, Tables 10–11 |
+| 10 | `run_background_test.py --checkpoint ...` | `background_test_hsv.csv`, `background_cam_energy_hsv.csv` — background replacement / leaf removal on the colour-segmentable subset | §3.6, Table 12 |
+| 11 | `run_external_eval.py` (see `run_external.sh`) | `external_<dataset>_metrics.json`, confusion matrices, predictions — zero-shot evaluation on RiceLeafBD and Sethy et al. | §3.4, Table 8 |
+| 12 | `run_external_finetune.py` (see `run_finetune.sh`, `run_finetune2.sh`) | `external_<dataset>_finetune.csv` — few-shot adaptation from the Paddy Doctor model and from ImageNet weights; Sethy et al. split group-wise by base image | §3.4, Table 9 |
 
-| Output | Goes into paper |
-|---|---|
-| `outputs/splits.csv` | consumed by all other scripts (and training) |
-| `outputs/split_counts.csv` | **per-class × per-split count table** (the new #6 table) |
-| `outputs/split_summary.txt` | dedup stats + split level → §Experimental Design prose |
+`run_round2_batch.sh` runs steps 6, 8, 9 and 10 in sequence. `make_confusion_figure.py`
+renders Fig. 4 from `confusion_matrix_pct.csv`.
 
-After running, paste `split_counts.csv` as the per-split table and confirm the
-train/val/test totals match the manuscript.
+## External datasets (step 11–12)
 
----
+Download from Mendeley Data (both CC BY 4.0) and point `--data-dir` at the class folders:
 
-## 2. `run_explanation_comparison.py` — Reviewer #7 (attribution comparison)
+- RiceLeafBD — <https://doi.org/10.17632/kx9rx8p2mz.1> (`Original Images/`)
+- Rice Leaf Disease Image Samples, Sethy et al. — <https://doi.org/10.17632/fwcj7stb8r.2> (`Rice Leaf Disease Images/`)
 
-Needs expert symptom masks (`--masks-dir`) aligned to the annotated test subset.
+The class-name mappings to Paddy Doctor labels are given in the two shell runners.
+Note that the Sethy et al. files are augmented copies of about 900 base photographs
+(`BLAST3_045.jpg`, `brownspot_orig_045.jpg`, … share a base image); the
+`--group-regex '_([0-9]+).'` option keeps all copies of one base image on one side of the
+hold-out. `external_sethy_finetune.csv` is the result *without* that grouping and is kept
+only to document the leakage it causes (100% accuracy); the paper reports
+`external_sethy_grouped_finetune.csv`.
 
-```bash
-python experiments/run_explanation_comparison.py \
-    --checkpoint "$CKPT" \
-    --splits-csv experiments/outputs/splits.csv \
-    --masks-dir /data/paddy-doctor/expert_masks \
-    --backbone convnextv2_tiny --num-classes 10 \
-    --threshold 0.5 \
-    --methods gradcam gradcampp layercam ig lime shap
-```
+## Notes
 
-| Output | Goes into paper |
-|---|---|
-| `outputs/explanation_comparison.csv` | **Table `tab:visual-explanation`** (IoU / insertion / deletion / point-game / runtime) |
-| `outputs/table_explanation_comparison.tex` | drop-in LaTeX table — replaces the provisional 6-method table |
-| `outputs/explanation_per_image.csv` | per-image scores → success/failure figure selection |
-
----
-
-## 3. `run_calibration.py` — Reviewer #8 (uncertainty & calibration)
-
-```bash
-python experiments/run_calibration.py \
-    --checkpoint "$CKPT" \
-    --splits-csv experiments/outputs/splits.csv \
-    --backbone convnextv2_tiny --num-classes 10 \
-    --mc-samples 30 --n-bins 15
-```
-
-| Output | Goes into paper |
-|---|---|
-| `outputs/calibration_metrics.csv` | **ECE / MCE / Brier** (before & after temperature scaling) → §Results |
-| `outputs/reliability_diagram.png` | new **reliability-diagram figure** |
-| `outputs/uncertainty_decomposition.csv` | epistemic vs aleatoric split (≈60/40) |
-| `outputs/referral_policy.csv` | uncertainty → {accept / reduce-confidence / refer} thresholds (#8/#9 decision policy) |
-
----
-
-## 4. `run_baselines_ablation.py` — Reviewer #11 (baselines + ablation)
-
-Two modes; run both.
-
-```bash
-# Baselines (Table tab:baselines)
-python experiments/run_baselines_ablation.py --mode baselines \
-    --splits-csv experiments/outputs/splits.csv --epochs 40 \
-    --backbones convnextv2_tiny efficientformer_l1 inception_v3 \
-                resnet50 mobilevit_s efficientnet_b0 vgg16
-
-# Ablation (Table tab:ablation)
-python experiments/run_baselines_ablation.py --mode ablation \
-    --splits-csv experiments/outputs/splits.csv --epochs 40
-```
-
-| Output | Goes into paper |
-|---|---|
-| `outputs/baselines.csv` | **Table `tab:baselines`** (params / accuracy / macro-F1 / latency) |
-| `outputs/ablation.csv` | **Table `tab:ablation`** (per-component ΔAcc) |
-| `outputs/baseline_*.pth` | trained baseline checkpoints |
-
----
-
-## After all runs
-
-1. Replace every `% PROVISIONAL` table/number in `paper/main.tex` with the emitted values.
-2. Re-check internal consistency (IoU, ECE, BLEU, accuracies) across Abstract / Results / Discussion / Conclusion.
-3. Update `paper/REVISION_RESPONSE_TRACKER.md` statuses 🟡 → 🟢.
-4. Tag a release and archive to Zenodo → paste the DOI into the Code-availability statement.
+- `run_explanation_comparison.py` is the older harness that also accepted expert symptom
+  masks; no such masks exist for this work and the paper reports only the model-based
+  metrics from `run_explanation_faithfulness.py`.
+- Logs (`*.log`) and checkpoints (`*.pth`) are not committed.

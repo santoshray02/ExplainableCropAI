@@ -17,8 +17,8 @@ authors:
     given-names: Durgesh
   - family-names: Kumar
     given-names: Sumit
-version: "1.0.0"
-date-released: "2026-06-29"
+version: "1.1.0"
+date-released: "2026-10-13"
 license: MIT
 doi: 10.5281/zenodo.21030215
 repository-code: "https://github.com/santoshray02/ExplainableCropAI"
