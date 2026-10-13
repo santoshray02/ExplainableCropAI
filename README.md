@@ -143,7 +143,7 @@ verified against local agricultural-extension recommendations before field use.
 
 ## Citation
 
-The code and result files are archived at Zenodo, DOI [10.5281/zenodo.21030215](https://doi.org/10.5281/zenodo.21030215). To cite the paper:
+The code and result files are archived at Zenodo, DOI [10.5281/zenodo.21030214](https://doi.org/10.5281/zenodo.21030214). To cite the paper:
 
 ```bibtex
 @article{explainablecropai2026,

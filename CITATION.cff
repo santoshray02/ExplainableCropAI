@@ -20,7 +20,7 @@ authors:
 version: "1.1.0"
 date-released: "2026-10-13"
 license: MIT
-doi: 10.5281/zenodo.21030215
+doi: 10.5281/zenodo.21030214
 repository-code: "https://github.com/santoshray02/ExplainableCropAI"
 keywords:
   - explainable AI
