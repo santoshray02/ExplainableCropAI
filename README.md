@@ -8,7 +8,7 @@ ExplainableCropAI detects paddy (rice) crop diseases and, alongside each predict
 produces three complementary explanations: a **Grad-CAM++ visual heatmap**, a
 **Monte Carlo Dropout uncertainty** estimate, and an **LLM-generated, audience-adaptive
 natural-language explanation** grounded in a curated treatment knowledge base. It is the
-reference implementation for the paper submitted to *The Visual Computer* (Springer Nature).
+reference implementation for the paper submitted to the *International Journal of Computational Intelligence Systems* (Springer Nature).
 
 > **Status:** revised manuscript under review. Every number in the paper is produced by the
 > scripts in [`experiments/`](experiments/README.md); their outputs (split files, per-image
@@ -150,7 +150,7 @@ The code and result files are archived at Zenodo, DOI [10.5281/zenodo.21030214](
   title   = {ExplainableCropAI: Interpretable Deep Learning for Agricultural
              Disease Diagnosis and Decision Support},
   author  = {Kumar, Santosh and Kumar, Sumit and Nandan, Durgesh},
-  journal = {The Visual Computer (under review)},
+  journal = {International Journal of Computational Intelligence Systems (under review)},
   year    = {2026},
   note    = {ConvNeXt V2-Tiny, Grad-CAM++, Monte Carlo Dropout, Phi-3-mini}
 }
